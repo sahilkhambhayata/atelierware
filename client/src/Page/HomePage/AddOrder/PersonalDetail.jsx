@@ -152,10 +152,11 @@ const PersonalDetail = ({ data }) => {
     setModalIsOpen(false);
   };
 
-  useEffect(() => {
-    // dispatch(getOrderType(BU_Id));
-    dispatch(getCustomerStyle(BU_Id));
-  }, []);
+  // Removed duplicate getCustomerStyle call - already called in parent SkelatonPage
+  // useEffect(() => {
+  //   // dispatch(getOrderType(BU_Id));
+  //   dispatch(getCustomerStyle(BU_Id));
+  // }, []);
 
   useEffect(() => {
     if (customerId) {
@@ -227,8 +228,8 @@ const PersonalDetail = ({ data }) => {
                       className="avatar rounded-circle"
                       src={SingleCustomer?.profile_front}
                       alt="1"
-                      // width="25px"
-                      // height="25px"
+                    // width="25px"
+                    // height="25px"
                     />
                   </div>
                 )}
@@ -238,8 +239,8 @@ const PersonalDetail = ({ data }) => {
                       className="avatar rounded-circle"
                       src={SingleCustomer?.profile_back}
                       alt="1"
-                      // width="25px"
-                      // height="25px"
+                    // width="25px"
+                    // height="25px"
                     />
                   </div>
                 )}
@@ -367,8 +368,8 @@ const PersonalDetail = ({ data }) => {
                     <span>
                       {SingleCustomer?.Address?.split(" ").length > 3
                         ? SingleCustomer?.Address.split(" ")
-                            .slice(0, 3)
-                            .join(" ") + " ..."
+                          .slice(0, 3)
+                          .join(" ") + " ..."
                         : SingleCustomer?.Address}
                     </span>
                     {/* 12, shfg hsfghsf sfghs hsfghs */}
@@ -409,10 +410,10 @@ const PersonalDetail = ({ data }) => {
                   <span className=" fw-medium">
                     {SingleCustomer && SingleCustomer?.LastOrderDate
                       ? formatDate(
-                          new Date(SingleCustomer?.LastOrderDate),
-                          getConfigData?.DateAndTime,
-                          false
-                        )
+                        new Date(SingleCustomer?.LastOrderDate),
+                        getConfigData?.DateAndTime,
+                        false
+                      )
                       : " N/A"}
                   </span>
                 </div>

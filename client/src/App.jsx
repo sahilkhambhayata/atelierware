@@ -120,23 +120,8 @@ function App() {
       } else {
         const userId = localStorage.getItem("userId");
         if (userId) {
-          dispatch(singleAdmin(userId));
-          dispatch(permissionByRole());
-          dispatch(TokenAdmin(userId)).then((res) => {
-            if (res?.message === "Invalid Token") {
-              localStorage.clear();
-              // localStorage.removeItem("token");
-              // localStorage.removeItem("asq");
-              navigate("/");
-              toast.error("Your LogIn Session Expired.");
-              // toaster.push(
-              //   <Message type={"error"} closable>
-              //     <p className="fs-6">Your LogIn Session Expired.</p>
-              //   </Message>,
-              //   { placement: "topEnd", duration: 1500 }
-              // );
-            }
-          });
+          // Removed TokenAdmin call - useSessionValidator hook already handles periodic validation
+          // This prevents duplicate API calls to /auth/v1/get/single/user/detail
         } else {
           navigate("/");
         }

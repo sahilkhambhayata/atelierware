@@ -49,11 +49,12 @@ const OrderDetail = ({ data }) => {
     // (state) => state.getcreateorddtls?.ordDetails.upCrtOrder
   );
 
-  useEffect(() => {
-    if (BU_Id) {
-      dispatch(getConfig(BU_Id));
-    }
-  }, []);
+  // Removed duplicate getConfig call - already called in parent SkelatonPage
+  // useEffect(() => {
+  //   if (BU_Id) {
+  //     dispatch(getConfig(BU_Id));
+  //   }
+  // }, []);
   const TOrdHdID = localStorage.getItem(`TOrdHdID${tabId}`);
 
   useEffect(() => {
@@ -62,7 +63,7 @@ const OrderDetail = ({ data }) => {
     }
   }, [TOrdHdID, dispatch]);
 
-  
+
   const customer = useSelector((state) => state.customerDetails);
   const selectedCustomer = customer?.single.data;
   const mood = localStorage.getItem(`mood${tabId}`);
@@ -112,8 +113,8 @@ const OrderDetail = ({ data }) => {
 
   const findOrderType = getcreateorddtls?.OrderTypeId
     ? orderType?.find((iteem) => {
-        return iteem.OrderTypeId === getcreateorddtls?.OrderTypeId;
-      })
+      return iteem.OrderTypeId === getcreateorddtls?.OrderTypeId;
+    })
     : "";
 
   const handleUpdateDetails = () => {
@@ -152,9 +153,10 @@ const OrderDetail = ({ data }) => {
   const handleAdvanceData = (data) => {
     setAdvanceData(data);
   };
-  useEffect(() => {
-    dispatch(getCustomerStyle(BU_Id));
-  }, []);
+  // Removed duplicate getCustomerStyle call - already called in parent SkelatonPage
+  // useEffect(() => {
+  //   dispatch(getCustomerStyle(BU_Id));
+  // }, []);
 
   return (
     <>
@@ -296,9 +298,9 @@ const OrderDetail = ({ data }) => {
               </span>
             </div>
 
-           
+
             {getcreateorddtls?.PoDate !== null &&
-            getcreateorddtls?.PoNo !== "" ? (
+              getcreateorddtls?.PoNo !== "" ? (
               <>
                 {getcreateorddtls?.PoDate !== null ? (
                   <div className="text-start  custCol-lg-3 col-md-6 col-12 mt-2 custome-px-1  custome-coll-45">
@@ -503,7 +505,7 @@ const OrderDetail = ({ data }) => {
             </div>
             <div className="text-start custom-border-right col-4 mt-2 custome-px-1"></div>
             {getcreateorddtls?.PoDate !== null &&
-            getcreateorddtls?.PoNo !== "" ? (
+              getcreateorddtls?.PoNo !== "" ? (
               <>
                 {getcreateorddtls?.PoDate !== null ? (
                   <div className="text-start  custom-border-right col-4 mt-2 custome-px-1">
@@ -704,7 +706,7 @@ const OrderDetail = ({ data }) => {
               )}
             </div>
             {getcreateorddtls?.PoDate !== null &&
-            getcreateorddtls?.PoNo !== "" ? (
+              getcreateorddtls?.PoNo !== "" ? (
               <>
                 {getcreateorddtls?.PoDate !== null ? (
                   <div className="text-start custom-border-right mt-2 custome-px-1 col-6">
