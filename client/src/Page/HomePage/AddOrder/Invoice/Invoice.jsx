@@ -1,0 +1,825 @@
+import React, { useEffect, useState } from "react";
+import html2pdf from "html2pdf.js";
+import jsPDF from "jspdf";
+import "@react-pdf-viewer/core/lib/styles/index.css";
+import { useDispatch, useSelector } from "react-redux";
+import { getInvoicePrintOrder } from "../../../../redux/actions/invoiceAction";
+// import Barcode from "react-barcode";
+import { Spinner } from "reactstrap";
+import Barcode from "react-barcode";
+import { sendPdf } from "../../../../redux/actions/SendPDFFile";
+import { toast } from "react-toastify";
+import { useTheme } from "../../../../Layout/Provider/Themes";
+import Head from "../../../../Layout/head/Head";
+import { useLocation, useNavigate } from "react-router";
+import { formatDate } from "../../../../redux/dateFormateFunction";
+
+const Invoice = () => {
+  const dispatch = useDispatch();
+  const symbol = localStorage.getItem("countrySymbol");
+  const { invoiceData } = useSelector((state) => state?.invoiceData);
+  const { isLoader } = useSelector((state) => state?.invoiceData);
+  const { tabId } = useTheme();
+
+  const handleExportToPDF = async () => {
+    const element = document.getElementById("pdfConvert");
+
+    if (!element) {
+      console.error("Element not found");
+      return;
+    }
+
+    try {
+      const pdf = new jsPDF();
+      await html2pdf(element, {
+        margin: 1,
+        filename: "Worker_Payable_Summary.pdf",
+        image: { type: "jpeg", quality: 0.98 },
+        html2canvas: { scale: 2 },
+        pagebreak: { avoid: ["tr", "div", "p", "span"], before: ".page-break" },
+        jsPDF: pdf,
+      })
+        .then(() => {
+          const blob = pdf.output("blob");
+          sendToBackendWithFixedFile("Downloads/Worker_Payable_Summary.pdf");
+          return blob;
+        })
+        .catch((error) => {
+          console.error("Error exporting PDF:", error);
+          return null;
+        });
+    } catch (error) {
+      console.error("Error exporting PDF or sending to backend:", error);
+    }
+  };
+
+
+  const getConfigData = useSelector((state) => state?.config?.orderType);
+
+ 
+  // let formattedTOrdDate = formatDate(
+  //   new Date(getcreateorddtls?.TOrdDate),
+  //   getConfigData?.DateAndTime,
+  //   true
+  //   // "dd-MMM-yyyy 12"
+  // );
+
+  const [TOrdHdID, setTOrdHdID] = useState();
+  const location = useLocation();
+  useEffect(() => {
+    // if (location?.state == null) {
+    //   navigate("/dashboard");
+    // }
+
+    if (tabId) {
+      const blncData = localStorage.getItem(`TOrdHdID${tabId}`);
+      if (location.state !== null) {
+        setTOrdHdID(localStorage.getItem(`TOrdHdID${tabId}`));
+      } else if (blncData !== null) {
+        const data = JSON.parse(localStorage.getItem("orderEditData"));
+        setTOrdHdID(localStorage.getItem(`TOrdHdID${tabId}`));
+      } else {
+        const data = JSON.parse(localStorage.getItem("orderEditData"));
+        setTOrdHdID(data.TOrdHdID);
+        localStorage.setItem(`TOrdHdID${tabId}`, data.TOrdHdID);
+      }
+    }
+  }, [tabId]);
+  const getInvoiceData = async () => {
+    dispatch(getInvoicePrintOrder(TOrdHdID)).then(async (res) => {
+      if (res.success) {
+        toast.success("generate Invoice successfully");
+      }
+    });
+  };
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (TOrdHdID == null || TOrdHdID == "null" || TOrdHdID == undefined) {
+      navigate(-1);
+    } else {
+      getInvoiceData();
+    }
+  }, [TOrdHdID]);
+
+  const sendToBackendWithFixedFile = async (filePath) => {
+    try {
+      const response = await fetch(filePath);
+      if (response.ok) {
+        const file = await response.blob();
+        const formData = new FormData();
+        formData.append("attach_img_1", file, "fixed_file.pdf");
+        dispatch(sendPdf(TOrdHdID, formData));
+      } else {
+        console.error("Failed to fetch file:", response.statusText);
+      }
+    } catch (error) {
+      console.error("Error fetching file:", error);
+    }
+  };
+
+  const [ordPrintTerms, setOrdPrintTerms] = useState({});
+
+  useEffect(() => {
+    // Check if invoiceData exists and has the necessary structure
+    if (invoiceData?.configData?.OrdPrintTerms) {
+      // Parse the string into a JavaScript object
+      const parsedOrdPrintTerms = JSON.parse(
+        invoiceData.configData.OrdPrintTerms
+      );
+      setOrdPrintTerms(parsedOrdPrintTerms);
+    }
+  }, [invoiceData]);
+
+  const ones = [
+    "",
+    "one",
+    "two",
+    "three",
+    "four",
+    "five",
+    "six",
+    "seven",
+    "eight",
+    "nine",
+  ];
+  const teens = [
+    "ten",
+    "eleven",
+    "twelve",
+    "thirteen",
+    "fourteen",
+    "fifteen",
+    "sixteen",
+    "seventeen",
+    "eighteen",
+    "nineteen",
+  ];
+  const tens = [
+    "",
+    "",
+    "twenty",
+    "thirty",
+    "forty",
+    "fifty",
+    "sixty",
+    "seventy",
+    "eighty",
+    "ninety",
+  ];
+  // Function to convert a number to text
+
+  const convertLessThanOneThousand = (num) => {
+    let words = "";
+    if (num % 100 < 10) {
+      words = ones[num % 10];
+      num = Math.floor(num / 10);
+      words = tens[num % 10] + " " + words;
+      num = Math.floor(num / 10);
+    } else if (num % 100 < 20) {
+      words = teens[num % 10];
+      num = Math.floor(num / 100);
+    } else {
+      words = ones[num % 10];
+      num = Math.floor(num / 10);
+      words = tens[num % 10] + " " + words;
+      num = Math.floor(num / 10);
+    }
+    if (num === 0) return words.trim();
+    return ones[num] + " hundred " + words.trim();
+  };
+
+  const convert = (num) => {
+    if (num === 0) return "zero";
+
+    let words = "";
+
+    if (num < 0) {
+      words = "negative ";
+      num = Math.abs(num);
+    }
+
+    let integerPart = Math.floor(num);
+    let fractionalPart = Math.round((num - integerPart) * 100);
+
+    let billions = Math.floor(integerPart / 1000000000);
+    let millions = Math.floor((integerPart % 1000000000) / 1000000);
+    let thousands = Math.floor((integerPart % 1000000) / 1000);
+    let remainder = integerPart % 1000;
+
+    if (billions > 0) {
+      words += convertLessThanOneThousand(billions) + " billion ";
+    }
+    if (millions > 0) {
+      words += convertLessThanOneThousand(millions) + " million ";
+    }
+    if (thousands > 0) {
+      words += convertLessThanOneThousand(thousands) + " thousand ";
+    }
+    if (remainder > 0) {
+      words += convertLessThanOneThousand(remainder);
+    }
+
+    words = words.trim();
+
+    if (fractionalPart > 0) {
+      words +=
+        " Rupees " + convertLessThanOneThousand(fractionalPart) + " paise";
+    }
+
+    return words.trim();
+  };
+
+  const getConfig = useSelector((state) => state?.config?.orderType);
+
+  const RoundUpToDecimal =
+    getConfig?.RoundUpToDecimal == null ||
+    getConfig?.RoundUpToDecimal == undefined ||
+    getConfig?.RoundUpToDecimal == 0
+      ? 2
+      : getConfig?.RoundUpToDecimal;
+
+  return (
+    <>
+      <Head title="Invoice"></Head>
+      <div
+        className={`f_invoice ${isLoader ? "isLoading" : ""}`}
+        id="pdfConvert"
+      >
+        {isLoader ? (
+          <div className="isLoading_div">
+            <div className="d-flex justify-content-center align-items-center w-100 h-50">
+              <Spinner className="" />
+            </div>
+          </div>
+        ) : (
+          ""
+        )}
+
+        {/* invoice_header Start */}
+        <div className="invoice_header">
+          <div className="d-flex justify-content-between align-items-center">
+            <div className="image-heading">
+              <div className="image-text-flex d-flex align-items-center">
+                <div className="invoice_image">
+                  {invoiceData?.CompanyInfo?.Logo ? (
+                    <img
+                      src={invoiceData?.CompanyInfo?.Logo}
+                      alt=""
+                      className="img-fluid in_img"
+                    />
+                  ) : (
+                    <></>
+                  )}
+                </div>
+                <div className="invoice_heading_text">
+                  {invoiceData?.branchIdData?.BranchName && (
+                    <>
+                      {invoiceData?.branchIdData?.BranchName.split(" ").map(
+                        (word, index) => (
+                          <React.Fragment key={index}>
+                            {index > 0 && " "}
+                            {index === 1 && <br />}
+                            {word}
+                          </React.Fragment>
+                        )
+                      )}
+                    </>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            <div className="tax-invoice_title">
+              <div className="text-title text-center">tAx Invoice</div>
+              <div className="gst_state_code">
+                <div className=" gst_state_d-flex">
+                  <div className="gst_state_code-text">GSTIN </div>
+                  <div className="gst_state_code-number">
+                    {invoiceData?.branchIdData?.GSTIN !== null || undefined
+                      ? invoiceData?.branchIdData?.GSTIN
+                      : "N/A"}
+                  </div>
+                </div>
+                <div className=" gst_state_d-flex">
+                  <div className="gst_state_code-text">State Code </div>
+                  <div className="gst_state_code-number">
+                  {invoiceData?.branchIdData?.StateCode !== null || undefined
+                      ? invoiceData?.branchIdData?.StateCode
+                      : "N/A"}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        {/* invoice_header End */}
+
+        {/* invoice_phone_mail_loc Start */}
+        <div className="invoice_phone_mail_loc">
+          <div className="ph_mail_loc-flex">
+            <div className="icon_text">
+              <div className="icon">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="25"
+                  height="25"
+                  viewBox="0 0 41 41"
+                  fill="none"
+                >
+                  <path
+                    d="M24.153 23.9958L25.0089 23.5051C26.192 22.8264 27.6993 23.0258 28.7205 23.9958L31.1424 26.2964C32.6976 27.7737 32.449 30.3066 30.6471 31.3401L27.9777 32.871C27.299 33.2604 26.5296 33.4716 25.7458 33.338M9.22961 7.88956C9.42382 6.95559 10.0772 6.24182 10.892 5.77448L13.8414 4.08281C15.4847 3.1403 17.6187 3.92621 18.3456 5.74175L19.5469 8.74232C20.1342 10.2092 19.587 11.8563 18.2592 12.6178L17.7203 12.9269"
+                    stroke="white"
+                    strokeWidth="1.50476"
+                  />
+                  <path
+                    d="M25.7442 33.3339C23.2661 32.9115 17.4205 31.0783 12.798 23.1245C8.43915 15.6241 8.73115 10.2749 9.22803 7.8855"
+                    stroke="white"
+                    strokeWidth="1.50476"
+                  />
+                  <path
+                    d="M24.1618 23.9998C24.1618 23.9998 22.1275 25.1666 18.9111 19.632C15.6947 14.0976 17.729 12.9309 17.729 12.9309"
+                    stroke="white"
+                    strokeWidth="1.50476"
+                    strokeLinecap="round"
+                  />
+                </svg>
+              </div>
+              <div className="text">{invoiceData?.branchIdData?.Phone}</div>
+            </div>
+
+            <div className="icon_text">
+              <div className="icon">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="25"
+                  height="25"
+                  viewBox="0 0 41 41"
+                  fill="none"
+                >
+                  <path
+                    d="M32.4676 32.3317H8.67131C7.41955 32.3302 6.21948 31.8323 5.33434 30.9472C4.44921 30.062 3.9513 28.862 3.94983 27.6102V13.368C3.9513 12.1162 4.44921 10.9161 5.33434 10.031C6.21948 9.14587 7.41955 8.64795 8.67131 8.64648H32.4676C33.7194 8.64795 34.9194 9.14587 35.8046 10.031C36.6897 10.9161 37.1876 12.1162 37.1891 13.368V27.6102C37.1876 28.862 36.6897 30.062 35.8046 30.9472C34.9194 31.8323 33.7194 32.3302 32.4676 32.3317ZM8.67131 10.3129C7.86106 10.3129 7.08399 10.6348 6.51105 11.2077C5.93811 11.7806 5.61624 12.5577 5.61624 13.368V27.6102C5.61624 28.4204 5.93811 29.1975 6.51105 29.7705C7.08399 30.3434 7.86106 30.6653 8.67131 30.6653H32.4676C33.2778 30.6653 34.0549 30.3434 34.6279 29.7705C35.2008 29.1975 35.5227 28.4204 35.5227 27.6102V13.368C35.5227 12.5577 35.2008 11.7806 34.6279 11.2077C34.0549 10.6348 33.2778 10.3129 32.4676 10.3129H8.67131Z"
+                    fill="white"
+                  />
+                  <path
+                    d="M20.5716 23.8681C19.5437 23.8698 18.5433 23.5363 17.722 22.9183L4.75183 13.1087C4.66019 13.0444 4.58245 12.9623 4.52326 12.8672C4.46407 12.7722 4.42463 12.6662 4.40731 12.5556C4.38999 12.445 4.39514 12.332 4.42245 12.2235C4.44976 12.1149 4.49867 12.0129 4.56626 11.9237C4.63385 11.8344 4.71874 11.7597 4.81585 11.704C4.91296 11.6483 5.0203 11.6127 5.13147 11.5994C5.24263 11.5861 5.35533 11.5953 5.46285 11.6266C5.57037 11.6578 5.67049 11.7104 5.75723 11.7811L18.7274 21.6018C19.2601 21.9994 19.9069 22.2142 20.5716 22.2142C21.2362 22.2142 21.8831 21.9994 22.4157 21.6018L35.3859 11.7811C35.4727 11.7104 35.5728 11.6578 35.6803 11.6266C35.7878 11.5953 35.9005 11.5861 36.0117 11.5994C36.1229 11.6127 36.2302 11.6483 36.3273 11.704C36.4244 11.7597 36.5093 11.8344 36.5769 11.9237C36.6445 12.0129 36.6934 12.1149 36.7207 12.2235C36.748 12.332 36.7532 12.445 36.7359 12.5556C36.7185 12.6662 36.6791 12.7722 36.6199 12.8672C36.5607 12.9623 36.483 13.0444 36.3913 13.1087L23.4211 22.9183C22.5998 23.5363 21.5994 23.8698 20.5716 23.8681Z"
+                    fill="white"
+                  />
+                  <path
+                    d="M5.10829 30.0085C4.9393 30.0088 4.77423 29.9576 4.63499 29.8619C4.49574 29.7662 4.3889 29.6303 4.32864 29.4724C4.26838 29.3146 4.25755 29.1421 4.29759 28.9779C4.33763 28.8137 4.42665 28.6656 4.55282 28.5532L14.7734 19.438C14.9384 19.2906 15.1552 19.2149 15.3761 19.2274C15.5969 19.2399 15.8037 19.3396 15.951 19.5046C16.0984 19.6696 16.1741 19.8864 16.1616 20.1072C16.1491 20.3281 16.0494 20.5349 15.8844 20.6822L5.66376 29.7975C5.51198 29.9356 5.31349 30.011 5.10829 30.0085ZM36.0257 30.0085C35.8205 30.011 35.622 29.9356 35.4702 29.7975L25.2496 20.6822C25.0846 20.5349 24.9849 20.3281 24.9724 20.1072C24.9599 19.8864 25.0356 19.6696 25.1829 19.5046C25.3303 19.3396 25.5371 19.2399 25.7579 19.2274C25.9788 19.2149 26.1955 19.2906 26.3605 19.438L36.5756 28.5532C36.7018 28.6656 36.7908 28.8137 36.8308 28.9779C36.8709 29.1421 36.86 29.3146 36.7998 29.4724C36.7395 29.6303 36.6327 29.7662 36.4934 29.8619C36.3542 29.9576 36.1891 30.0088 36.0201 30.0085H36.0257Z"
+                    fill="white"
+                  />
+                </svg>
+              </div>
+              <div className="text">
+                {invoiceData?.branchIdData?.Email !== null || undefined
+                  ? invoiceData?.branchIdData?.Email
+                  : "N/A"}
+              </div>
+            </div>
+
+            <div className="icon_text">
+              <div className="icon">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="20"
+                  height="25"
+                  viewBox="0 0 28 29"
+                  fill="none"
+                >
+                  <path
+                    d="M14.0972 1.66467C11.3734 1.66467 8.76122 2.74668 6.83522 4.67268C4.90922 6.59867 3.82721 9.21088 3.82721 11.9346C3.82721 18.8669 12.8776 26.6977 13.2628 27.0315C13.4953 27.2304 13.7912 27.3397 14.0972 27.3397C14.4032 27.3397 14.6991 27.2304 14.9316 27.0315C15.381 26.6977 24.3672 18.8669 24.3672 11.9346C24.3672 9.21088 23.2852 6.59867 21.3592 4.67268C19.4332 2.74668 16.821 1.66467 14.0972 1.66467ZM14.0972 24.3228C11.3628 21.7553 6.39471 16.2224 6.39471 11.9346C6.39471 9.89182 7.20622 7.93266 8.65072 6.48817C10.0952 5.04367 12.0544 4.23216 14.0972 4.23216C16.14 4.23216 18.0992 5.04367 19.5437 6.48817C20.9882 7.93266 21.7997 9.89182 21.7997 11.9346C21.7997 16.2224 16.8316 21.7681 14.0972 24.3228ZM14.0972 6.79966C13.0816 6.79966 12.0888 7.10082 11.2444 7.66506C10.3999 8.2293 9.74174 9.03127 9.35309 9.96957C8.96443 10.9079 8.86274 11.9403 9.06088 12.9364C9.25901 13.9325 9.74807 14.8475 10.4662 15.5656C11.1844 16.2838 12.0993 16.7728 13.0954 16.971C14.0915 17.1691 15.124 17.0674 16.0623 16.6787C17.0006 16.2901 17.8026 15.6319 18.3668 14.7875C18.931 13.943 19.2322 12.9502 19.2322 11.9346C19.2322 10.5728 18.6912 9.26665 17.7282 8.30366C16.7652 7.34066 15.4591 6.79966 14.0972 6.79966ZM14.0972 14.5021C13.5894 14.5021 13.093 14.3516 12.6708 14.0694C12.2486 13.7873 11.9195 13.3863 11.7251 12.9172C11.5308 12.448 11.48 11.9318 11.579 11.4337C11.6781 10.9357 11.9226 10.4782 12.2817 10.1192C12.6408 9.76008 13.0983 9.51555 13.5963 9.41648C14.0944 9.31741 14.6106 9.36826 15.0797 9.56259C15.5489 9.75691 15.9499 10.086 16.232 10.5082C16.5141 10.9304 16.6647 11.4268 16.6647 11.9346C16.6647 12.6156 16.3942 13.2686 15.9127 13.7501C15.4312 14.2316 14.7782 14.5021 14.0972 14.5021Z"
+                    fill="white"
+                  />
+                </svg>
+              </div>
+              <div className="text">{invoiceData?.branchIdData?.Address1} </div>
+            </div>
+          </div>
+        </div>
+        {/* invoice_phone_mail_loc End */}
+
+        {/* invoice_to Start */}
+
+        <div className="invoice_to">
+          <div className="d-flex justify-content-between align-items-center">
+            <div className="name_ph_mai_loc_part">
+              <div className="invoice_red_tex">INVOICE TO :</div>
+              <div className="invoice_name text-uppercase">
+                {invoiceData?.Order?.CustName}
+              </div>
+              <div className="icon-text_ph-ml-loc">
+                <div className="icon_text">
+                  <div className="icon">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="20"
+                      height="20"
+                      viewBox="0 0 31 31"
+                      fill="none"
+                    >
+                      <path
+                        d="M18.1778 18.3949L18.8479 18.0107C19.7742 17.4793 20.9544 17.6354 21.7539 18.3949L23.6501 20.1961C24.8678 21.3528 24.6731 23.3358 23.2623 24.145L21.1724 25.3436C20.6409 25.6485 20.0386 25.8139 19.4249 25.7092M6.49369 5.78467C6.64574 5.05342 7.15729 4.49458 7.79523 4.12868L10.1044 2.80421C11.391 2.06628 13.0618 2.6816 13.631 4.10306L14.5715 6.45232C15.0314 7.60081 14.6029 8.89039 13.5633 9.48658L13.1414 9.72862"
+                        stroke="#1C2B4C"
+                        strokeWidth="2.12217"
+                      />
+                      <path
+                        d="M19.4269 25.7064C17.4867 25.3757 12.9099 23.9404 9.2908 17.7131C5.87808 11.8408 6.1067 7.65262 6.49573 5.78186"
+                        stroke="#1C2B4C"
+                        strokeWidth="2.12217"
+                      />
+                      <path
+                        d="M18.1843 18.399C18.1843 18.399 16.5916 19.3126 14.0734 14.9794C11.5551 10.6463 13.1479 9.73275 13.1479 9.73275"
+                        stroke="#1C2B4C"
+                        strokeWidth="2.12217"
+                        strokeLinecap="round"
+                      />
+                    </svg>
+                  </div>
+                  <div className="text">{invoiceData?.Order?.MobNo}</div>
+                </div>
+                <div className="icon_text">
+                  <div className="icon">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="20"
+                      height="15"
+                      viewBox="0 0 20 15"
+                      fill="none"
+                    >
+                      <path
+                        d="M17.1591 14.2513H2.84091C2.08772 14.2505 1.36564 13.9509 0.83306 13.4183C0.300478 12.8857 0.000884539 12.1636 0 11.4104V2.84091C0.000884539 2.08772 0.300478 1.36564 0.83306 0.83306C1.36564 0.300478 2.08772 0.000884539 2.84091 0H17.1591C17.9123 0.000884539 18.6344 0.300478 19.1669 0.83306C19.6995 1.36564 19.9991 2.08772 20 2.84091V11.4104C19.9991 12.1636 19.6995 12.8857 19.1669 13.4183C18.6344 13.9509 17.9123 14.2505 17.1591 14.2513ZM2.84091 1.00267C2.35338 1.00267 1.88582 1.19634 1.54108 1.54108C1.19634 1.88582 1.00267 2.35338 1.00267 2.84091V11.4104C1.00267 11.898 1.19634 12.3655 1.54108 12.7103C1.88582 13.055 2.35338 13.2487 2.84091 13.2487H17.1591C17.6466 13.2487 18.1142 13.055 18.4589 12.7103C18.8037 12.3655 18.9973 11.898 18.9973 11.4104V2.84091C18.9973 2.35338 18.8037 1.88582 18.4589 1.54108C18.1142 1.19634 17.6466 1.00267 17.1591 1.00267H2.84091Z"
+                        fill="#1C2B4C"
+                      />
+                      <path
+                        d="M10.0013 9.15882C9.38288 9.15979 8.78095 8.95915 8.28677 8.58729L0.482622 2.68489C0.427482 2.64619 0.380707 2.59677 0.34509 2.5396C0.309474 2.48242 0.285746 2.41865 0.275323 2.35209C0.264901 2.28554 0.267999 2.21757 0.284431 2.15224C0.300864 2.08691 0.330294 2.02556 0.370964 1.97186C0.411634 1.91816 0.462709 1.8732 0.52114 1.83968C0.579571 1.80615 0.644159 1.78475 0.711047 1.77675C0.777934 1.76874 0.845748 1.7743 0.91044 1.79308C0.975132 1.81187 1.03537 1.8435 1.08757 1.88609L8.89171 7.79518C9.21219 8.03442 9.60141 8.16367 10.0013 8.16367C10.4013 8.16367 10.7905 8.03442 11.111 7.79518L18.9151 1.88609C18.9673 1.8435 19.0275 1.81187 19.0922 1.79308C19.1569 1.7743 19.2247 1.76874 19.2916 1.77675C19.3585 1.78475 19.4231 1.80615 19.4815 1.83968C19.54 1.8732 19.591 1.91816 19.6317 1.97186C19.6724 2.02556 19.7018 2.08691 19.7182 2.15224C19.7347 2.21757 19.7378 2.28554 19.7274 2.35209C19.7169 2.41865 19.6932 2.48242 19.6576 2.5396C19.622 2.59677 19.5752 2.64619 19.5201 2.68489L11.7159 8.58729C11.2217 8.95915 10.6198 9.15979 10.0013 9.15882Z"
+                        fill="#1C2B4C"
+                      />
+                      <path
+                        d="M0.69702 12.8535C0.59534 12.8537 0.496018 12.8229 0.412233 12.7653C0.328448 12.7077 0.264162 12.6259 0.227904 12.5309C0.191646 12.436 0.18513 12.3322 0.209222 12.2334C0.233314 12.1346 0.286874 12.0455 0.362795 11.9778L6.51253 6.49322C6.61181 6.40458 6.74223 6.359 6.87511 6.36653C7.00799 6.37405 7.13244 6.43405 7.22109 6.53333C7.30973 6.6326 7.3553 6.76303 7.34778 6.89591C7.34026 7.02879 7.28026 7.15324 7.18098 7.24188L1.03124 12.7265C0.939917 12.8096 0.820484 12.855 0.69702 12.8535ZM19.3 12.8535C19.1765 12.855 19.0571 12.8096 18.9657 12.7265L12.816 7.24188C12.7167 7.15324 12.6567 7.02879 12.6492 6.89591C12.6417 6.76303 12.6873 6.6326 12.7759 6.53333C12.8645 6.43405 12.989 6.37405 13.1219 6.36653C13.2548 6.359 13.3852 6.40458 13.4845 6.49322L19.6308 11.9778C19.7068 12.0455 19.7603 12.1346 19.7844 12.2334C19.8085 12.3322 19.802 12.436 19.7657 12.5309C19.7295 12.6259 19.6652 12.7077 19.5814 12.7653C19.4976 12.8229 19.3983 12.8537 19.2966 12.8535H19.3Z"
+                        fill="#1C2B4C"
+                      />
+                    </svg>
+                  </div>
+                  <div className="text">{invoiceData?.Order?.Email}</div>
+                </div>
+                <div className="icon_text">
+                  <div className="icon">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="20"
+                      height="20"
+                      viewBox="0 0 20 20"
+                      fill="none"
+                    >
+                      <path
+                        d="M10.0029 0.622192C8.01381 0.622192 6.10615 1.41237 4.69963 2.81888C3.29311 4.2254 2.50293 6.13305 2.50293 8.12217C2.50293 13.1846 9.11231 18.9034 9.39356 19.1471C9.56337 19.2924 9.77947 19.3722 10.0029 19.3722C10.2264 19.3722 10.4425 19.2924 10.6123 19.1471C10.9404 18.9034 17.5029 13.1846 17.5029 8.12217C17.5029 6.13305 16.7128 4.2254 15.3062 2.81888C13.8997 1.41237 11.9921 0.622192 10.0029 0.622192ZM10.0029 17.169C8.00605 15.294 4.37793 11.2534 4.37793 8.12217C4.37793 6.63033 4.97056 5.19959 6.02545 4.14471C7.08035 3.08982 8.51109 2.49719 10.0029 2.49719C11.4948 2.49719 12.9255 3.08982 13.9804 4.14471C15.0353 5.19959 15.6279 6.63033 15.6279 8.12217C15.6279 11.2534 11.9998 15.3034 10.0029 17.169ZM10.0029 4.37218C9.26125 4.37218 8.53623 4.59211 7.91954 5.00417C7.30286 5.41622 6.82221 6.00189 6.53838 6.68711C6.25455 7.37233 6.18029 8.12633 6.32498 8.85375C6.46968 9.58118 6.82683 10.2494 7.35128 10.7738C7.87573 11.2983 8.54391 11.6554 9.27134 11.8001C9.99877 11.9448 10.7528 11.8705 11.438 11.5867C12.1232 11.3029 12.7089 10.8222 13.1209 10.2055C13.533 9.58887 13.7529 8.86384 13.7529 8.12217C13.7529 7.12761 13.3578 6.17378 12.6546 5.47053C11.9513 4.76727 10.9975 4.37218 10.0029 4.37218ZM10.0029 9.99716C9.63209 9.99716 9.26958 9.88719 8.96124 9.68117C8.65289 9.47514 8.41257 9.18231 8.27066 8.8397C8.12874 8.49709 8.09161 8.12009 8.16396 7.75637C8.2363 7.39266 8.41488 7.05857 8.6771 6.79635C8.93933 6.53412 9.27342 6.35555 9.63713 6.2832C10.0008 6.21085 10.3778 6.24798 10.7205 6.3899C11.0631 6.53181 11.3559 6.77214 11.5619 7.08048C11.768 7.38882 11.8779 7.75133 11.8779 8.12217C11.8779 8.61945 11.6804 9.09636 11.3288 9.44799C10.9771 9.79962 10.5002 9.99716 10.0029 9.99716Z"
+                        fill="#1C2B4C"
+                      />
+                    </svg>
+                  </div>
+                  <div className="text">{invoiceData?.Order?.Address}</div>
+                </div>
+              </div>
+            </div>
+            <div className="invoice_no_date__part">
+              <div className="invoice_bar_urgent">
+                <div className="barcode-image">
+                  <Barcode value={`*${invoiceData?.Order?.OrdBarcode}*`} />
+                  <div className="barcode_text text-center">
+                    {invoiceData?.Order?.OrdBarcode}
+                  </div>
+                </div>
+
+                <div className="is_urgent ">
+                  <span
+                    className={`text ${
+                      invoiceData?.Order?.UrgentType == 1
+                        ? "bg-red"
+                        : "opacity-0 bg-green"
+                    }   `}
+                  >
+                    {invoiceData?.Order?.UrgentType == 1 ? "Urgent" : "Regular"}
+                  </span>
+                </div>
+              </div>
+              <div className="invoice_Date">
+                <div className="in_date_text">
+                  <div className="in_text">Invoice No</div>
+                  <div className="in_number">{invoiceData?.Order?.TOrdNo}</div>
+                </div>
+                <div className="in_date_text">
+                  <div className="in_text">Invoice Date</div>
+                  <div className="in_number">
+                    {formatDate(new Date(), getConfigData?.DateAndTime, true)}
+                  </div>
+                </div>
+                <div className="in_date_text">
+                  <div className="in_text">Trial Date</div>
+                  <div className="in_number">
+                    {formatDate(new Date(invoiceData?.Order?.TrialDate),getConfigData?.DateAndTime, true)}
+                  </div>
+                </div>
+                <div className="in_date_text">
+                  <div className="in_text">Del. Date</div>
+                  <div className="in_number">
+                    {formatDate(new Date(invoiceData?.Order?.DelDate),getConfigData?.DateAndTime, true)}
+                  </div>
+                </div>
+              </div>
+              <div className="invoice_end_button">
+                <div className="btn">
+                  Stylist {invoiceData?.Order?.SalesmanName}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        {/* invoice_to End */}
+
+        {/* invoice_Table Start */}
+        <div className="invoice_table">
+          <table class="table  bg-tr-even">
+            <thead>
+              <tr>
+                <th scope="col">NO</th>
+                <th scope="col">Particular</th>
+                <th scope="col">HSN Code</th>
+                <th scope="col">QTY</th>
+                <th scope="col">Rate</th>
+                <th scope="col">Discount</th>
+                <th scope="col">Taxable</th>
+                {/* {invoiceData?.Order?.SalesType == "INCLUDING" ? (
+                  <>
+                    <th scope="col">CGST</th>
+                    <th scope="col">SGST</th>
+                  </>
+                ) : ( */}
+                <th scope="col">Tax</th>
+                {/* )} */}
+                <th scope="col">Total</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              {invoiceData?.Order?.TOrdDtls?.map((val, ind) => {
+                const originalPrice = val.BasicRate; // Replace with the actual property name for original price
+                const discountPercent = val.Discount;
+                const discountAmount = (
+                  (originalPrice * discountPercent) /
+                  100
+                )?.toFixed(2);
+
+                const fabArray = val?.fabricList?.filter(
+                  (val) =>
+                    val?.ItemType === "Cut Length" ||
+                    val?.ItemType === "Fabric" ||
+                    val?.ItemType === "fabric" ||
+                    val?.ItemType === "cut length"
+                );
+                const accArray = val?.fabricList?.filter(
+                  (val) =>
+                    val?.ItemType === "Accessories" ||
+                    val?.ItemType === "accessories"
+                );
+
+                return (
+                  <tr key={val.TOrdDtId}>
+                    <td>{ind + 1}</td>
+                    <td>
+                      <div className="particular_title">{val.ItemName}</div>
+                      {fabArray.length > 0 && (
+                        <div className="particular_fabric">
+                          (Fabric -
+                          {fabArray?.map((val) => val.Item_name).join(", ")})
+                        </div>
+                      )}
+                      {accArray.length > 0 && (
+                        <div className="particular_accessories">
+                          (Accessories -{" "}
+                          {accArray?.map((val) => val.Item_name).join(", ")})
+                        </div>
+                      )}
+                    </td>
+                    <td>{val.HSN_Code}</td>
+                    <td>{val.Qty}</td>
+                    <td>{val.BasicRate?.toFixed(RoundUpToDecimal)}</td>
+                    <td>{discountPercent}</td>
+                    <td>{val.BasicRate - val.AdSTax}</td>
+                    {/* {invoiceData?.Order?.SalesType == "INCLUDING" ? (
+                      <>
+                        {" "}
+                        <td>{val.CGSTAmt}</td>
+                        <td>{val.SGSTAmt}</td>
+                      </>
+                    ) : ( */}
+                    <td>{val.AdSTax}</td>
+                    {/* )} */}
+
+                    <td>{val.DelAmount}</td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+        {/* invoice_Table End */}
+        {/* invoice_GrandTotal Start */}
+        <div className="invoice_GrandTotal">
+          <div className="d-flex justify-content-between">
+            <div className="hsn_sac_table min-w-60">
+              <div className="amt-text">
+                Indian rupee {convert(invoiceData?.granttotal)} Only
+              </div>
+              <div className="hsn_table">
+                <table class="table  bg-tr-even">
+                  <thead>
+                    {/* <tr>
+                      <th scope="col"></th>
+                      <th scope="col"></th>
+                      {invoiceData?.Order?.SalesType == "INCLUDING" ? (
+                        <>
+                          <th colSpan="2">Central Tax</th>
+                          <th colSpan="2">State Tax</th>
+                        </>
+                      ) : (
+                        <>
+                          <th colSpan="2">International Tax</th>
+                        </>
+                      )}
+                      <th scope="col"></th>
+                    </tr> */}
+                    <tr className="cust_verticale">
+                      <th scope="col">TAX SLAB</th>
+                      <th scope="col">Taxable value</th>
+                      <th scope="col">Rate</th>
+                      <th scope="col">Amount</th>
+                      {/* {invoiceData?.Order?.SalesType == "INCLUDING" ? (
+                        <>
+                          <th scope="col">Rate</th>
+                          <th scope="col">Amount</th>
+                          <th scope="col">Rate</th>
+                          <th scope="col">Amount</th>
+                        </>
+                      ) : (
+                        <>
+                          <th scope="col">Rate</th>
+                          <th scope="col">Amount</th>
+                        </>
+                      )} */}
+                      {/* <th scope="col">Total tax amount</th> */}
+                    </tr>
+                  </thead>
+
+                  <tbody>
+                    {invoiceData?.summaryData?.map((item, ind) => {
+                      return (
+                        <tr className="" key={ind}>
+                          <td>{item.STPerc}%</td>
+                          <td>
+                            {(item.TaxableAmt - item.totalAdSTax).toFixed(2)}
+                          </td>
+                          <td>{item.totalAdSTax}</td>
+                          <td>{item.TaxableAmt}</td>
+                        </tr>
+                      );
+                    })}
+
+                    {/* Calculate totals */}
+                    {(() => {
+                      // Sum all relevant fields using reduce
+                      const totalSTPerc = invoiceData?.summaryData?.reduce(
+                        (acc, item) => acc + item.STPerc,
+                        0
+                      );
+                      const totalTaxableAmt = invoiceData?.summaryData?.reduce(
+                        (acc, item) => acc + item.TaxableAmt,
+                        0
+                      );
+                      const totalSTAmt = invoiceData?.summaryData?.reduce(
+                        (acc, item) => acc + item.totalAdSTax,
+                        0
+                      );
+                      const totalDifference = invoiceData?.summaryData?.reduce(
+                        (acc, item) =>
+                          acc + (item.TaxableAmt - item.totalAdSTax),
+                        0
+                      );
+
+                      return (
+                        <>
+                          <tr>
+                            <td>Total</td>
+                            <td>{totalDifference?.toFixed(2)}</td>
+                            <td>{totalSTAmt?.toFixed(2)}</td>
+                            <td>{totalTaxableAmt?.toFixed(2)}</td>
+                          </tr>
+                        </>
+                      );
+                    })()}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div className="grandTotal_table mt-2">
+              <table class="table table-bordered  bg-tr-even">
+                <tbody>
+                  <tr>
+                    <td>Grand Total</td>
+                    <td>
+                      {symbol}
+                      {invoiceData?.granttotal}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Total Paid</td>
+                    <td>
+                      {symbol}
+                      {invoiceData?.TotalPaid - invoiceData?.CashDiscount}
+                    </td>
+                  </tr>
+                  {invoiceData?.CashDiscount > 0 && (
+                    <tr>
+                      <td>Discount</td>
+                      <td>
+                        {symbol}
+                        {invoiceData?.CashDiscount}
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+                <tfoot className="text-center">
+                  <tr>
+                    <th>Balance</th>
+                    <th>
+                      {symbol}
+                      {invoiceData?.Balance}
+                    </th>
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
+          </div>
+        </div>
+        {/* invoice_GrandTotal End */}
+
+        {/* Tax Amount (in Words) Start */}
+        <div className="tax_Amount_inWords">
+          <div className="d-flex align-items-center gap-2">
+            <div className="text-amt_q">Tax Amount (in Words)</div>
+            <div className="tex-amt_as">
+              Indian rupee {convert(invoiceData?.totalTaxAmt)} Only
+            </div>
+          </div>
+        </div>
+        {/* Tax Amount (in Words) End */}
+
+        {/* Terms & conditions Start */}
+
+        <div className="invoice_termsAndConditions">
+          <div className="d-flex justify-content-between align-items-center">
+            <div className="termsAndConditions_part">
+              <div className="termsAndConditions_title">Terms & conditions</div>
+              <div className="Terms-conditions-text">
+                {Object.keys(ordPrintTerms).map((key, ind) => (
+                  <div className="in_date_text" key={key}>
+                    <div className="in_text">0{ind + 1}</div>
+                    <div className="in_number">{ordPrintTerms[key]}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="declarationOn_part">
+              <div className="declarationOn_card">
+                <div className="title">Declaration on</div>
+                <div className="text">
+                  {invoiceData?.configData?.DeclarationOn}
+                </div>
+              </div>
+              <div className="last_declarationOn_card">
+                <div className="title">
+                  {invoiceData?.branchIdData?.BranchName}
+                </div>
+                <div className="text">Authorised signatory</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      {/* for example */}
+      <div className="d-flex justify-content-center mt-4">
+        <button className="btn btn-sm btn-primary" onClick={handleExportToPDF}>
+          Export to PDF
+        </button>
+      </div>
+
+      {/* <div onClick={() => sendToBackend()}>
+        <button>send backend</button>
+      </div> */}
+    </>
+  );
+};
+
+export default Invoice;

@@ -1,0 +1,17 @@
+<svg width="17" height="18" viewBox="0 0 17 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g opacity="0.5">
+<mask id="path-1-inside-1_101_47" fill="white">
+<rect x="6.12684" y="12.2558" width="4.65421" height="4.7971" rx="1"/>
+</mask>
+<rect x="6.12684" y="12.2558" width="4.65421" height="4.7971" rx="1" stroke="#112D55" stroke-width="2.6" mask="url(#path-1-inside-1_101_47)"/>
+<mask id="path-2-inside-2_101_47" fill="white">
+<rect x="6.12684" y="1.16647" width="4.65421" height="4.7971" rx="1"/>
+</mask>
+<rect x="6.12684" y="1.16647" width="4.65421" height="4.7971" rx="1" stroke="#112D55" stroke-width="2.4" mask="url(#path-2-inside-2_101_47)"/>
+<rect x="3.70394" y="1.49741" width="9.5" height="8.93234" rx="1.25" stroke="#112D55" stroke-width="1.5"/>
+<circle cx="2.64594" cy="14.9091" r="1.56699" stroke="#112D55" stroke-width="1.5"/>
+<path d="M6.66982 15.6591C7.08403 15.6591 7.41982 15.3233 7.41982 14.9091C7.41982 14.4949 7.08403 14.1591 6.66982 14.1591V15.6591ZM4.08784 15.6591H6.66982V14.1591H4.08784V15.6591Z" fill="#112D55"/>
+<circle cx="2.31699" cy="2.31699" r="1.56699" transform="matrix(-1 0 0 1 16.5789 12.5921)" stroke="#112D55" stroke-width="1.5"/>
+<path d="M10.2381 15.6591C9.82386 15.6591 9.48808 15.3233 9.48808 14.9091C9.48808 14.4949 9.82386 14.1591 10.2381 14.1591V15.6591ZM12.82 15.6591H10.2381V14.1591H12.82V15.6591Z" fill="#112D55"/>
+</g>
+</svg>

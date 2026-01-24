@@ -1,0 +1,280 @@
+.pagination {
+    &-goto {
+        display: inline-flex;
+        align-items: center;
+        font-size: .8125rem;
+        text-transform: uppercase;
+    }
+}
+
+.page {
+    &-link {
+        font-size: $pagination-font-size;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        line-height: $pagination-line-height;
+        min-width: calc(#{$pagination-line-height} + #{$pagination-padding-y*2} + #{$pagination-border-width*2});
+
+        .pagination-sm & {
+            line-height: $pagination-line-height-sm;
+            min-width: calc(#{$pagination-line-height-sm} + #{$pagination-padding-y-sm*2} + #{$pagination-border-width*2});
+        }
+
+        .pagination-lg & {
+            line-height: $pagination-line-height-lg;
+            min-width: calc(#{$pagination-line-height-lg} + #{$pagination-padding-y-lg*2} + #{$pagination-border-width*2});
+        }
+
+        .pagination-xl & {
+            padding: $pagination-padding-y-xl $pagination-padding-x-xl;
+            font-size: $pagination-font-size*1.7;
+            line-height: $pagination-line-height-xl;
+            min-width: calc(#{$pagination-line-height-xl} + #{$pagination-padding-y-xl*2} + #{$pagination-border-width*2});
+        }
+
+        .icon {
+            font-size: .8125rem;
+            line-height: inherit;
+        }
+
+        &:not([href]) {
+            background-color: transparent;
+            color: inherit;
+
+            .icon {
+                &:before {
+                    position: relative;
+                    top: 1px;
+                }
+            }
+        }
+
+        &-prev,
+        &-next {
+            span {
+                display: none;
+            }
+        }
+    }
+}
+
+@include media-breakpoint-up(sm) {
+    .page {
+        &-link {
+
+            &-prev,
+            &-next {
+                span {
+                    display: block;
+                }
+            }
+
+            &-prev {
+                .icon {
+                    padding-right: 0.25rem;
+                }
+            }
+
+            &-next {
+                .icon {
+                    padding-left: 0.25rem;
+                }
+            }
+        }
+    }
+}
+
+
+
+
+
+//  Add custom pagination
+
+
+.pagination {
+    &.rounded-10 {
+        border-radius: 5px;
+        border: 1px solid #DBDFEA;
+    }
+
+    .custom-pagination {
+        padding: 5px;
+
+        .row-page-title {
+            color: var(--Body-Color, #526484);
+            text-align: center;
+            margin: 0 10px;
+            font-size: 15px;
+
+        }
+
+        .select-box {
+            margin: 0 10px;
+
+            .form-select {
+                padding: 2px 29px 2px 6px;
+                background-position: right 0.4rem center;
+                background-size: 10px 10px;
+            }
+
+
+
+            .page-dtails {
+                color: var(--Body-Color, #526484);
+                text-align: center;
+                font-size: 15px;
+
+            }
+
+
+
+
+
+        }
+
+        .right-arrow-button {
+            padding: 2px;
+
+            button {
+                font-size: 23px;
+                padding: 2px;
+
+                &.css-78trlr-MuiButtonBase-root-MuiIconButton-root {
+                    padding: 0px !important;
+
+                }
+            }
+
+            .right-icon {
+                line-height: 22px;
+                margin-left: 2px;
+            }
+        }
+
+
+        .left-arrow-button {
+            padding: 2px;
+
+            button {
+                font-size: 23px;
+                padding: 2px;
+
+                &.css-78trlr-MuiButtonBase-root-MuiIconButton-root {
+                    padding: 0px !important;
+
+                }
+
+
+            }
+
+
+            .left-icon {
+                line-height: 22px;
+                margin-right: 2px;
+            }
+        }
+    }
+}
+
+
+@media (min-width : 665px) and (max-width: 700px) {
+    .pagination {
+        .custom-pagination {
+            .row-page-title {
+                text-align: center;
+                margin: 0 0px;
+                font-size: 15px;
+            }
+        }
+    }
+}
+
+
+@media (max-width: 380px) {
+    .pagination {
+        &.rounded-10 {
+            border-radius: 5px;
+            border: 1px solid #DBDFEA;
+        }
+
+        .custom-pagination {
+            padding: 5px;
+
+            .row-page-title {
+                color: var(--Body-Color, #526484);
+                text-align: center;
+                margin: 0 2px;
+                font-size: 13px;
+
+            }
+
+            .select-box {
+                margin: 0 5px;
+
+                .form-select {
+                    padding: 2px 29px 2px 6px;
+                    background-position: right 0.4rem center;
+                    background-size: 10px 10px;
+                }
+
+
+
+                .page-dtails {
+                    color: var(--Body-Color, #526484);
+                    text-align: center;
+                    font-size: 13px;
+
+                }
+
+
+
+
+
+            }
+
+            .right-arrow-button {
+                padding: 2px;
+
+                button {
+                    font-size: 23px;
+                    padding: 2px;
+
+                    &.css-78trlr-MuiButtonBase-root-MuiIconButton-root {
+                        padding: 0px !important;
+
+                    }
+                }
+
+                .right-icon {
+                    line-height: 22px;
+                    margin-left: 2px;
+                }
+            }
+
+
+            .left-arrow-button {
+                padding: 2px;
+
+                button {
+                    font-size: 23px;
+                    padding: 2px;
+
+                    &.css-78trlr-MuiButtonBase-root-MuiIconButton-root {
+                        padding: 0px !important;
+
+                    }
+
+
+                }
+
+
+                .left-icon {
+                    line-height: 22px;
+                    margin-right: 2px;
+                }
+            }
+        }
+    }
+
+}

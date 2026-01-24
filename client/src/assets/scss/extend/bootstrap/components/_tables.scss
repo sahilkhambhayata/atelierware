@@ -1,0 +1,196 @@
+.table {
+  &-striped tbody tr:nth-of-type(odd) {
+    background-color: $lighter;
+  }
+  > :not(caption) > * > * {
+    border-top: 1px solid $table-border-color;
+    border-bottom: 0;
+    background-color: $white;
+  }
+  &-hover tbody tr:hover {
+    color: $secondary-light;
+    background-color: $lighter;
+  }
+  &-head {
+    background: $lighter;
+  }
+  > :not(:first-child) {
+    border-top: none;
+  }
+  thead tr:last-child {
+    th {
+      border-bottom: $table-border-width solid $table-border-color;
+    }
+  }
+  &-dark thead tr:last-child th,
+  thead.thead-dark tr:last-child th {
+    border-color: $table-dark-border-color;
+  }
+  td,
+  th {
+    &:first-child {
+      padding-left: $table-cell-padding-x-sm;
+    }
+    &:last-child {
+      padding-right: $table-cell-padding-x-sm;
+    }
+  }
+
+  th {
+    line-height: 1.1;
+    &.overline-title {
+      line-height: 1.25rem;
+      font-weight: $fw-medium;
+    }
+  }
+  caption {
+    font-style: italic;
+    padding-left: $table-cell-padding-x-sm;
+  }
+  &-bordered {
+    td,
+    th {
+      padding-left: $table-cell-padding-bordered;
+      padding-right: $table-cell-padding-bordered;
+    }
+  }
+  &-plain {
+    td,
+    th {
+      &:first-child {
+        padding-left: 0;
+      }
+      &:last-child {
+        padding-right: 0;
+      }
+    }
+  }
+  &-lg {
+    td {
+      padding-top: ($table-cell-padding * 2);
+      padding-bottom: ($table-cell-padding * 2);
+    }
+    th {
+      padding-top: ($table-cell-padding * 1.5);
+      padding-bottom: ($table-cell-padding * 1.5);
+    }
+  }
+  &-vm td,
+  &-vm th,
+  td.vm,
+  th.vm {
+    vertical-align: middle;
+  }
+}
+@include media-breakpoint-up(sm) {
+  .table {
+    &-lg td,
+    &-lg th {
+      &:first-child {
+        padding-left: ($table-cell-padding-sm + $table-cell-padding-x-sm);
+      }
+      &:last-child {
+        padding-right: ($table-cell-padding-sm + $table-cell-padding-x-sm);
+      }
+    }
+  }
+}
+
+.table-borderless th,
+.table-borderless td,
+.table-borderless thead th,
+.table-borderless tbody + tbody {
+  border: 0;
+}
+.table > :not(caption) > * > * {
+  box-shadow: none;
+}
+.table .table-light th {
+  color: $base-color !important;
+  background-color: $lighter;
+  border: $light-300;
+}
+
+// .css-i4bv87-MuiSvgIcon-root{
+//     display: none !important;
+// }
+.css-1kqseyz.TableDetailToggleCell-toggleCell{
+  padding-left: 0px !important;
+}
+.css-1kqseyz{
+  padding: 0px !important;
+}
+.css-1yxmbwk{
+  padding: 0px !important;
+}
+
+.css-1ebvd0u.TableCell-cell{
+  overflow: visible !important;
+}
+.css-1ar44cc.TableStubCell-cell{
+  background-color: #EBEDF5 !important;
+  position: sticky !important;
+  top: 0 !important;
+  right: 0 !important; /* Adjust this value according to your layout */
+  z-index: 999 !important;
+}
+.css-1ebvd0u{
+  padding: 0 !important;
+}
+.css-1cpz5b7-MuiTableCell-root {
+  padding: 0 !important;
+}
+
+.css-1b9v7k0{
+  padding: 0 !important;
+}
+.order-table table{
+  border-spacing: 0 !important;
+}
+
+.table-Customer-col.clicked {
+  position: relative;
+}
+
+.table-Customer-col.clicked::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.8);
+  z-index: 1; /* Ensure overlay is above other content */
+  pointer-events: none; /* This ensures the overlay doesn't block interactions */
+}
+
+.spinner-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(255, 255, 255, 0.8); /* Adjust opacity or color as needed */
+  z-index: 2; /* Ensure spinner is above overlay */
+}
+
+.spinner {
+  border: 4px solid rgba(41, 39, 39, 0.3); /* Adjust color and thickness */
+  border-top: 4px solid #ffffff; /* Adjust spinner color */
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  animation: spin 1s linear infinite; /* Optional: Spinner animation */
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.cursor-sppiner{
+  cursor: progress;
+}

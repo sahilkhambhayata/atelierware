@@ -1,0 +1,56 @@
+// Included Global Variables and Functions
+@import "atelierware_variables";
+
+// Included Fonts
+/** 01. FONTS */
+@import url('https://fonts.googleapis.com/css2?family=Kaushan+Script&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+@import "core/fonts/roboto";
+
+// Included Bootstarp
+@import "extend/bootstrap/variables";
+@import "extend/bootstrap/bootstrap";
+@import "extend/bootstrap/extend";
+
+// Include Other Vendors
+@import "vendors/bundle";
+
+// Include Core atelierware Style
+
+@import "core/style";
+
+
+///////////////////////// DO NOT REMOVE ABOVE ///////////////////////
+
+////// GLOBAL INCLUDED
+@import "global/style";
+
+//////  APPLICATONS - Common Uses
+@import "apps/asterisk";
+@import "apps/reply-comment";
+@import "apps/attach";
+
+
+
+//////  Apps
+@import "apps/messages"; // - Support Messages
+@import "apps/inbox"; // - Inbox/ Mail App
+@import "apps/file-manager"; // - File Manager
+@import "apps/chats"; // - Chats
+
+///////  PREVIEW PURPOSE
+@import "core/preview"; // Can be remove on real projoect
+
+///////  UI/MODE OVERRIDE
+@import "core/mode-override";
+
+///////  DARK MODE SKIN
+@import "core/dark-skin";
+
+/////// Common
+@import "./Common/common";
+
+/////// Invoice
+@import "./invoice/invoice";
+
+/*! END @iO */
+////////////////////////// END STYLESHEET ////////////////////////////

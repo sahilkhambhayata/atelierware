@@ -1,0 +1,141 @@
+/// Dropdowns
+//////////[/////////////////
+.nk-notification {
+  .dropdown-menu & {
+    max-height: 239px;
+    overflow: auto;
+  }
+
+  &-item {
+    display: flex;
+    align-items: center;
+    padding: 1.25rem 1.75rem;
+  }
+
+  &-icon {
+    flex-shrink: 0;
+    margin-right: 0.75rem;
+  }
+
+  &-text {
+    font-size: $fx-sz-13;
+    color: $base-text;
+
+    span {
+      color: $base-color;
+    }
+  }
+
+  &-time {
+    font-size: $fx-sz-11;
+    color: $base-light;
+  }
+}
+
+.nk-chat-list,
+.chat-list {
+  .dropdown-menu & {
+    max-height: 274px;
+    overflow: auto;
+  }
+}
+
+//training cusstom width
+.nk-training {
+  .dropdown-menu & {
+    max-height: 300px;
+    overflow: auto;
+  }
+
+  &-item {
+    display: flex;
+    align-items: center;
+    padding: 1px 1rem 1px 1rem;
+  }
+
+  &-text {
+    font-size: $fx-sz-15;
+    color: $base-text;
+
+    span {
+      color: $base-light;
+    }
+  }
+}
+
+.nk-help {
+  .dropdown-menu & {
+    max-height: 300px;
+    overflow: auto;
+    text-wrap: wrap;
+  }
+
+  span {
+    color: $base-light;
+    font-size: $fx-sz-15;
+  }
+}
+
+.custom-training-dropdown {
+  position: absolute;
+  inset: 14px 0px auto;
+  transform: translate(0px, 26px);
+}
+
+
+
+//export custome styles
+.nk-export {
+  .dropdown-menu & {
+    max-height: 300px;
+    overflow: auto;
+    max-width: 40px !important;
+  }
+
+  &-item {
+    display: flex;
+    align-items: center;
+    padding: 1px 1rem 1px 1rem;
+  }
+
+  &-text {
+    font-size: $fx-sz-15;
+    color: $base-text;
+
+    span {
+      color: $base-light;
+    }
+  }
+}
+
+
+
+
+.action {
+  .dropdown-menu-s1{
+    width: 200px;
+  }
+  .link-list-opt a {
+    cursor: pointer;
+    font-size: 14px;
+    color: #1C2B4C;
+
+    img {
+      width: 20px ;
+      height: 20px;
+      margin-right: 10px;
+    }
+  }
+}
+
+.action-icons.link-list-opt a {
+  cursor: pointer;
+  font-size: 14px;
+  color: #1C2B4C;
+
+  img {
+    width: 20px ;
+    height: 20px;
+    margin-right: 10px;
+  }
+}

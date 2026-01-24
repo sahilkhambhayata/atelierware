@@ -1,0 +1,113 @@
+.custom-container {
+    max-width: 1200px;
+    margin-right: auto;
+    margin-left: auto;
+    padding-right: 15px;
+    padding-left: 15px;
+}
+
+.custom-container-orderListing {
+
+    max-width: 1200px;
+    margin-right: auto;
+    margin-left: auto;
+    padding-right: 15px;
+    padding-left: 15px;
+
+}
+
+
+
+@media (max-width: 576px) {
+    .custom-container {
+        max-width: 100%;
+        padding-right: 10px;
+        padding-left: 10px;
+    }
+
+    .custom-container-orderListing {
+        max-width: 100%;
+        padding-right: 10px;
+        padding-left: 10px;
+    }
+}
+
+@media (min-width: 576px) {
+    .custom-container {
+        max-width: 710px;
+    }
+
+    .custom-container-orderListing {
+        max-width: 710px;
+    }
+}
+
+@media (min-width: 768px) {
+    .custom-container {
+        max-width: 850px;
+
+    }
+
+    .custom-container-orderListing {
+        max-width: 850px;
+
+    }
+}
+
+@media (min-width: 992px) {
+    .custom-container {
+        max-width: 1050px;
+
+    }
+
+    .custom-container-orderListing {
+        max-width: 1050px;
+
+    }
+}
+
+@media (min-width: 1200px) {
+    .custom-container {
+        max-width: 1300px;
+    }
+
+    .custom-container-orderListing {
+        max-width: 1300px;
+    }
+}
+
+@media (min-width: 1500px) {
+    .custom-container {
+        max-width: 1450px;
+
+    }
+
+    .custom-container-orderListing {
+        max-width: 1450px;
+    }
+
+}
+
+@media (min-width: 1700px) {
+    .custom-container {
+        max-width: 1650px;
+    }
+
+    .custom-container-orderListing {
+        max-width: 1650px;
+    }
+
+
+}
+
+@media (min-width: 1800px) {
+    .custom-container {
+        max-width: 1750px;
+    }
+
+    .custom-container-orderListing {
+        max-width: 1750px;
+    }
+
+
+}
