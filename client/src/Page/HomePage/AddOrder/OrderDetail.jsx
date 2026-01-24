@@ -58,7 +58,9 @@ const OrderDetail = ({ data }) => {
   const TOrdHdID = localStorage.getItem(`TOrdHdID${tabId}`);
 
   useEffect(() => {
-    if (TOrdHdID != "null") {
+    // Strict validation - only call API if TOrdHdID is valid
+    // Prevents API call with null/undefined/"null" values
+    if (TOrdHdID && TOrdHdID !== "null" && TOrdHdID !== null && TOrdHdID !== undefined) {
       dispatch(getSingleOrderDtlsAsyncData(TOrdHdID));
     }
   }, [TOrdHdID, dispatch]);

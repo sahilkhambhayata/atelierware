@@ -159,7 +159,9 @@ const PersonalDetail = ({ data }) => {
   // }, []);
 
   useEffect(() => {
-    if (customerId) {
+    // Strict validation - only call API if customerId is valid
+    // Prevents API call with null/undefined/"null" values
+    if (customerId && customerId !== "null" && customerId !== null && customerId !== undefined) {
       dispatch(getSingleCustomer(customerId));
     }
   }, [customerId, dispatch]);

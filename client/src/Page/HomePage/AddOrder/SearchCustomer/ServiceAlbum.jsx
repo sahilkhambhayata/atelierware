@@ -16,20 +16,21 @@ const ServiceAlbum = ({ onImageClick, searchService }) => {
 
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    dispatch(getServiceListAsyncData(BU_ID, searchService));
-  }, []);
+  // Removed duplicate useEffect - the useEffect below handles both initial load and search changes
+  // useEffect(() => {
+  //   dispatch(getServiceListAsyncData(BU_ID, searchService));
+  // }, []);
 
   useEffect(() => {
     dispatch(getServiceListAsyncData(BU_ID, searchService));
-  }, [searchService,BU_ID,dispatch]);
+  }, [searchService, BU_ID, dispatch]);
 
 
-  
+
   return (
     <div className="row m-0 w-100 ">
 
-    
+
       {!serviceNoData.noData ? (
         service ? (
           service?.orderDetails?.map((item, ind) => {
@@ -41,7 +42,7 @@ const ServiceAlbum = ({ onImageClick, searchService }) => {
                 <div
                   className="album text-center"
                   onClick={() => handleClick(item)}
-                  //  onClick={() => handleClick(img.path)}
+                //  onClick={() => handleClick(img.path)}
                 >
                   {item.ItemImage ? (
                     <img src={item.ItemImage} className="img-fluid w-100" />
