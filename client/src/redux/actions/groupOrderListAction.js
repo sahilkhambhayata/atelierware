@@ -64,7 +64,7 @@ export const getSingleGroupOrderList = (id) => {
 
       return data1.data;
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     }
   };
 };
@@ -85,7 +85,7 @@ export const deleteGroupOrderItem = (id) => {
       
       return data1.data;
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     }
   };
 };

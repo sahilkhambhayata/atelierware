@@ -110,7 +110,7 @@ const Login = () => {
   //         dispatch(getOrderCount());
   //         navigate("/dashboard");
   //       } else {
-  //         console.log(res, "ERROR in getBranch");
+  //         // console.log(res, "ERROR in getBranch");
   //         toast.error(res.message);
   //         setLoading(false);
   //       }

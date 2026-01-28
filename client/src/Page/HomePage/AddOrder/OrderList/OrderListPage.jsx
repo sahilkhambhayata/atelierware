@@ -94,18 +94,12 @@ const OrderListPage = () => {
     location.state && location.state.from === "group-page";
   // const isGroupId = location.state && location.state.id;
 
-  useEffect(() => {
-    // if (isFromGroupOrderList) {
-    //   const TOrdHdId = localStorage.getItem(`TOrdHdID${tabId}`);
-    // const TOrdHdId = 22687;
-
-    dispatch(getGroupOrderListAsyncData(TOrdHdId));
-    // } else {
-    //   const TOrdHdId = localStorage.getItem(`TOrdHdID${tabId}`);
-
-    // dispatch(getOrderListAsyncData(TOrdHdId));
-    // }
-  }, [isFromGroupOrderList]);
+  // Removed duplicate getGroupOrderListAsyncData call
+  // The child component SingleAndGroupOrderList already calls this API
+  // This was causing a 3rd duplicate API call
+  // useEffect(() => {
+  //   dispatch(getGroupOrderListAsyncData(TOrdHdId));
+  // }, [isFromGroupOrderList]);
 
   return (
     <>
@@ -161,8 +155,8 @@ const OrderListPage = () => {
               (paymentMethod === "cash" ||
                 paymentMethod === "wallet" ||
                 paymentMethod === "bank") &&
-              displaySummary &&
-              displayForm
+                displaySummary &&
+                displayForm
                 ? "xl"
                 : "lg"
             }
@@ -234,7 +228,7 @@ const OrderListPage = () => {
                     color="dark"
                     className="mr-2"
                     onClick={() => setPaymentDelete(false)}
-                    // onClick={() => handleImageDelete(deleteImage, deleteImageIndex)}
+                  // onClick={() => handleImageDelete(deleteImage, deleteImageIndex)}
                   >
                     Delete
                   </Button>

@@ -35,7 +35,7 @@ export const getInvoicePrintOrder = (TOrdHdID) => {
       dispatch(getInvoiceData(res.data));
       return res.data;
     } catch (err) {
-      console.log(err);
+      // console.log(err);
     }
   };
 };

@@ -22,7 +22,7 @@ export const statusUpdate = (SId, nextSId, TOrdDtId, UserId) => {
 
       return data1.data;
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     }
   };
 };

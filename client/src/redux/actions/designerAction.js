@@ -20,7 +20,7 @@ export const getDesignerList = (BU_ID) => {
         return data.data;
       } else {
         // dispatch(logoutAdmin())
-        console.log(data.data.error);
+        // console.log(data.data.error);
       }
       return data.data;
     } catch (error) {}

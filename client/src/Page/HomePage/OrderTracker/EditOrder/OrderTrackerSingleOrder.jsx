@@ -95,11 +95,14 @@ const OrderTrackerSingleOrder = () => {
     }
   }, [tabId]);
 
-  useEffect(() => {
-    if (id) {
-      dispatch(getSingleCustomer(id));
-    }
-  }, [id]);
+  // Removed duplicate getSingleCustomer call
+  // PersonalDetail component (rendered below) already calls this API
+  // This was causing duplicate getCustomers API calls (2x)
+  // useEffect(() => {
+  //   if (id) {
+  //     dispatch(getSingleCustomer(id));
+  //   }
+  // }, [id]);
 
   const handlePayment = () => {
     setIsPayment(true);
@@ -181,7 +184,7 @@ const OrderTrackerSingleOrder = () => {
             </div>
           )}
 
-          
+
 
           <Modal
             isOpen={isPayment}
@@ -189,8 +192,8 @@ const OrderTrackerSingleOrder = () => {
               (paymentMethod === "cash" ||
                 paymentMethod === "wallet" ||
                 paymentMethod === "bank") &&
-              displaySummary &&
-              displayForm
+                displaySummary &&
+                displayForm
                 ? "xl"
                 : "lg"
             }
@@ -199,6 +202,7 @@ const OrderTrackerSingleOrder = () => {
             <PayNowModal
               from={from}
               tab={tab}
+              TORDHdID={TOrdHdId}
               onPaymentMethod={handlePaymentMethod}
               onPaymentModal={handlePaymentModal}
               onPaymentDelete={handlePaymentDelete}
@@ -256,7 +260,7 @@ const OrderTrackerSingleOrder = () => {
                     color="dark"
                     className="mr-2"
                     onClick={() => setPaymentDelete(false)}
-                    // onClick={() => handleImageDelete(deleteImage, deleteImageIndex)}
+                  // onClick={() => handleImageDelete(deleteImage, deleteImageIndex)}
                   >
                     Delete
                   </Button>

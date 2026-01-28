@@ -32,7 +32,7 @@ export const getSingleArticleDetailsAsyncData = (article_Id) => {
         dispatch(getSingleArticleDetails(res.data));
       })
       .catch((err) => {
-        console.log(err);
+        // console.log(err);
       });
   };
 };

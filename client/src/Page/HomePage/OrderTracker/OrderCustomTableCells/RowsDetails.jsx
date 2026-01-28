@@ -179,7 +179,7 @@ const RowsDetails = ({ val, data, tab, customerData, balanceData }) => {
       </div>
 
       <div className="table-body">
-        {console.log(data,"This is main data")}
+        {/* {console.log(data,"This is main data")} */}
         {data?.map((item, ind) => {
           let formattedTrialDate =
             item.TrialDate !== null

@@ -40,7 +40,7 @@ export const getColumnListData = (id, tableName) => {
       }
       
     } catch (error) {
-      console.log(error);
+      // console.log(error);
       return false
     }
     // .then((res) => {
@@ -82,7 +82,7 @@ export const updateColumnListData = (id, tableName, tableFields) => {
         }
       );
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     }
   };
 };

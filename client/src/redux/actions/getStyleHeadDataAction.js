@@ -64,7 +64,7 @@ export const addStyleHeadDataAction = (
 
       return res.data;
     } catch (err) {
-      console.log(err);
+      // console.log(err);
     }
   };
 };

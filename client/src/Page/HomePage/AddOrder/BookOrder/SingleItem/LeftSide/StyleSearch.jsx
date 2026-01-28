@@ -132,23 +132,36 @@ const StyleSearch = ({
   //   // }
   // }, [singleOrderData]);
 
+  // Removed duplicate getStyleHeadDataAction API call
+  // Parent component (LeftSideDetail) already calls this API when item is selected
+  // Keeping state variables for UI, but using data from Redux store instead of making duplicate API call
   const [isLoader, setIsLoader] = useState(false);
   const [isStyle, setIsStyle] = useState(true);
+
+  // Monitor Redux store data instead of making API call
   useEffect(() => {
-    setIsLoader(true);
-    if (serviceId) {
-      dispatch(getStyleHeadDataAction(BU_ID, serviceId)).then((data) => {
-        if (data.success === true) {
-          setIsLoader(false);
-        } else {
-          setTimeout(() => {
-            setIsStyle(false);
-            setIsLoader(false);
-          }, 3000);
-        }
-      });
+    if (getStyleHeadData?.orderItemList) {
+      setIsLoader(false);
+      setIsStyle(true);
     }
-  }, [serviceId]);
+  }, [getStyleHeadData]);
+
+  // Original duplicate API call removed:
+  // useEffect(() => {
+  //   setIsLoader(true);
+  //   if (serviceId) {
+  //     dispatch(getStyleHeadDataAction(BU_ID, serviceId)).then((data) => {
+  //       if (data.success === true) {
+  //         setIsLoader(false);
+  //       } else {
+  //         setTimeout(() => {
+  //           setIsStyle(false);
+  //           setIsLoader(false);
+  //         }, 3000);
+  //       }
+  //     });
+  //   }
+  // }, [serviceId]);
 
   useEffect(() => {
     if (getStyleHeadData.orderItemList !== undefined) {
@@ -349,11 +362,10 @@ const StyleSearch = ({
                         height="120px"
                         width="100%"
                         alt=""
-                        className={`${
-                          singleImageRecord[item.StyleId] === undefined
-                            ? ""
-                            : "object-fit"
-                        }`}
+                        className={`${singleImageRecord[item.StyleId] === undefined
+                          ? ""
+                          : "object-fit"
+                          }`}
                       />
                       <div className="text-md-start text-center px-md-2  px-0 mt-1">
                         <span className="fw-bold">{item.StyleName}</span>

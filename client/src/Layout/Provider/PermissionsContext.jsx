@@ -31,7 +31,12 @@ export const PermissionsProvider = ({ children }) => {
   };
 
   const handleAction = (code, type, actionHandler, data, callBack) => {
-    if (!isActionPermitted(code, type)) {
+    // Check if permissions have been loaded (non-empty array)
+    // If permissions haven't loaded yet, allow navigation to proceed
+    // The destination page will handle permission checks via useEffect
+    const permissionsLoaded = permissions && permissions.length > 0;
+
+    if (permissionsLoaded && !isActionPermitted(code, type)) {
       toast.error(
         "You are not authorised to perform this action, for more details contact your account admin."
       );

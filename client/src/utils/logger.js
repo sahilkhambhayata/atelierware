@@ -3,19 +3,19 @@ export const logWithTab = (label, message, data = null, type = 'log') => {
   const tabId = typeof window !== 'undefined' ? window.location.pathname : 'unknown';
   const timestamp = new Date().toISOString();
   const prefix = `[${timestamp}] [TAB: ${tabId}] [${label}]`;
-  
+
   switch (type) {
     case 'error':
-      console.error(prefix, message, data ? data : '');
+      // console.error(prefix, message, data ? data : '');
       break;
     case 'warn':
-      console.warn(prefix, message, data ? data : '');
+      // console.warn(prefix, message, data ? data : '');
       break;
     case 'info':
-      console.info(prefix, message, data ? data : '');
+      // console.info(prefix, message, data ? data : '');
       break;
     default:
-      console.log(prefix, message, data ? data : '');
+    // console.log(prefix, message, data ? data : '');
   }
 };
 

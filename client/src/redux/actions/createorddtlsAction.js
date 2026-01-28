@@ -118,7 +118,7 @@ export const getSingleOrderDtlsAsyncData = (tordHdId) => {
         return true; // Return true if the request was successful
       })
       .catch((err) => {
-        console.log(err);
+        // console.log(err);
         return false; // Return false if there was an error
       });
   };

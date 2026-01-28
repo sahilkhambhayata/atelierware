@@ -31,7 +31,7 @@ export const addFabricAccessories = (data) => {
       dispatch({ type: "ADD_EDIT_FABRIC_ACC", payload: data1.data });
       return data1.data;
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     }
   };
 };
@@ -78,7 +78,7 @@ export const getFabricAccessoriesList = (TOrdDtId) => {
 //     dispatch({ type: "DELETE_FABRIC_ACC", payload: id });
 //     // return data1.data;
 //   } catch (error) {
-//     console.log(error);
+//     // console.log(error);
 //   }
 // };
 
@@ -99,7 +99,7 @@ export const deleteFabricAcc = (id) => {
 
       return data1.data;
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     }
   };
 };

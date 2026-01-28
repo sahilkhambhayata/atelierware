@@ -99,14 +99,14 @@ const RightSideDetail = () => {
   const updatedMakingAmount =
     Object.keys(singleOrderData).length !== 0
       ? singleOrderData?.orderItemList?.[0]?.BasicRate -
-        singleOrderData?.orderItemList?.[0]?.FabAmt
+      singleOrderData?.orderItemList?.[0]?.FabAmt
       : 0;
   const [makingAmt, setMakingAmt] = useState(
     updatedMakingAmount
       ? updatedMakingAmount
       : selectedItem?.BasicRate
-      ? selectedItem?.BasicRate
-      : 0
+        ? selectedItem?.BasicRate
+        : 0
   );
 
   const updatedDiscountAmount =
@@ -141,8 +141,8 @@ const RightSideDetail = () => {
 
   const RoundUpToDecimal =
     getConfig?.RoundUpToDecimal == 0 ||
-    getConfig?.RoundUpToDecimal == undefined ||
-    getConfig?.RoundUpToDecimal == null
+      getConfig?.RoundUpToDecimal == undefined ||
+      getConfig?.RoundUpToDecimal == null
       ? 2
       : getConfigData?.RoundUpToDecimal;
 
@@ -200,13 +200,13 @@ const RightSideDetail = () => {
   let Stitching = parseFloat(makingAmt); // Stitching is discussive after dynamic
   let basicAmt = isFromGroupOrderPage
     ? +(parseFloat(FabricAmt) + parseFloat(AccessoriesAmount))?.toFixed(
-        RoundUpToDecimal
-      )
+      RoundUpToDecimal
+    )
     : +(
-        parseFloat(Stitching) +
-        parseFloat(FabricAmt) +
-        parseFloat(AccessoriesAmount)
-      )?.toFixed(RoundUpToDecimal);
+      parseFloat(Stitching) +
+      parseFloat(FabricAmt) +
+      parseFloat(AccessoriesAmount)
+    )?.toFixed(RoundUpToDecimal);
   let FabricAccessoriesAmt = Number(FabricAmt) + Number(AccessoriesAmount);
   let DiscountType = selectedDiscount;
   let DiscountPer = selectedDiscount === "%" ? discountAmount : 0;
@@ -377,7 +377,7 @@ const RightSideDetail = () => {
             (TaxPer *
               (+parseFloat(basicAmt)?.toFixed(RoundUpToDecimal) -
                 +parseFloat(discountAmt)?.toFixed(RoundUpToDecimal))) /
-              (100 + TaxPer)
+            (100 + TaxPer)
           )?.toFixed(RoundUpToDecimal);
           CGSTAmt = +parseFloat(TaxAmt / 2)?.toFixed(RoundUpToDecimal);
           SGSTAmt = +parseFloat(TaxAmt / 2)?.toFixed(RoundUpToDecimal);
@@ -387,7 +387,7 @@ const RightSideDetail = () => {
           (vat *
             (+parseFloat(basicAmt)?.toFixed(RoundUpToDecimal) -
               +parseFloat(discountAmt)?.toFixed(RoundUpToDecimal))) /
-            (100 + vat)
+          (100 + vat)
         )?.toFixed(RoundUpToDecimal);
         TaxAmt = +parseFloat(vatAmt)?.toFixed(RoundUpToDecimal);
         TaxPer = +parseFloat(vat)?.toFixed(RoundUpToDecimal);
@@ -747,16 +747,17 @@ const RightSideDetail = () => {
 
   const dateFormatConfig = getConfigData?.DateAndTime?.split(" ");
   const dateFormat =
-  config?.DateAndTime?.replace("true", "HH:mm aa").replace("false", "") ??
-  "dd/MM/yyyy HH:mm";
+    config?.DateAndTime?.replace("true", "HH:mm aa").replace("false", "") ??
+    "dd/MM/yyyy HH:mm";
 
-  useEffect(() => {
-    // dispatch(getVatSlabData(selectedItem.VatSlabId));
-    // dispatch(getBranch(BranchId)).then((res) => {});
-    if (BU_Id) {
-      dispatch(getConfig(BU_Id));
-    }
-  }, []);
+  // Removed duplicate getConfig call
+  // This was causing the API to be called twice on component mount
+  // The first useEffect (line 90-94) already handles this
+  // useEffect(() => {
+  //   if (BU_Id) {
+  //     dispatch(getConfig(BU_Id));
+  //   }
+  // }, []);
 
   // static send data to singleOrderBook
 
@@ -844,7 +845,7 @@ const RightSideDetail = () => {
                 isClearable
                 autoComplete="off"
                 shouldCloseOnSelect={false}
-                // isClearable
+              // isClearable
               ></DatePicker>
             </span>
           </div>
@@ -892,11 +893,10 @@ const RightSideDetail = () => {
                     <div className="d-flex text-dark align-items-center">
                       <div className="">
                         <span
-                          className={`text-uppercase fs-14 fw-medium ${
-                            advanceData.priority === "urgent"
+                          className={`text-uppercase fs-14 fw-medium ${advanceData.priority === "urgent"
                               ? "text-danger"
                               : "text-dark"
-                          }`}
+                            }`}
                         >
                           <span> {advanceData.priority}</span>
                         </span>
@@ -952,12 +952,11 @@ const RightSideDetail = () => {
       )}
 
       <div
-        className={` mt-3 mx-1 row fx-column sv-card ${
-          !isFromGroupPage ||
-          (isFromGroupPage && (FabricAmt > 0 || AccessoriesAmount > 0))
+        className={` mt-3 mx-1 row fx-column sv-card ${!isFromGroupPage ||
+            (isFromGroupPage && (FabricAmt > 0 || AccessoriesAmount > 0))
             ? "border rounded-2"
             : ""
-        }`}
+          }`}
       >
         <div className="p-0 p-sm-3 mx-auto ">
           {/* {!isFromGroupPage && ( */}
@@ -1033,8 +1032,8 @@ const RightSideDetail = () => {
                       {makingAmt == 0
                         ? "-"
                         : makingAmt == "NaN"
-                        ? 0
-                        : makingAmt}
+                          ? 0
+                          : makingAmt}
                     </span>
                   </InputGroup.Text>
                 </InputGroup>
@@ -1174,9 +1173,8 @@ const RightSideDetail = () => {
                   <Tooltip
                     id={`discounttooltip`}
                     direction="right"
-                    text={`Please Enter discount ${
-                      selectedDiscount === symbol ? "Amount" : "percent"
-                    }`}
+                    text={`Please Enter discount ${selectedDiscount === symbol ? "Amount" : "percent"
+                      }`}
                   />
                 </div>
               </div>
@@ -1270,8 +1268,8 @@ const RightSideDetail = () => {
                         {basicAmt == ""
                           ? 0
                           : discountAmt?.toFixed(RoundUpToDecimal) == "NaN"
-                          ? 0
-                          : discountAmt?.toFixed(RoundUpToDecimal)}
+                            ? 0
+                            : discountAmt?.toFixed(RoundUpToDecimal)}
                       </span>
                     </InputGroup.Text>
                   </InputGroup>
@@ -1327,8 +1325,8 @@ const RightSideDetail = () => {
                         {basicAmt == ""
                           ? 0
                           : taxableAmount?.toFixed(RoundUpToDecimal) == "NaN"
-                          ? 0
-                          : taxableAmount?.toFixed(RoundUpToDecimal)}
+                            ? 0
+                            : taxableAmount?.toFixed(RoundUpToDecimal)}
                       </span>
                     </InputGroup.Text>
                   </InputGroup>
@@ -1405,8 +1403,8 @@ const RightSideDetail = () => {
                         {basicAmt == ""
                           ? 0
                           : TaxAmt?.toFixed(RoundUpToDecimal) == "NaN"
-                          ? 0
-                          : TaxAmt?.toFixed(RoundUpToDecimal)}
+                            ? 0
+                            : TaxAmt?.toFixed(RoundUpToDecimal)}
                         {/* {basicAmt == "" ? 0 : TaxAmt?.toFixed(RoundUpToDecimal)} */}
                       </span>
                     </InputGroup.Text>
@@ -1427,8 +1425,8 @@ const RightSideDetail = () => {
                 {basicAmt === ""
                   ? 0
                   : netPayable?.toFixed(RoundUpToDecimal) == "NaN"
-                  ? 0
-                  : netPayable?.toFixed(RoundUpToDecimal)}
+                    ? 0
+                    : netPayable?.toFixed(RoundUpToDecimal)}
               </span>
             </div>
           </div>

@@ -69,8 +69,8 @@ const SingleAndGroupOrderList = () => {
   const serviceId = localStorage.getItem(`serviceId${tabId}`);
   const RoundUpToDecimal =
     getConfig?.RoundUpToDecimal == null ||
-    getConfig?.RoundUpToDecimal == undefined ||
-    getConfig?.RoundUpToDecimal == 0
+      getConfig?.RoundUpToDecimal == undefined ||
+      getConfig?.RoundUpToDecimal == 0
       ? 2
       : getConfig?.RoundUpToDecimal;
   const EnableInventory = useSelector(
@@ -146,12 +146,15 @@ const SingleAndGroupOrderList = () => {
     localStorage.setItem(`TOrdHdID${tabId}`, item.TOrdHdID);
     localStorage.setItem(`serviceId${tabId}`, item.ItemId);
 
+    // // console.log();
+
     if (item.groupItemList.length > 0) {
       dispatch(getSingleGroupOrderList(item.TOrdDtId));
       navigate("/group-order-home-page", {
         state: { from: "group-order-list" },
       });
     } else {
+      // // console.log("=========================single===================");
       dispatch(getSingleOrderList(item.TOrdDtId));
       navigate("/add-order-home-page", {
         state: {
@@ -198,11 +201,13 @@ const SingleAndGroupOrderList = () => {
       dispatch(getGroupOrderListAsyncData(TOrdHdID));
     }
   }, [tabId]);
-  useEffect(() => {
-    if (TOrdHdID != null) {
-      dispatch(getGroupOrderListAsyncData(TOrdHdID));
-    }
-  }, []);
+  // Removed duplicate useEffect - already called with [tabId] dependency above
+  // This was causing the API to be called twice on component mount
+  // useEffect(() => {
+  //   if (TOrdHdID != null) {
+  //     dispatch(getGroupOrderListAsyncData(TOrdHdID));
+  //   }
+  // }, []);
 
   const handleDeleteItem = (item) => {
     setIsLoader(true);
@@ -288,7 +293,7 @@ const SingleAndGroupOrderList = () => {
       <div className="shadow p-1  bg-white cust-orderlist-padding ">
         <div
           className=" rounded-2 p-1 position-relative cust-orderlist-padding"
-          // style={{ maxHeight: "500px", minHeight: "500px ", overflow: "auto" }}
+        // style={{ maxHeight: "500px", minHeight: "500px ", overflow: "auto" }}
         >
           {orderList.isLoader ? (
             <ListingSkelaton />
@@ -350,23 +355,23 @@ const SingleAndGroupOrderList = () => {
                               <UncontrolledDropdown
                                 className="user-dropdown table-Customer-col w-100"
                                 isOpen={openedRow === ind}
-                                toggle={() => {}}
+                                toggle={() => { }}
                               >
                                 <DropdownToggle tag="a">
                                   <div className="avatar-stack mt-1 d-flex">
                                     <span
                                       className="fw-bold fs-6 text-dark"
-                                      // onMouseEnter={() =>
-                                      //   handleMouseEnter(order, ind)
-                                      // }
-                                      // onMouseLeave={handleMouseLeave}
+                                    // onMouseEnter={() =>
+                                    //   handleMouseEnter(order, ind)
+                                    // }
+                                    // onMouseLeave={handleMouseLeave}
                                     >
                                       {/* Sherwani... */}
                                       {order.ItemName ? (
                                         <>
                                           {order.ItemName.length > 10
                                             ? order.ItemName.slice(0, 10) +
-                                              "..."
+                                            "..."
                                             : order.ItemName}
                                         </>
                                       ) : (
@@ -486,9 +491,9 @@ const SingleAndGroupOrderList = () => {
                                         <span className="ms-1">
                                           {dropDownData?.ItemDesc?.length > 100
                                             ? dropDownData.ItemDesc.slice(
-                                                0,
-                                                100
-                                              ) + "..."
+                                              0,
+                                              100
+                                            ) + "..."
                                             : dropDownData.ItemDesc}
                                         </span>
                                       </div>
@@ -614,7 +619,7 @@ const SingleAndGroupOrderList = () => {
                                       key={ind}
                                     >
                                       <div className="col-3 d-flex mt-2 custom-group-item-lable">
-                                        <span>{item.ItemName} &nbsp; {item.OrdSrNo ? `(${item.OrdSrNo})` :""} </span>
+                                        <span>{item.ItemName} &nbsp; {item.OrdSrNo ? `(${item.OrdSrNo})` : ""} </span>
                                       </div>
 
                                       <div className="col-9 d-flex feb_acces_measu_stl_icon">
@@ -773,11 +778,10 @@ const SingleAndGroupOrderList = () => {
                             <div className="right-side-part-1 pl-0">
                               <div className="d-flex justify-content-between">
                                 <Accordion
-                                  className={`custom-z-index border-bottom ctransition w-100 ${
-                                    showAccordion.includes(ind)
-                                      ? "position-absolute px-2  justify-content-between"
-                                      : " Accordion-header-bg-tranpernt bg-transperent"
-                                  }`}
+                                  className={`custom-z-index border-bottom ctransition w-100 ${showAccordion.includes(ind)
+                                    ? "position-absolute px-2  justify-content-between"
+                                    : " Accordion-header-bg-tranpernt bg-transperent"
+                                    }`}
                                   style={{
                                     zIndex: showAccordion.includes(ind)
                                       ? "11"
@@ -786,11 +790,10 @@ const SingleAndGroupOrderList = () => {
                                 >
                                   <Accordion.Item
                                     eventKey="0"
-                                    className={`w-100 bg-transperent   ${
-                                      showAccordion.includes(ind)
-                                        ? "custome-acc-item"
-                                        : "basic_acc_btn_item"
-                                    }`}
+                                    className={`w-100 bg-transperent   ${showAccordion.includes(ind)
+                                      ? "custome-acc-item"
+                                      : "basic_acc_btn_item"
+                                      }`}
                                   >
                                     <Accordion.Header className="w-100 custom-acc-header">
                                       <div
@@ -831,8 +834,8 @@ const SingleAndGroupOrderList = () => {
                                             {symbol}{" "}
                                             {order?.BasicRate
                                               ? (+order.BasicRate)?.toFixed(
-                                                  RoundUpToDecimal
-                                                )
+                                                RoundUpToDecimal
+                                              )
                                               : 0}
                                           </span>
                                         </div>
@@ -897,8 +900,8 @@ const SingleAndGroupOrderList = () => {
                                     {symbol}{" "}
                                     {order?.BasicRate
                                       ? (+order.BasicRate)?.toFixed(
-                                          RoundUpToDecimal
-                                        )
+                                        RoundUpToDecimal
+                                      )
                                       : 0}
                                   </span>
                                 </div>
@@ -936,8 +939,8 @@ const SingleAndGroupOrderList = () => {
                                 {symbol}{" "}
                                 {order.NetAmount
                                   ? parseFloat(order.NetAmount)?.toFixed(
-                                      RoundUpToDecimal
-                                    )
+                                    RoundUpToDecimal
+                                  )
                                   : 0}
                               </h5>
                             </div>
@@ -968,7 +971,7 @@ const SingleAndGroupOrderList = () => {
                               <UncontrolledDropdown
                                 className="user-dropdown table-Customer-col w-100 "
                                 isOpen={openedRow === ind}
-                                toggle={() => {}}
+                                toggle={() => { }}
                               >
                                 <DropdownToggle tag="a">
                                   <div className="avatar-stack mt-1 d-flex">
@@ -977,10 +980,10 @@ const SingleAndGroupOrderList = () => {
                                         <>
                                           {order.ItemName.length > 10
                                             ? order.ItemName.slice(0, 10) +
-                                              "..."
+                                            "..."
                                             : order.ItemName}
-                                             &nbsp;
-                                             {order.OrdSrNo ? `(${order.OrdSrNo})` : ""}
+                                          &nbsp;
+                                          {order.OrdSrNo ? `(${order.OrdSrNo})` : ""}
                                         </>
                                       ) : (
                                         "Sherwani......."
@@ -1138,9 +1141,9 @@ const SingleAndGroupOrderList = () => {
                                         <span className="ms-1">
                                           {dropDownData?.ItemDesc?.length > 100
                                             ? dropDownData.ItemDesc.slice(
-                                                0,
-                                                100
-                                              ) + "..."
+                                              0,
+                                              100
+                                            ) + "..."
                                             : dropDownData.ItemDesc}
                                         </span>
                                       </div>
@@ -1416,11 +1419,10 @@ const SingleAndGroupOrderList = () => {
                             <div className="right-side-part-1 pl-0">
                               <div className="d-flex justify-content-between ">
                                 <Accordion
-                                  className={`custom-z-index border-bottom ctransition w-100 ${
-                                    showAccordion.includes(ind)
-                                      ? "position-absolute px-2  justify-content-between"
-                                      : " Accordion-header-bg-tranpernt bg-transperent"
-                                  }`}
+                                  className={`custom-z-index border-bottom ctransition w-100 ${showAccordion.includes(ind)
+                                    ? "position-absolute px-2  justify-content-between"
+                                    : " Accordion-header-bg-tranpernt bg-transperent"
+                                    }`}
                                   style={{
                                     zIndex: showAccordion.includes(ind)
                                       ? "11"
@@ -1429,11 +1431,10 @@ const SingleAndGroupOrderList = () => {
                                 >
                                   <Accordion.Item
                                     eventKey="0"
-                                    className={`w-100 bg-transperent   ${
-                                      showAccordion.includes(ind)
-                                        ? "custome-acc-item"
-                                        : "basic_acc_btn_item"
-                                    }`}
+                                    className={`w-100 bg-transperent   ${showAccordion.includes(ind)
+                                      ? "custome-acc-item"
+                                      : "basic_acc_btn_item"
+                                      }`}
                                   >
                                     <Accordion.Header className="w-100   custom-acc-header">
                                       <div
@@ -1474,8 +1475,8 @@ const SingleAndGroupOrderList = () => {
                                             {symbol}{" "}
                                             {order?.BasicRate
                                               ? (+order.BasicRate)?.toFixed(
-                                                  RoundUpToDecimal
-                                                )
+                                                RoundUpToDecimal
+                                              )
                                               : 0}
                                           </span>
                                         </div>
@@ -1527,7 +1528,6 @@ const SingleAndGroupOrderList = () => {
                                           </Accordion.Header>
                                         </Accordion.Item>
                                       </Accordion>
-                                      {console.log(order)}
 
                                       {fabArray.length > 0 && (
                                         <Accordion>
@@ -1602,12 +1602,12 @@ const SingleAndGroupOrderList = () => {
                                                                 ?.ArticleName
                                                                 .length > 5
                                                                 ? item.articleDetails?.ArticleName.slice(
-                                                                    0,
-                                                                    5
-                                                                  ) + "..."
+                                                                  0,
+                                                                  5
+                                                                ) + "..."
                                                                 : item
-                                                                    .articleDetails
-                                                                    ?.ArticleName}
+                                                                  .articleDetails
+                                                                  ?.ArticleName}
                                                             </p>
                                                           </div>
                                                           <div className="custom-border-right pr-2 pl-2 ">
@@ -1649,11 +1649,11 @@ const SingleAndGroupOrderList = () => {
                                                           {symbol}{" "}
                                                           {item?.Basic_Amt ==
                                                             0 ||
-                                                          item?.Basic_Amt ==
+                                                            item?.Basic_Amt ==
                                                             null
                                                             ? item.Item_rate
                                                             : item.Basic_Amt *
-                                                              item?.Quantity}
+                                                            item?.Quantity}
                                                         </span>
                                                       </div>
                                                     </div>
@@ -1783,11 +1783,11 @@ const SingleAndGroupOrderList = () => {
                                                             {symbol}{" "}
                                                             {item?.Basic_Amt ==
                                                               0 ||
-                                                            item?.Basic_Amt ==
+                                                              item?.Basic_Amt ==
                                                               null
                                                               ? item.Item_rate
                                                               : item.Basic_Amt *
-                                                                item?.Quantity}
+                                                              item?.Quantity}
                                                           </span>
                                                         </div>
                                                       </div>
@@ -1813,8 +1813,8 @@ const SingleAndGroupOrderList = () => {
                                     {symbol}{" "}
                                     {order?.BasicRate
                                       ? (+order.BasicRate)?.toFixed(
-                                          RoundUpToDecimal
-                                        )
+                                        RoundUpToDecimal
+                                      )
                                       : 0}
                                   </span>
                                 </div>
@@ -1852,8 +1852,8 @@ const SingleAndGroupOrderList = () => {
                                 {symbol}{" "}
                                 {order.NetAmount
                                   ? parseFloat(order.NetAmount)?.toFixed(
-                                      RoundUpToDecimal
-                                    )
+                                    RoundUpToDecimal
+                                  )
                                   : 0}
                               </h5>
                             </div>

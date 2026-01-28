@@ -419,12 +419,12 @@ const EditPersonalDetailForm = ({ editSingleData, onDataChange }) => {
         detection2.descriptor
       );
       if (distance < 0.6) {
-        console.log("Faces match!");
+        // console.log("Faces match!");
       } else {
-        console.log("Faces do not match.");
+        // console.log("Faces do not match.");
       }
     } else {
-      console.log("Face detection failed.");
+      // console.log("Face detection failed.");
     }
   };
 

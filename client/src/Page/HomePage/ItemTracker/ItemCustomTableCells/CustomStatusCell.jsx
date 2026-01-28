@@ -19,7 +19,7 @@ const CustomStatusCell = ({ statusData }) => {
   // let dataLemgth = dropdownData.length;
   // const handleCellClick = useHandleCellClick();
 
-  console.log(statusData,"currentStatus")
+  // console.log(statusData,"currentStatus")
   useEffect(() => {
     setDropdownData(statusData?.val?.newstatus);
     setCurrentStatus(statusData?.currentStatus);
@@ -72,7 +72,7 @@ const CustomStatusCell = ({ statusData }) => {
 
   return (
     <>
-    {console.log(currentStatus)}
+    {/* {console.log(currentStatus)} */}
       <div
         className={`d-flex justify-content-center cursor-pointer ${
           modelStatus ? "custom-open-dropdown" : ""

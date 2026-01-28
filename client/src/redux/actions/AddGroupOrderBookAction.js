@@ -78,7 +78,7 @@ export const AddGroupOrderBook = (
       dispatch({ type: "ADD_GROUP_ORDER", payload: response.data });
       return response.data;
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     }
   };
 };
@@ -102,7 +102,7 @@ export const generateGroupTOrdDtId = (data) => {
 
       return response;
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     }
   };
 };

@@ -24,7 +24,7 @@ export const getOrderCount = () => {
       }
       return data.data;
     } catch (error) {
-      console.log(error, "error");
+      // console.log(error, "error");
       // dispatch(getSearchDetails({}, searchStatus, search));
     }
   };
@@ -50,11 +50,11 @@ export const getItemCount = () => {
         dispatch({ type: "GET_ITEM_COUNT", payload: data.data });
         return data.data;
       } else {
-        console.log(data.data.error);
+        // console.log(data.data.error);
       }
       return data.data;
     } catch (error) {
-      console.log(error, "error");
+      // console.log(error, "error");
     }
   };
 };

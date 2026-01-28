@@ -36,10 +36,12 @@ const AddOrderHomePage = () => {
     // }
   }, [tabId, location.state]);
 
-  
+
 
   useEffect(() => {
-    if (id !== null) {
+    // Strict validation - prevent API call with null/undefined
+    // Previous check only validated against null, allowing undefined to pass through
+    if (id && id !== null && id !== undefined) {
       dispatch(getSingleCustomer(id));
     }
   }, [id, tabId, dispatch]);

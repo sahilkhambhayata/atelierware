@@ -19,11 +19,11 @@ export const getSaleType = (BU_ID) => {
         return data.data;
       } else {
         dispatch(logoutAdmin(userId))
-        console.log(data.data.error);
+        // console.log(data.data.error);
       }
       return data.data;
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     }
   };
 };

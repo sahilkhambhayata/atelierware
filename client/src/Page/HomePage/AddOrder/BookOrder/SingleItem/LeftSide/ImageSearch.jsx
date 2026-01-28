@@ -72,7 +72,7 @@ const ImageSearch = ({
     try {
       if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
         setHasWebcam(false);
-        console.log("Webcam access not supported in this browser.");
+        // console.log("Webcam access not supported in this browser.");
         return;
       }
 
@@ -82,13 +82,13 @@ const ImageSearch = ({
         return true;
       } else {
         setHasWebcam(false);
-        console.log("No camera found.");
+        // console.log("No camera found.");
         return false;
       }
     } catch (error) {
-      console.log(
-        "Error accessing webcam. Please check your browser settings."
-      );
+      // console.log(
+      //   "Error accessing webcam. Please check your browser settings."
+      // );
       setHasWebcam(false);
       return false;
     }
@@ -320,7 +320,7 @@ const ImageSearch = ({
               <div
                 className={`my-1 position-relative bg-white border rounded-2 p-1 d-flex align-items-center justify-content-between ${
                   isHovered ? "shadow-lg" : "shadow-sm"
-                }`}
+                  }`}
               >
                 <div className="d-flex align-items-center">
                   <img
@@ -340,19 +340,19 @@ const ImageSearch = ({
                 <div className="d-flex align-items-center">
                   {mainImage?.id
                     ? mainImage?.id === img?.id && (
-                        <img
-                          src={MainImageIcon1}
-                          alt=""
-                          className="mx-1 cursor-pointer"
-                        />
-                      )
+                      <img
+                        src={MainImageIcon1}
+                        alt=""
+                        className="mx-1 cursor-pointer"
+                      />
+                    )
                     : mainImage?.image === img.image && (
-                        <img
-                          src={MainImageIcon1}
-                          alt=""
-                          className="mx-1 cursor-pointer"
-                        />
-                      )}
+                      <img
+                        src={MainImageIcon1}
+                        alt=""
+                        className="mx-1 cursor-pointer"
+                      />
+                    )}
 
                   {(isHovered || !isDesktop) && (
                     <div className=" d-flex align-items-center">
@@ -399,9 +399,9 @@ const ImageSearch = ({
             ref={webcamRef}
             audio={true}
             screenshotFormat="image/jpeg"
-            // videoConstraints={videoConstraints}
+          // videoConstraints={videoConstraints}
 
-            // onUserMedia={updateVideoConstraints}
+          // onUserMedia={updateVideoConstraints}
           />
           <div className="text-center ">
             <Button outline color="light" onClick={capturePhoto}>

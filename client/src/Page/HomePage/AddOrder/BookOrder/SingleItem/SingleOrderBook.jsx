@@ -547,7 +547,7 @@ const SingleOrderBook = () => {
   }, [imageStore, garmentStore]);
 
   // useEffect(() => {
-  //   console.log(garmentStore, "garmentStore");
+  //   // console.log(garmentStore, "garmentStore");
 
   //   setMasterData({
   //     ...masterData,

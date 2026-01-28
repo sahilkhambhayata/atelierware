@@ -60,8 +60,8 @@ const FabricSearch = ({
 
   const RoundUpToDecimal =
     getConfig?.RoundUpToDecimal == 0 ||
-    getConfig?.RoundUpToDecimal == undefined ||
-    getConfig?.RoundUpToDecimal == null
+      getConfig?.RoundUpToDecimal == undefined ||
+      getConfig?.RoundUpToDecimal == null
       ? 2
       : getConfig?.RoundUpToDecimal;
 
@@ -262,10 +262,12 @@ const FabricSearch = ({
 
   const [isInputFocused, setIsInputFocused] = useState(false);
 
-  useEffect(() => {
-    // dispatch(getFebricSearchDetailsAsyncData(fab));
-    debouncedSearchRef.current(dispatch, fab);
-  }, [fab]);
+  // Removed duplicate debounced search call
+  // handleFabricChange already calls debouncedSearchRef.current when user types
+  // This useEffect was causing duplicate searchFabOrAcc API calls (3x total)
+  // useEffect(() => {
+  //   debouncedSearchRef.current(dispatch, fab);
+  // }, [fab]);
 
   const gerFabricSearchDetails = useSelector(
     (state) => state.FabricDetailsData
@@ -331,7 +333,7 @@ const FabricSearch = ({
           style={{ top: "15px", left: "8px" }}
         ></Icon>
       </div>
-     
+
       {isInputFocused && (
         <div className=" bg-white fabricAutoCompalate position-absolute">
           {gerFabricSearchDetails.FebricData.message == "No data found" ? (
@@ -382,7 +384,7 @@ const FabricSearch = ({
                           </>
                         ) : (
                           <>
-                           
+
                             {val.ArticleName.length > 8
                               ? val.ArticleName?.slice(0, 8) + "..."
                               : val.ArticleName}
@@ -557,9 +559,9 @@ const FabricSearch = ({
             </div>
 
             {val.ItemType == "Cut Length" ||
-            val.ItemType == "fabric" ||
-            val.ItemType == "Fabric" ||
-            val.ItemType == "cut length" ? (
+              val.ItemType == "fabric" ||
+              val.ItemType == "Fabric" ||
+              val.ItemType == "cut length" ? (
               <>
                 <div className="d-flex align-items-center ">
                   <div className="d-flex align-items-center p-2">

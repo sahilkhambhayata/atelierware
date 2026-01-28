@@ -626,10 +626,10 @@ const Estimate = () => {
                 );
                 const originalPrice = val.BasicRate;
 
-                console.log(originalPrice);
+                // console.log(originalPrice);
 
                 const discountPercent = val.Discount;
-                console.log(discountPercent);
+                // console.log(discountPercent);
                 const discountAmount = (
                   (originalPrice * discountPercent) /
                   100

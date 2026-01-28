@@ -15,7 +15,7 @@ export const paymentSubmit = (data) => {
 
       return response.data;
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     }
   };
 };
@@ -37,7 +37,7 @@ export const payOnDeliverySubmit = (data) => {
 
       return response.data;
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     }
   };
 };
@@ -63,7 +63,7 @@ export const deletePayment = (data) => {
 
       return response.data
     } catch (err) {
-      console.log(err);
+      // console.log(err);
     }
   };
 };

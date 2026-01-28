@@ -217,7 +217,7 @@ export const TokenAdmin = () => {
 //         return data.data;
 //       }
 //     } catch (error) {
-//       console.log(error);
+//       // console.log(error);
 //       return error;
 //     }
 //   };
@@ -342,7 +342,7 @@ export const logoutAdmin = (id) => {
         dispatch({ type: "LOGOUT", payload: data.data });
         return data.data;
       } else {
-        console.log(data.data.error);
+        // console.log(data.data.error);
       }
       return data.data;
     } catch (error) {
@@ -376,7 +376,7 @@ export const changeBranch = () => {
         dispatch({ type: "CHANGE_BRANCH", payload: data.data });
         return data.data;
       } else {
-        console.log(data.data.error);
+        // console.log(data.data.error);
       }
       return data.data;
     } catch (error) {

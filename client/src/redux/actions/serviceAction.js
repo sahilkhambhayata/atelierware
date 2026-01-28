@@ -113,7 +113,7 @@ export const getupServiceListAsyncData = (BU_ID, searchService) => {
         dispatch(getupServiceList(res.data));
       })
       .catch((err) => {
-        console.log(err.data);
+        // console.log(err.data);
         dispatch(UpNoDAtaFound({ data: true }));
       });
   };

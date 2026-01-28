@@ -463,7 +463,7 @@ const LeftSideDetail = ({ imagePath }) => {
     // );
 
     // setNewArray([mainImage, ...filteredMergedImageArray]);
-    
+
 
     if (mergedImageArray.length > 0 && mergedImageArray.length <= 10) {
       dispatch(getDirectImageArray(mergedImageArray, mainImage));
@@ -600,7 +600,7 @@ const LeftSideDetail = ({ imagePath }) => {
       if (singleOrderData.orderItemList[0]) {
         const obj = singleOrderData.orderItemList[0];
 
-        console.log(obj);
+        // console.log(obj);
 
         //image at edit time
         const newImageObjects = Object.keys(obj)
@@ -789,7 +789,9 @@ const LeftSideDetail = ({ imagePath }) => {
   const TOrdDtID = localStorage.getItem(`TOrdDtID${tabId}`);
 
   useEffect(() => {
-    if (TOrdDtID && serviceId) {
+    // Strict validation - prevent API call with null/undefined/"null" string
+    // Previous check allowed string "null" to pass, causing fabriclist/null API failure
+    if (TOrdDtID && TOrdDtID !== "null" && TOrdDtID !== null && serviceId) {
       dispatch(getFabricAccessoriesList(TOrdDtID));
     } else {
       dispatch({ type: "GET_FABRIC_ACC_LIST", payload: {} });
@@ -841,26 +843,26 @@ const LeftSideDetail = ({ imagePath }) => {
   );
 
   const totalFabricAmount = fabArray?.reduce((sum, fabric) => {
-    console.log(fabric.Item_rate);
+    // console.log(fabric.Item_rate);
     const product = isFromGroupOrderPage
       ? fabric.Basic_Amt == null || fabric.Basic_Amt == 0
         ? fabric.Item_rate
         : fabric.Quantity * fabric.Basic_Amt
       : fabric.Basic_Amt == null || fabric.Basic_Amt == 0
-      ? fabric.Item_rate
-      : fabric.Quantity * fabric.Basic_Amt;
+        ? fabric.Item_rate
+        : fabric.Quantity * fabric.Basic_Amt;
     return sum + product;
   }, 0);
 
-  console.log(totalFabricAmount);
+  // console.log(totalFabricAmount);
   const totalAccAmount = accArray?.reduce((sum, fabric) => {
     const product = isFromGroupOrderPage
       ? fabric.Basic_Amt == null || fabric.Basic_Amt == 0
         ? fabric.Item_rate
         : fabric.Quantity * fabric.Basic_Amt
       : fabric.Basic_Amt == null || fabric.Basic_Amt == 0
-      ? fabric.Item_rate
-      : fabric.Quantity * fabric.Basic_Amt;
+        ? fabric.Item_rate
+        : fabric.Quantity * fabric.Basic_Amt;
     return sum + product;
   }, 0);
 
@@ -883,10 +885,12 @@ const LeftSideDetail = ({ imagePath }) => {
 
   // const singleOrderData = useSelector((state) => state.orderListData.single);
   useEffect(() => {
-    if (TOrdDtId != "null") {
+    // Fixed: Changed dependency from fabArray?.length to TOrdDtId
+    // Previous dependency caused duplicate calls when fabric array was populated
+    if (TOrdDtId && TOrdDtId !== "null" && TOrdDtId !== null) {
       dispatch(fabicDropDownList(TOrdDtId));
     }
-  }, [fabArray?.length]);
+  }, [TOrdDtId, dispatch]);
 
   const [itemDesc, setItemDesc] = useState("");
   const handleInputChange = (e) => {
@@ -988,9 +992,8 @@ const LeftSideDetail = ({ imagePath }) => {
               {serviceId != null && TOrdDtId != null && (
                 <div>
                   <div
-                    className={`rounded-2 ${
-                      fabArray?.length > 0 ? "border" : "border-0"
-                    }`}
+                    className={`rounded-2 ${fabArray?.length > 0 ? "border" : "border-0"
+                      }`}
                   >
                     {fabArray?.length > 0 ? (
                       <div className="border-bottom mt-1 rounded-2 fw-bold d-flex align-items-center justify-content-between align-items-center getFebric_sec mx-auto px-2 ">
@@ -1040,19 +1043,19 @@ const LeftSideDetail = ({ imagePath }) => {
                                   {/* {fabric.articleData.ArticleName} */}
                                   {fabric.articleData.ArticleName.length >= 12
                                     ? fabric.articleData.ArticleName.slice(
-                                        0,
-                                        12
-                                      ) + "..."
+                                      0,
+                                      12
+                                    ) + "..."
                                     : fabric.articleData.ArticleName}
                                 </span>
                                 {fabric.articleData.ArticleName.length >=
                                   12 && (
-                                  <Tooltip
-                                    id={`ArticleName${index}`}
-                                    direction="right"
-                                    text={fabric.articleData.ArticleName}
-                                  />
-                                )}
+                                    <Tooltip
+                                      id={`ArticleName${index}`}
+                                      direction="right"
+                                      text={fabric.articleData.ArticleName}
+                                    />
+                                  )}
                                 <div className="d-flex custom-light-text custom-text-transform">
                                   {fabric.Barcode_Id != null && (
                                     <>
@@ -1071,7 +1074,7 @@ const LeftSideDetail = ({ imagePath }) => {
                                   >
                                     {fabric?.Descriptions?.length >= 12
                                       ? fabric?.Descriptions?.slice(0, 12) +
-                                        "..."
+                                      "..."
                                       : fabric?.Descriptions}
                                   </p>
 
@@ -1142,8 +1145,8 @@ const LeftSideDetail = ({ imagePath }) => {
                                     : fabric.Quantity * fabric.Basic_Amt
                                   : fabric.Basic_Amt == null ||
                                     fabric.Basic_Amt == 0
-                                  ? fabric.Item_rate
-                                  : fabric.Quantity * fabric.Basic_Amt}
+                                    ? fabric.Item_rate
+                                    : fabric.Quantity * fabric.Basic_Amt}
                               </label>
                             </div>
                             <div className="col-md-1 col-sm-2 col-4 text-end px-0 edit-icon">
@@ -1217,9 +1220,8 @@ const LeftSideDetail = ({ imagePath }) => {
                   </div>
 
                   <div
-                    className={` mt-2 rounded-2 ${
-                      accArray?.length > 0 ? "border" : "border-0"
-                    }`}
+                    className={` mt-2 rounded-2 ${accArray?.length > 0 ? "border" : "border-0"
+                      }`}
                   >
                     {accArray?.length > 0 ? (
                       <div className="border-bottom mt-1 rounded-2 fw-bold d-flex align-items-center justify-content-between align-items-center getFebric_sec mx-auto px-2 ">
@@ -1266,19 +1268,19 @@ const LeftSideDetail = ({ imagePath }) => {
                               >
                                 {accessory.articleData.ArticleName.length >= 12
                                   ? accessory.articleData.ArticleName.slice(
-                                      0,
-                                      12
-                                    ) + "..."
+                                    0,
+                                    12
+                                  ) + "..."
                                   : accessory.articleData.ArticleName}
                               </span>
                               {accessory.articleData.ArticleName.length >=
                                 12 && (
-                                <Tooltip
-                                  id={`ArticleName${index}`}
-                                  direction="right"
-                                  text={accessory.articleData.ArticleName}
-                                />
-                              )}
+                                  <Tooltip
+                                    id={`ArticleName${index}`}
+                                    direction="right"
+                                    text={accessory.articleData.ArticleName}
+                                  />
+                                )}
 
                               <div className="d-flex custom-light-text custom-text-transform">
                                 {accessory.Barcode_Id != null && (
@@ -1298,7 +1300,7 @@ const LeftSideDetail = ({ imagePath }) => {
                                 >
                                   {accessory.Descriptions.length >= 12
                                     ? accessory.Descriptions.slice(0, 12) +
-                                      "..."
+                                    "..."
                                     : accessory.Descriptions}
                                 </p>
 
@@ -1368,8 +1370,8 @@ const LeftSideDetail = ({ imagePath }) => {
                                   : accessory.Quantity * accessory.Basic_Amt
                                 : accessory.Basic_Amt == null ||
                                   accessory.Basic_Amt == 0
-                                ? accessory.Item_rate
-                                : accessory.Quantity * accessory.Basic_Amt}
+                                  ? accessory.Item_rate
+                                  : accessory.Quantity * accessory.Basic_Amt}
                             </label>
                           </div>
                           <div className="col-md-1 col-sm-2 col-4 text-end px-0 edit-icon">
@@ -1405,8 +1407,8 @@ const LeftSideDetail = ({ imagePath }) => {
             <Accordion
               className={`shadow mt-3`}
               activeKey={accordionFabric ? "0" : null}
-              // readOnly={mood === "view"}
-              // onKeyDown={handleKeyDown}
+            // readOnly={mood === "view"}
+            // onKeyDown={handleKeyDown}
             >
               <Accordion.Item eventKey="0">
                 <Accordion.Header
@@ -1583,7 +1585,7 @@ const LeftSideDetail = ({ imagePath }) => {
                 <Measurement
                   mood={mood}
                   handleAddMeasurementSuccess={handleAddMeasurementSuccess}
-                  // saveClicked={saveClicked}
+                // saveClicked={saveClicked}
                 />
               </Accordion.Body>
             </Accordion.Item>
@@ -1598,7 +1600,7 @@ const LeftSideDetail = ({ imagePath }) => {
               <Accordion.Header
                 className="custom-accordion-header position-relative"
                 onClick={toggleStyle}
-                // onClick={mood == "view" ? handleKeyDown : toggleStyle}
+              // onClick={mood == "view" ? handleKeyDown : toggleStyle}
               >
                 <span
                   className={`form-control-lg form-control search-input pl-5 landing-26 taxtcolor-light ${isStyle &&
@@ -1708,7 +1710,7 @@ const LeftSideDetail = ({ imagePath }) => {
               <Accordion.Header
                 className="custom-accordion-header position-relative"
                 onClick={toggleImage}
-                // onClick={mood == "view" ? handleKeyDown : toggleImage}
+              // onClick={mood == "view" ? handleKeyDown : toggleImage}
               >
                 <span
                   className={`form-control-lg form-control search-input pl-5 landing-26 taxtcolor-light ${mergedImageArray.length >
@@ -1848,9 +1850,8 @@ const LeftSideDetail = ({ imagePath }) => {
                 return (
                   <div
                     key={ind}
-                    className={`px-2 py-1 rounded-pill  cursor-pointer transition-animation min-w-150 ${
-                      item.StyleId === activeID ? "bg-1c2b4c text-white" : ""
-                    }`}
+                    className={`px-2 py-1 rounded-pill  cursor-pointer transition-animation min-w-150 ${item.StyleId === activeID ? "bg-1c2b4c text-white" : ""
+                      }`}
                     onClick={() => {
                       // setStyleSwitchValue(activeID);
                       setActiveId(item.StyleId);
@@ -1873,11 +1874,10 @@ const LeftSideDetail = ({ imagePath }) => {
         <ModalBody className="p-3 border-bottom-red">
           <div className="row custome-styleModal">
             <div
-              className={`border border-2 rounded-2 overflow-y-auto min-max-h-700  ${
-                Object.keys(singleImageRecord).length === 0
-                  ? "custome-col-12"
-                  : "custome-col-9"
-              } `}
+              className={`border border-2 rounded-2 overflow-y-auto min-max-h-700  ${Object.keys(singleImageRecord).length === 0
+                ? "custome-col-12"
+                : "custome-col-9"
+                } `}
               style={{ maxHeight: "600px", minHeight: "600px" }}
             >
               <div className="row ">
@@ -1897,11 +1897,10 @@ const LeftSideDetail = ({ imagePath }) => {
                         key={ind}
                       >
                         <div
-                          className={`album single-album ${
-                            isSelectedOrDefault(img)
-                              ? "border border-2 rounded-2 shadow"
-                              : ""
-                          }`}
+                          className={`album single-album ${isSelectedOrDefault(img)
+                            ? "border border-2 rounded-2 shadow"
+                            : ""
+                            }`}
                           onClick={() =>
                             handleCuffSelect(img.images ? img : noImageIcon)
                           }
@@ -1947,7 +1946,7 @@ const LeftSideDetail = ({ imagePath }) => {
                           }
                           alt="Selected"
                           className="image-selected"
-                          // width="100px"
+                        // width="100px"
                         />
                         <br />
                         <span className="fw-medium">{res.StyleName}</span>
@@ -2228,7 +2227,7 @@ const LeftSideDetail = ({ imagePath }) => {
         {isCatalog && (
           <ModalBody
             className="overflow-y-auto mb-5 border m-2 rounded-2"
-            // style={{ minHeight: "400px", maxHeight: "400px" }}
+          // style={{ minHeight: "400px", maxHeight: "400px" }}
           >
             <div className="catelog-header d-flex justify-content-center">
               <div className="catalog-searchbox w-50 px-lg-0 mb-3">
@@ -2245,7 +2244,7 @@ const LeftSideDetail = ({ imagePath }) => {
                   name="search"
                   className="catalog-search-icon "
 
-                  // onClick={handleClick}
+                // onClick={handleClick}
                 ></Icon>
               </div>
             </div>
@@ -2336,11 +2335,10 @@ const LeftSideDetail = ({ imagePath }) => {
                       return (
                         <div
                           key={ind}
-                          className={`mt-3 col-2 p-3 ${
-                            catalogImageArray.includes(item)
-                              ? "bg-light"
-                              : "bg-white"
-                          }`}
+                          className={`mt-3 col-2 p-3 ${catalogImageArray.includes(item)
+                            ? "bg-light"
+                            : "bg-white"
+                            }`}
                         >
                           <img
                             src={item?.CatDetImage}

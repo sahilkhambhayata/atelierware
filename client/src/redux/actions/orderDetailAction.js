@@ -332,7 +332,7 @@ export const getOrderDetailsAsyncData = (
         }
       }
     } catch (error) {
-      console.log(error.message);
+      // console.log(error.message);
     }
   };
 };
@@ -432,7 +432,7 @@ export const sendOrderDeleteOtp = (row) => {
 
       return data;
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     }
   };
 };
@@ -491,7 +491,7 @@ export const verifyOrderDeleteOtp = (email, otp) => {
         }
       }
     } catch (error) {
-      console.log(error);
+      // console.log(error);
       // return error.response.data;
     }
   };
@@ -539,7 +539,7 @@ export const deleteOrder = (id) => {
         return data.data;
       }
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     }
   };
 };

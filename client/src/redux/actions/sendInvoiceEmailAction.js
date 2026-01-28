@@ -21,7 +21,7 @@ export const sendEmailOfInvoice = (id) => {
       return data1.data;
       // dispatch({ type: "ADD_FLATE_EXCEL", payload: data1.data });
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     }
   };
 };

@@ -218,7 +218,7 @@ const Measurement = ({ mood, handleAddMeasurementSuccess }) => {
         }
       }
     });
-    // console.log(Object.keys(singleOrderData).length !== 0, "updatedFormMeas1");
+    // // console.log(Object.keys(singleOrderData).length !== 0, "updatedFormMeas1");
 
     if (Object.keys(updatedFormMeas).length > 0) {
       setFormMeas(updatedFormMeas);
@@ -242,7 +242,7 @@ const Measurement = ({ mood, handleAddMeasurementSuccess }) => {
       });
 
       // Update the form state with the new measurement values
-      console.log(updatedFormMeas, "number 2");
+      // console.log(updatedFormMeas, "number 2");
       // number 2
       setFormMeas(updatedFormMeas);
     }
@@ -276,7 +276,7 @@ const Measurement = ({ mood, handleAddMeasurementSuccess }) => {
           }
         });
 
-        console.log(updatedFormMeas, "number 3");
+        // console.log(updatedFormMeas, "number 3");
 
         // number 3
         setFormMeas(updatedFormMeas);
@@ -342,7 +342,7 @@ const Measurement = ({ mood, handleAddMeasurementSuccess }) => {
       </UncontrolledDropdown>
       <div className="w-100 px-3">
         {measure?.Measurement?.map((item, ind) => {
-          // console.log(formMeas);
+          // // console.log(formMeas);
 
           return (
             <div className="row align-items-center" key={item.CNTMID}>

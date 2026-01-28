@@ -24,7 +24,7 @@ export const getOrderExpandData = (TOrdHdID) => {
 
         return data.data;
       } else {
-        console.log(data.data.error);
+        // console.log(data.data.error);
       }
       return data.data;
     } catch (error) {

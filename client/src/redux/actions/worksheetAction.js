@@ -41,7 +41,7 @@ export const getWorksheetPrintOrder = (TOrdHdID) => {
       dispatch(getWorksheetData(res.data));
       return res.data;
     } catch (err) {
-      console.log(err);
+      // console.log(err);
     }
   };
 };
@@ -68,7 +68,7 @@ export const getSingleItemWorksheetPrintOrder = (TOrdDtID) => {
       dispatch(getSingleItemWorksheetData(res.data));
       return res.data;
     } catch (err) {
-      console.log(err);
+      // console.log(err);
     }
   };
 };

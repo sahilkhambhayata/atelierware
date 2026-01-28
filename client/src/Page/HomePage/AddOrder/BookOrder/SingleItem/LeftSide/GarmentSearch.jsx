@@ -220,7 +220,7 @@ const GarmentSearch = ({
     // const newMergedImages = [...mergedGarmentArray, ...updatedImages];
     // onGarmentSelect(newMergedImages);
   };
-  console.log(isMobile, "");
+  // console.log(isMobile, "");
   return (
     <div>
       <div className="position-relative nk-header-searchbox border m-0 px-lg-5 px-md-2 px-2 pt-3 shadow">

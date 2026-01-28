@@ -16,7 +16,7 @@ const CustomBalanceCell = ({ balanceData }) => {
 
   const handlePayment = () => {
     // e.stopPropagation()
-    console.log(balanceData.balanceData.TOrdHdID);
+    // console.log(balanceData.balanceData.TOrdHdID);
     
     
     setIsPayment(true);

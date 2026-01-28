@@ -19,11 +19,11 @@ export const getPaymentMethod = (BU_Id) => {
         dispatch({ type: "GET_PAYMENT_METHOD", payload: data.data });
         return data.data;
       } else {
-        console.log(data.data.error);
+        // console.log(data.data.error);
       }
       return data.data;
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     }
   };
 };

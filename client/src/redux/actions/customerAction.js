@@ -56,7 +56,7 @@ export const getSingleCustomer = (customer_id) => async (dispatch) => {
     dispatch({ type: "GET_SINGLE_CUSTOMER", payload: data.data });
     return data.data;
   } catch (error) {
-    console.log(error);
+    // console.log(error);
   }
 };
 
@@ -103,7 +103,7 @@ export const addCustomer = (data, image, BU_Id, companyId, BranchId) => {
       dispatch({ type: "ADD_CUSTOMER", payload: response.data });
       return response.data;
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     }
   };
 };
@@ -157,7 +157,7 @@ export const UpdateCustomer = (
       return response.data;
       // dispatch({ type: "ADD_CUSTOMER", payload: data.data });
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     }
   };
 };

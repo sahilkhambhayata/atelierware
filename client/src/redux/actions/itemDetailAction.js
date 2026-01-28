@@ -327,7 +327,7 @@ export const getItemDetailsAsyncData = (
         }
       }
     } catch (error) {
-      console.log(error.message);
+      // console.log(error.message);
     }
   };
 };
@@ -457,7 +457,7 @@ export const verifyItemDeleteOtp = (row, email, otp) => {
         }
       }
     } catch (error) {
-      console.log(error);
+      // console.log(error);
       // return error
       // return error.response.data;
     }

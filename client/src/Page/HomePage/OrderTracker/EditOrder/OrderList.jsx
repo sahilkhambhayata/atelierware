@@ -137,7 +137,7 @@ const OrderList = ({ tab, from }) => {
   const location = useLocation();
 
   const handleBacktoOrder = () => {
-    console.log(tabId);
+    // console.log(tabId);
 
     let oldDtIDValue = localStorage.getItem(`TOrdDtID${tabId}`);
 
@@ -1694,10 +1694,7 @@ const OrderList = ({ tab, from }) => {
                                                           </div>
                                                         </div>
                                                       </div>
-                                                      {console.log(
-                                                        item,
-                                                        "fhdfhdf"
-                                                      )}
+                                                      {/* {console.log(item,"fhdfhdf")} */}
                                                       <div className="cust-Fab_listing-content-25">
                                                         <div
                                                           style={{

@@ -20,7 +20,7 @@ export const addDublicateOrder = (dtId) => {
 
       return data1.data;
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     }
   };
 };

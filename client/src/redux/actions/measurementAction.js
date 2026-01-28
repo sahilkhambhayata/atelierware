@@ -19,7 +19,7 @@ export const getMeasureList = (BU_ID, itemId) => {
 
         return data.data;
       } else {
-        console.log(data.data.error);
+        // console.log(data.data.error);
       }
       return data.data;
     } catch (error) {
@@ -61,7 +61,7 @@ export const addMeasurement = (
 
       return res.data;
     } catch (err) {
-      console.log(err);
+      // console.log(err);
     }
   };
 };
@@ -80,11 +80,11 @@ export const oldMeasurementList = (custId, itemId) => {
         dispatch({ type: "OLD_MEASURE", payload: res.data });
         return res.data;
       } else {
-        console.log(res.data.error);
+        // console.log(res.data.error);
       }
       return res.data;
     } catch (err) {
-      console.log(err);
+      // console.log(err);
     }
   };
 };
@@ -103,11 +103,11 @@ export const getMeasurementByItemId = (custId, itemId) => {
         dispatch({ type: "MEASUREMENT_BY_ITEM", payload: res.data });
         return res.data;
       } else {
-        console.log(res.data.error);
+        // console.log(res.data.error);
       }
       return res.data;
     } catch (err) {
-      console.log(err);
+      // console.log(err);
     }
   };
 };
@@ -126,11 +126,11 @@ export const oldItemList = (custId, itemId) => {
         dispatch({ type: "OLD_ITEM_MEASUREMENT_LIST", payload: res.data });
         return res.data;
       } else {
-        console.log(res.data.error);
+        // console.log(res.data.error);
       }
       return res.data;
     } catch (error) {
-      console.log(err);
+      // console.log(err);
     }
   };
 };

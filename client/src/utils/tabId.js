@@ -11,9 +11,9 @@ export const initializeTabId = () => {
     if (!tabId) {
       tabId = generateTabId();
       localStorage.setItem('tabId', tabId);
-      console.log(`[TAB_ID_INIT] Generated new tab ID: ${tabId}`);
+      // console.log(`[TAB_ID_INIT] Generated new tab ID: ${tabId}`);
     } else {
-      console.log(`[TAB_ID_INIT] Using existing tab ID: ${tabId}`);
+      // console.log(`[TAB_ID_INIT] Using existing tab ID: ${tabId}`);
     }
     return tabId;
   }

@@ -35,7 +35,7 @@ export const addGroupFabricAccessories = (data) => {
 
       return data1.data;
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     }
   };
 };

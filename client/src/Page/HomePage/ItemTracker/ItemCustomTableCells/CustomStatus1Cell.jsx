@@ -75,7 +75,7 @@ const CustomStatus1Cell = ({ statusData }) => {
   const handleStatusChanger = (item) => {
     // e.stopPropagation();
     setLoader(true);
-    console.log(item);
+    // console.log(item);
     
 
     if (item.NextSId == "113") {
