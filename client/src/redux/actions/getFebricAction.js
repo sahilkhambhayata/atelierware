@@ -22,7 +22,7 @@ export const FabricNoDAtaFound = (data) => {
   };
 };
 
-export const getFebricSearchDetailsAsyncData = (searchService) => {
+export const getFebricSearchDetailsAsyncData = (searchService, serviceId, ak) => {
 
   return (dispatch) => {
     dispatch(loading());
@@ -32,9 +32,7 @@ export const getFebricSearchDetailsAsyncData = (searchService) => {
 
     axiosClient
       .get(
-        // `oms/v1/searchFabOrAcc?p=${p}&l=${l}&searchString=${searchService}`,
-
-        `oms/v1/searchFabOrAcc?searchString=${searchService}&p=${p}&l=${l}`,
+        `/oms/v1/searchFabOrAcc?p=${p}&l=${l}&searchString=${searchService}&ak=${ak}`,
         {
           headers: {
             token: token,
@@ -46,14 +44,14 @@ export const getFebricSearchDetailsAsyncData = (searchService) => {
         dispatch(getFabricDetails(res.data));
       })
       .catch((err) => {
-       
+
         dispatch(FabricNoDAtaFound({ data: true }));
       });
   };
 };
 
 
-export const createDebouncedSearchFabric= () =>
-  debounce((dispatch, searchService) => {
-    dispatch(getFebricSearchDetailsAsyncData(searchService));
+export const createDebouncedSearchFabric = () =>
+  debounce((dispatch, searchService, serviceId, ak) => {
+    dispatch(getFebricSearchDetailsAsyncData(searchService, serviceId, ak));
   }, 800);

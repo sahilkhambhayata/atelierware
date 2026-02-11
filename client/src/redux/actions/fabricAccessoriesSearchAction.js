@@ -22,7 +22,7 @@ export const getFabricAccDetailsAsyncData = (search, serviceId, ak) => {
     const token = localStorage.getItem("token");
 
     axiosClient
-      .get(`/oms/v1/searchFabOrAcc/${serviceId}?ak=${ak}&search=${search}`, {
+      .get(`/oms/v1/searchFabOrAcc?p=${p}&l=${l}&searchString=${search}&ak=${ak}`, {
         headers: {
           token: token,
         },

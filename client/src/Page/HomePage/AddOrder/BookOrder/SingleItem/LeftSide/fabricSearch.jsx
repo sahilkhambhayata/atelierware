@@ -254,7 +254,7 @@ const FabricSearch = ({
 
   const handleFabricChange = (e) => {
     const inputValue = e.target.value;
-    debouncedSearchRef.current(dispatch, e.target.value);
+    debouncedSearchRef.current(dispatch, e.target.value, serviceId, BU_ID);
     // dispatch(getFebricSearchDetailsAsyncData(e.target.value));
     setFab(inputValue);
   };
