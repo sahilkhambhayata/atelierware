@@ -59,8 +59,8 @@ const PaymentModel = ({
   const symbol = localStorage.getItem("countrySymbol");
   const RoundUpToDecimal =
     getConfig?.RoundUpToDecimal == 0 ||
-    getConfig?.RoundUpToDecimal == undefined ||
-    getConfig?.RoundUpToDecimal == null
+      getConfig?.RoundUpToDecimal == undefined ||
+      getConfig?.RoundUpToDecimal == null
       ? 2
       : getConfig?.RoundUpToDecimal;
 
@@ -585,11 +585,7 @@ const PaymentModel = ({
             a.click();
             document.body.removeChild(a);
 
-            if (from == "order-tracker") {
-              navigate("/dashboard");
-            } else {
-              navigate("/item-tracker");
-            }
+            navigate("/dashboard");
 
             closePaymentModal();
             setCashDetails({
@@ -616,11 +612,7 @@ const PaymentModel = ({
               bankTransaction: "",
               bankTransactionDate: "",
             });
-            setTimeout(() => {
-              // setOrdModalLoading(false);
-              navigate("/dashboard");
-              closePaymentModal();
-            }, 3000);
+
             dispatch(getPaymentData(cashDetails, walletDetails, bankDetails));
           } else {
             // toast.error(res.message);
@@ -768,11 +760,10 @@ const PaymentModel = ({
               <div className="border rounded-pill px-1 py-1 d-flex align-items-center">
                 <div onClick={() => handlePaymentMethodChange("cod")}>
                   <div
-                    className={`py-1 px-2 rounded-pill d-flex ${
-                      paymentMethod === "cod"
+                    className={`py-1 px-2 rounded-pill d-flex ${paymentMethod === "cod"
                         ? "bg-dark text-white"
                         : "bg-white text-dark"
-                    }`}
+                      }`}
                   >
                     <img
                       src={
@@ -791,11 +782,10 @@ const PaymentModel = ({
                 </div>
                 <div onClick={() => handlePaymentMethodChange("cash")}>
                   <div
-                    className={`py-1 px-2 rounded-pill d-flex ${
-                      paymentMethod === "cash"
+                    className={`py-1 px-2 rounded-pill d-flex ${paymentMethod === "cash"
                         ? "bg-dark text-white"
                         : "bg-white text-dark"
-                    }`}
+                      }`}
                   >
                     <img
                       src={
@@ -814,11 +804,10 @@ const PaymentModel = ({
                 </div>
                 <div onClick={() => handlePaymentMethodChange("wallet")}>
                   <div
-                    className={`py-1 px-2 rounded-pill d-flex ${
-                      paymentMethod === "wallet"
+                    className={`py-1 px-2 rounded-pill d-flex ${paymentMethod === "wallet"
                         ? "bg-dark text-white"
                         : "bg-white text-dark"
-                    }`}
+                      }`}
                   >
                     <img
                       src={
@@ -836,11 +825,10 @@ const PaymentModel = ({
                 </div>
                 <div onClick={() => handlePaymentMethodChange("bank")}>
                   <div
-                    className={`py-1 px-2 rounded-pill d-flex align-items-center ${
-                      paymentMethod === "bank"
+                    className={`py-1 px-2 rounded-pill d-flex align-items-center ${paymentMethod === "bank"
                         ? "bg-dark text-white"
                         : "bg-white text-dark"
-                    }`}
+                      }`}
                   >
                     <img
                       src={
@@ -917,9 +905,8 @@ const PaymentModel = ({
           <div className="row position-relative">
             {displayForm && (
               <div
-                className={` ${
-                  displaySummary ? "col-xl-6 col-12 " : "col-12"
-                } `}
+                className={` ${displaySummary ? "col-xl-6 col-12 " : "col-12"
+                  } `}
               >
                 <div className="d-flex justify-content-center mt-5">
                   <span className="fs-3 fw-bold text-center">Payment</span>
@@ -934,11 +921,10 @@ const PaymentModel = ({
                   <div className="border rounded-pill px-1 py-1 d-flex align-items-center">
                     <div onClick={() => handlePaymentMethodChange("cod")}>
                       <div
-                        className={`py-1 px-2 rounded-pill d-flex ${
-                          paymentMethod === "cod"
+                        className={`py-1 px-2 rounded-pill d-flex ${paymentMethod === "cod"
                             ? "bg-dark text-white"
                             : "bg-white text-dark"
-                        }`}
+                          }`}
                       >
                         <img
                           src={
@@ -957,11 +943,10 @@ const PaymentModel = ({
                     </div>
                     <div onClick={() => handlePaymentMethodChange("cash")}>
                       <div
-                        className={`py-1 px-2 rounded-pill d-flex ${
-                          paymentMethod === "cash"
+                        className={`py-1 px-2 rounded-pill d-flex ${paymentMethod === "cash"
                             ? "bg-dark text-white"
                             : "bg-white text-dark"
-                        }`}
+                          }`}
                       >
                         <img
                           src={
@@ -980,11 +965,10 @@ const PaymentModel = ({
                     </div>
                     <div onClick={() => handlePaymentMethodChange("wallet")}>
                       <div
-                        className={`py-1 px-2 rounded-pill d-flex ${
-                          paymentMethod === "wallet"
+                        className={`py-1 px-2 rounded-pill d-flex ${paymentMethod === "wallet"
                             ? "bg-dark text-white"
                             : "bg-white text-dark"
-                        }`}
+                          }`}
                       >
                         <img
                           src={
@@ -1002,11 +986,10 @@ const PaymentModel = ({
                     </div>
                     <div onClick={() => handlePaymentMethodChange("bank")}>
                       <div
-                        className={`py-1 px-2 rounded-pill d-flex ${
-                          paymentMethod === "bank"
+                        className={`py-1 px-2 rounded-pill d-flex ${paymentMethod === "bank"
                             ? "bg-dark text-white"
                             : "bg-white text-dark"
-                        }`}
+                          }`}
                       >
                         <img
                           src={
@@ -1037,7 +1020,7 @@ const PaymentModel = ({
                       <UncontrolledDropdown
                         className="user-dropdown justify-content-center "
                         isOpen={help.accountNameHelp}
-                        toggle={() => {}}
+                        toggle={() => { }}
                       >
                         <DropdownToggle tag="a">
                           <img
@@ -1150,7 +1133,7 @@ const PaymentModel = ({
                       <UncontrolledDropdown
                         className="user-dropdown justify-content-center "
                         isOpen={help.amountHelp}
-                        toggle={() => {}}
+                        toggle={() => { }}
                       >
                         <DropdownToggle tag="a">
                           <img
@@ -1241,9 +1224,8 @@ const PaymentModel = ({
             )}
             {displaySummary && (
               <div
-                className={`${
-                  displayForm ? "col-xl-6 col-12 px-2" : "col-12"
-                } bg-gray10 custome-pdmr`}
+                className={`${displayForm ? "col-xl-6 col-12 px-2" : "col-12"
+                  } bg-gray10 custome-pdmr`}
               >
                 <div className="bg-gray10 mb-2 mt-5">
                   <NetPayableData />
@@ -1261,7 +1243,7 @@ const PaymentModel = ({
                             <UncontrolledDropdown
                               className="user-dropdown justify-content-center "
                               isOpen={help.cashHelp}
-                              toggle={() => {}}
+                              toggle={() => { }}
                             >
                               <DropdownToggle tag="a">
                                 <img
@@ -1289,7 +1271,7 @@ const PaymentModel = ({
                               >
                                 <div className="dropdown-body">
                                   <div className="avtar-rows-container">
-                                  Payment made in cash mode
+                                    Payment made in cash mode
                                   </div>
                                 </div>
                               </DropdownMenu>
@@ -1328,7 +1310,7 @@ const PaymentModel = ({
                             <UncontrolledDropdown
                               className="user-dropdown justify-content-center "
                               isOpen={help.walletHelp}
-                              toggle={() => {}}
+                              toggle={() => { }}
                             >
                               <DropdownToggle tag="a">
                                 <img
@@ -1356,7 +1338,7 @@ const PaymentModel = ({
                               >
                                 <div className="dropdown-body">
                                   <div className="avtar-rows-container">
-                                  Payment made in wallet mode
+                                    Payment made in wallet mode
                                   </div>
                                 </div>
                               </DropdownMenu>
@@ -1411,7 +1393,7 @@ const PaymentModel = ({
                             <UncontrolledDropdown
                               className="user-dropdown justify-content-center "
                               isOpen={help.BankHelp}
-                              toggle={() => {}}
+                              toggle={() => { }}
                             >
                               <DropdownToggle tag="a">
                                 <img
@@ -1439,7 +1421,7 @@ const PaymentModel = ({
                               >
                                 <div className="dropdown-body">
                                   <div className="avtar-rows-container">
-                                  Payment made in bank mode
+                                    Payment made in bank mode
                                   </div>
                                 </div>
                               </DropdownMenu>
@@ -1476,7 +1458,7 @@ const PaymentModel = ({
                                 src={PaymentDeleteIcon}
                                 alt=""
                                 onClick={(e) => handleDeleteCash("bank")}
-                                // onClick={handleDelete}
+                              // onClick={handleDelete}
                               />
                             </div>
                           </td>
@@ -1568,7 +1550,7 @@ const PaymentModel = ({
                     disabled={
                       orderList?.orderData?.Order?.totalNetAmount - sum < 0
                     }
-                    // disabled={orderList?.orderData?.Order?.NetAmt - sum < 0}
+                  // disabled={orderList?.orderData?.Order?.NetAmt - sum < 0}
                   >
                     {isLoader ? (
                       <>
@@ -1625,11 +1607,10 @@ const PaymentModel = ({
                   <div className="border rounded-pill px-1 py-1 d-flex align-items-center">
                     <div onClick={() => handlePaymentMethodChange("cod")}>
                       <div
-                        className={`d-flex  py-1 px-2 rounded-pill ${
-                          paymentMethod === "cod"
+                        className={`d-flex  py-1 px-2 rounded-pill ${paymentMethod === "cod"
                             ? "bg-dark text-white"
                             : "bg-white text-dark"
-                        }`}
+                          }`}
                       >
                         <img
                           src={
@@ -1648,11 +1629,10 @@ const PaymentModel = ({
 
                     <div onClick={() => handlePaymentMethodChange("cash")}>
                       <div
-                        className={`d-flex py-1 px-2 rounded-pill ${
-                          paymentMethod === "cash"
+                        className={`d-flex py-1 px-2 rounded-pill ${paymentMethod === "cash"
                             ? "bg-dark text-white"
                             : "bg-white text-dark"
-                        }`}
+                          }`}
                       >
                         <img
                           src={
@@ -1672,11 +1652,10 @@ const PaymentModel = ({
 
                     <div onClick={() => handlePaymentMethodChange("wallet")}>
                       <div
-                        className={`d-flex py-1 px-2 rounded-pill ${
-                          paymentMethod === "wallet"
+                        className={`d-flex py-1 px-2 rounded-pill ${paymentMethod === "wallet"
                             ? "bg-dark text-white"
                             : "bg-white text-dark"
-                        }`}
+                          }`}
                       >
                         <img
                           src={
@@ -1695,11 +1674,10 @@ const PaymentModel = ({
 
                     <div onClick={() => handlePaymentMethodChange("bank")}>
                       <div
-                        className={`d-flex py-1 px-2 rounded-pill ${
-                          paymentMethod === "bank"
+                        className={`d-flex py-1 px-2 rounded-pill ${paymentMethod === "bank"
                             ? "bg-dark text-white"
                             : "bg-white text-dark"
-                        }`}
+                          }`}
                       >
                         <img
                           src={
@@ -1731,7 +1709,7 @@ const PaymentModel = ({
                       <UncontrolledDropdown
                         className="user-dropdown justify-content-center "
                         isOpen={help.accountNameHelp}
-                        toggle={() => {}}
+                        toggle={() => { }}
                       >
                         <DropdownToggle tag="a">
                           <img
@@ -1844,7 +1822,7 @@ const PaymentModel = ({
                       <UncontrolledDropdown
                         className="user-dropdown justify-content-center "
                         isOpen={help.amountHelp}
-                        toggle={() => {}}
+                        toggle={() => { }}
                       >
                         <DropdownToggle tag="a">
                           <img
@@ -1906,7 +1884,7 @@ const PaymentModel = ({
                       <UncontrolledDropdown
                         className="user-dropdown justify-content-center "
                         isOpen={help.channelHelp}
-                        toggle={() => {}}
+                        toggle={() => { }}
                       >
                         <DropdownToggle tag="a">
                           <img
@@ -2023,7 +2001,7 @@ const PaymentModel = ({
                           <UncontrolledDropdown
                             className="user-dropdown justify-content-center "
                             isOpen={help.transactionHelp}
-                            toggle={() => {}}
+                            toggle={() => { }}
                           >
                             <DropdownToggle tag="a">
                               <img
@@ -2086,7 +2064,7 @@ const PaymentModel = ({
                           <UncontrolledDropdown
                             className="user-dropdown justify-content-center "
                             isOpen={help.transactionDateHelp}
-                            toggle={() => {}}
+                            toggle={() => { }}
                           >
                             <DropdownToggle tag="a">
                               <img
@@ -2159,7 +2137,7 @@ const PaymentModel = ({
                         walletDetails?.walletAccountId == "" ||
                         walletDetails?.walletChannelId == ""
                       }
-                      // onClick={handleAddPayment}
+                    // onClick={handleAddPayment}
                     >
                       Add to Payment
                     </Button>
@@ -2169,9 +2147,8 @@ const PaymentModel = ({
             )}
             {displaySummary && (
               <div
-                className={`${
-                  displayForm ? "col-xl-6 col-12 px-2" : "col-12"
-                } bg-gray10 custome-pdmr`}
+                className={`${displayForm ? "col-xl-6 col-12 px-2" : "col-12"
+                  } bg-gray10 custome-pdmr`}
               >
                 <div className="bg-gray10 mb-2 mt-5">
                   <NetPayableData />
@@ -2189,7 +2166,7 @@ const PaymentModel = ({
                             <UncontrolledDropdown
                               className="user-dropdown justify-content-center "
                               isOpen={help.cashHelp}
-                              toggle={() => {}}
+                              toggle={() => { }}
                             >
                               <DropdownToggle tag="a">
                                 <img
@@ -2218,7 +2195,7 @@ const PaymentModel = ({
                               >
                                 <div className="dropdown-body">
                                   <div className="avtar-rows-container">
-                                  Payment made in cash mode
+                                    Payment made in cash mode
                                   </div>
                                 </div>
                               </DropdownMenu>
@@ -2244,7 +2221,7 @@ const PaymentModel = ({
                                 src={PaymentDeleteIcon}
                                 alt=""
                                 onClick={(e) => handleDeleteCash("cash")}
-                                // onClick={handleDelete}
+                              // onClick={handleDelete}
                               />
                             </div>
                           </td>
@@ -2258,7 +2235,7 @@ const PaymentModel = ({
                             <UncontrolledDropdown
                               className="user-dropdown justify-content-center "
                               isOpen={help.walletHelp}
-                              toggle={() => {}}
+                              toggle={() => { }}
                             >
                               <DropdownToggle tag="a">
                                 <img
@@ -2286,7 +2263,7 @@ const PaymentModel = ({
                               >
                                 <div className="dropdown-body">
                                   <div className="avtar-rows-container">
-                                  Payment made in wallet mode
+                                    Payment made in wallet mode
                                   </div>
                                 </div>
                               </DropdownMenu>
@@ -2326,7 +2303,7 @@ const PaymentModel = ({
                                 src={PaymentDeleteIcon}
                                 alt=""
                                 onClick={(e) => handleDeleteCash("wallet")}
-                                // onClick={handleDelete}
+                              // onClick={handleDelete}
                               />
                             </div>
                           </td>
@@ -2341,7 +2318,7 @@ const PaymentModel = ({
                             <UncontrolledDropdown
                               className="user-dropdown justify-content-center "
                               isOpen={help.BankHelp}
-                              toggle={() => {}}
+                              toggle={() => { }}
                             >
                               <DropdownToggle tag="a">
                                 <img
@@ -2369,7 +2346,7 @@ const PaymentModel = ({
                               >
                                 <div className="dropdown-body">
                                   <div className="avtar-rows-container">
-                                  Payment made in bank mode
+                                    Payment made in bank mode
                                   </div>
                                 </div>
                               </DropdownMenu>
@@ -2406,7 +2383,7 @@ const PaymentModel = ({
                                 src={PaymentDeleteIcon}
                                 alt=""
                                 onClick={(e) => handleDeleteCash("bank")}
-                                // onClick={handleDelete}
+                              // onClick={handleDelete}
                               />
                             </div>
                           </td>
@@ -2498,7 +2475,7 @@ const PaymentModel = ({
                     disabled={
                       orderList?.orderData?.Order?.totalNetAmount - sum < 0
                     }
-                    // disabled={orderList?.orderData?.Order?.NetAmt - sum < 0}
+                  // disabled={orderList?.orderData?.Order?.NetAmt - sum < 0}
                   >
                     {isLoader ? (
                       <>
@@ -2558,11 +2535,10 @@ const PaymentModel = ({
                   <div className="border rounded-pill px-1 py-1 d-flex align-items-center">
                     <div onClick={() => handlePaymentMethodChange("cod")}>
                       <div
-                        className={`d-flex  py-1 px-2 rounded-pill ${
-                          paymentMethod === "cod"
+                        className={`d-flex  py-1 px-2 rounded-pill ${paymentMethod === "cod"
                             ? "bg-dark text-white"
                             : "bg-white text-dark"
-                        }`}
+                          }`}
                       >
                         <img
                           src={
@@ -2581,11 +2557,10 @@ const PaymentModel = ({
 
                     <div onClick={() => handlePaymentMethodChange("cash")}>
                       <div
-                        className={`d-flex py-1 px-2 rounded-pill ${
-                          paymentMethod === "cash"
+                        className={`d-flex py-1 px-2 rounded-pill ${paymentMethod === "cash"
                             ? "bg-dark text-white"
                             : "bg-white text-dark"
-                        }`}
+                          }`}
                       >
                         <img
                           src={
@@ -2605,11 +2580,10 @@ const PaymentModel = ({
 
                     <div onClick={() => handlePaymentMethodChange("wallet")}>
                       <div
-                        className={`d-flex py-1 px-2 rounded-pill ${
-                          paymentMethod === "wallet"
+                        className={`d-flex py-1 px-2 rounded-pill ${paymentMethod === "wallet"
                             ? "bg-dark text-white"
                             : "bg-white text-dark"
-                        }`}
+                          }`}
                       >
                         <img
                           src={
@@ -2628,11 +2602,10 @@ const PaymentModel = ({
 
                     <div onClick={() => handlePaymentMethodChange("bank")}>
                       <div
-                        className={`d-flex py-1 px-2 rounded-pill ${
-                          paymentMethod === "bank"
+                        className={`d-flex py-1 px-2 rounded-pill ${paymentMethod === "bank"
                             ? "bg-dark text-white"
                             : "bg-white text-dark"
-                        }`}
+                          }`}
                       >
                         <img
                           src={
@@ -2664,7 +2637,7 @@ const PaymentModel = ({
                       <UncontrolledDropdown
                         className="user-dropdown justify-content-center "
                         isOpen={help.accountNameHelp}
-                        toggle={() => {}}
+                        toggle={() => { }}
                       >
                         <DropdownToggle tag="a">
                           <img
@@ -2777,7 +2750,7 @@ const PaymentModel = ({
                       <UncontrolledDropdown
                         className="user-dropdown justify-content-center "
                         isOpen={help.amountHelp}
-                        toggle={() => {}}
+                        toggle={() => { }}
                       >
                         <DropdownToggle tag="a">
                           <img
@@ -2838,7 +2811,7 @@ const PaymentModel = ({
                       <UncontrolledDropdown
                         className="user-dropdown justify-content-center "
                         isOpen={help.channelHelp}
-                        toggle={() => {}}
+                        toggle={() => { }}
                       >
                         <DropdownToggle tag="a">
                           <img
@@ -2955,7 +2928,7 @@ const PaymentModel = ({
                           <UncontrolledDropdown
                             className="user-dropdown justify-content-center "
                             isOpen={help.transactionHelp}
-                            toggle={() => {}}
+                            toggle={() => { }}
                           >
                             <DropdownToggle tag="a">
                               <img
@@ -3018,7 +2991,7 @@ const PaymentModel = ({
                           <UncontrolledDropdown
                             className="user-dropdown justify-content-center "
                             isOpen={help.transactionDateHelp}
-                            toggle={() => {}}
+                            toggle={() => { }}
                           >
                             <DropdownToggle tag="a">
                               <img
@@ -3091,7 +3064,7 @@ const PaymentModel = ({
                         bankDetails?.bankAccountId == "" ||
                         bankDetails?.bankChannelId == ""
                       }
-                      // onClick={handleAddPayment}
+                    // onClick={handleAddPayment}
                     >
                       Add to Payment
                     </Button>
@@ -3101,9 +3074,8 @@ const PaymentModel = ({
             )}
             {displaySummary && (
               <div
-                className={`${
-                  displayForm ? "col-xl-6 col-12 px-2" : "col-12"
-                } bg-gray10 custome-pdmr`}
+                className={`${displayForm ? "col-xl-6 col-12 px-2" : "col-12"
+                  } bg-gray10 custome-pdmr`}
               >
                 <div className="bg-gray10 mb-2 mt-5">
                   <NetPayableData />
@@ -3121,7 +3093,7 @@ const PaymentModel = ({
                             <UncontrolledDropdown
                               className="user-dropdown justify-content-center "
                               isOpen={help.cashHelp}
-                              toggle={() => {}}
+                              toggle={() => { }}
                             >
                               <DropdownToggle tag="a">
                                 <img
@@ -3150,7 +3122,7 @@ const PaymentModel = ({
                               >
                                 <div className="dropdown-body">
                                   <div className="avtar-rows-container">
-                                  Payment made in cash mode
+                                    Payment made in cash mode
                                   </div>
                                 </div>
                               </DropdownMenu>
@@ -3175,7 +3147,7 @@ const PaymentModel = ({
                                 src={PaymentDeleteIcon}
                                 alt=""
                                 onClick={(e) => handleDeleteCash("cash")}
-                                // onClick={handleDelete}
+                              // onClick={handleDelete}
                               />
                             </div>
                           </td>
@@ -3189,7 +3161,7 @@ const PaymentModel = ({
                             <UncontrolledDropdown
                               className="user-dropdown justify-content-center "
                               isOpen={help.walletHelp}
-                              toggle={() => {}}
+                              toggle={() => { }}
                             >
                               <DropdownToggle tag="a">
                                 <img
@@ -3217,7 +3189,7 @@ const PaymentModel = ({
                               >
                                 <div className="dropdown-body">
                                   <div className="avtar-rows-container">
-                                  Payment made in wallet mode
+                                    Payment made in wallet mode
                                   </div>
                                 </div>
                               </DropdownMenu>
@@ -3257,7 +3229,7 @@ const PaymentModel = ({
                                 src={PaymentDeleteIcon}
                                 alt=""
                                 onClick={(e) => handleDeleteCash("wallet")}
-                                // onClick={handleDelete}
+                              // onClick={handleDelete}
                               />
                             </div>
                           </td>
@@ -3272,7 +3244,7 @@ const PaymentModel = ({
                             <UncontrolledDropdown
                               className="user-dropdown justify-content-center "
                               isOpen={help.BankHelp}
-                              toggle={() => {}}
+                              toggle={() => { }}
                             >
                               <DropdownToggle tag="a">
                                 <img
@@ -3300,7 +3272,7 @@ const PaymentModel = ({
                               >
                                 <div className="dropdown-body">
                                   <div className="avtar-rows-container">
-                                  Payment made in bank mode
+                                    Payment made in bank mode
                                   </div>
                                 </div>
                               </DropdownMenu>
@@ -3337,7 +3309,7 @@ const PaymentModel = ({
                                 src={PaymentDeleteIcon}
                                 alt=""
                                 onClick={(e) => handleDeleteCash("bank")}
-                                // onClick={handleDelete}
+                              // onClick={handleDelete}
                               />
                             </div>
                           </td>
@@ -3429,7 +3401,7 @@ const PaymentModel = ({
                     disabled={
                       orderList?.orderData?.Order?.totalNetAmount - sum < 0
                     }
-                    // disabled={orderList?.orderData?.Order?.NetAmt - sum < 0}
+                  // disabled={orderList?.orderData?.Order?.NetAmt - sum < 0}
                   >
                     {isLoader ? (
                       <>
