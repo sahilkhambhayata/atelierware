@@ -9,8 +9,8 @@ export const axiosClient = axios.create({
   // baseURL: "http://192.168.29.152:8088/", // AP BASE
   // baseURL: "http://192.168.29.210:8088/", // As BASE
   // baseURL: "http://192.168.1.17:8088/", // mo BASE
-  baseURL: "http://localhost:8088/", // SA BASE
-  // baseURL: "https://betaapi.atelierware.com", //live url
+  // baseURL: "http://localhost:8088/", // SA BASE
+  baseURL: "https://betaapi.atelierware.com", //live url
 });
 
 // Request interceptor to add token to headers
