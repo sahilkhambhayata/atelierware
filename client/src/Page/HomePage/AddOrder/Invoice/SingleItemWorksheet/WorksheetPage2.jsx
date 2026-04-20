@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
+import { axiosClient } from "./../../../../../axios/axios";
 import { useSelector } from "react-redux";
 
 const WorksheetPage2 = () => {
   const worksheetData = useSelector((state) => state?.worksheetData);
   const [finalImageObjects, setFinalImageObjects] = useState([]);
- 
- 
+
+
   useEffect(() => {
     if (
       worksheetData &&
@@ -17,6 +18,7 @@ const WorksheetPage2 = () => {
           (key) =>
             (key.startsWith("attach_img_") ||
               key.startsWith("attach_garment_img_")) &&
+            !key.endsWith("_desc") &&
             worksheetData.worksheetData.TOrdDtls[key] !== null
         )
         .map((imgKey) => {
@@ -29,10 +31,10 @@ const WorksheetPage2 = () => {
           };
         });
 
-   
+
       if (newImageObjects.length > 0) {
         setFinalImageObjects(
-          newImageObjects.slice(1, newImageObjects.length / 2)
+          newImageObjects.slice(1)
         );
       }
       // const finalObjects = newImageObjects.slice(1, newImageObjects.length / 2);
@@ -52,14 +54,25 @@ const WorksheetPage2 = () => {
         </div>
       </div>
       {/* Invoice_description End*/}
-    
+
       {/* invoice_group_image  Start*/}
       <div className="invoice_group_Images mt-1">
         <div className=" invoice_group_Images_flex  justify-content-around">
           {finalImageObjects.map((item, i) => (
             <div className="image_card " key={i}>
               <div className="image-sec">
-                <img src={item.image} alt="" />
+                <img
+                  src={
+                    !item.image
+                      ? ""
+                      : item.image instanceof File || item.image instanceof Blob
+                        ? URL.createObjectURL(item.image)
+                        : item.image.startsWith?.("data:") || item.image.startsWith?.("http")
+                          ? item.image
+                          : `${axiosClient.defaults.baseURL}${item.image}`
+                  }
+                  alt=""
+                />
               </div>
               <div className="image-desc">{item.desc}</div>
             </div>

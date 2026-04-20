@@ -8,15 +8,19 @@ export const AddOrderBook = (
 ) => {
 
   return async (dispatch) => {
+    const toNum = (val) => {
+      const n = Number(val);
+      return isNaN(n) ? 0 : n;
+    };
     try {
-      
+
       const token = localStorage.getItem("token");
-      const formdata = {
-        TOrdDtID: +TOrdDtID,
-        ItemId: +data.ItemId,
-        CompanyId: +data.CompanyId,
-        BranchId: +data.BranchId,
-        TOrdHdID: +TOrdHdID,
+      const jsonFormData = {
+        TOrdDtID: toNum(TOrdDtID),
+        ItemId: toNum(data.ItemId),
+        CompanyId: toNum(data.CompanyId),
+        BranchId: toNum(data.BranchId),
+        TOrdHdID: toNum(TOrdHdID),
         attach_img_1: data.attach_img_1,
         attach_img_2: data.attach_img_2,
         attach_img_3: data.attach_img_3,
@@ -47,73 +51,69 @@ export const AddOrderBook = (
         attach_garment_img_3_desc: data.attach_garment_img_3_desc,
 
         ItemName: data.ItemName,
-        PatternAmt: +data.PatternAmt,
-        Rate: +getDirectPaymentInfo?.makingAmt,
-        DesignAmt: +data.DesignAmt,
+        PatternAmt: toNum(data.PatternAmt),
+        Rate: toNum(getDirectPaymentInfo?.makingAmt),
+        DesignAmt: toNum(data.DesignAmt),
         Urgent: trailDeliveryData.priority == "regular" ? false : true,
-        DeliveryDate: trailDeliveryData.deliveryDate,
+        DeliveryDate: trailDeliveryData.deliveryDate ? new Date(trailDeliveryData.deliveryDate).toISOString().split('T')[0] : null,
         ItemDesc: data.ItemDesc,
-        MainItemId: Number(data.MainItemId),
-        AdFabAmt: Number(data.AdFabricAmt),
-        AdPattern: Number(data.AdPattern),
-        LastUpdateddate: data.LastUpdateddate,
+        MainItemId: toNum(data.MainItemId),
+        AdFabAmt: toNum(data.AdFabricAmt),
+        AdPattern: toNum(data.AdPattern),
+        LastUpdateddate: data.LastUpdateddate ? new Date(data.LastUpdateddate).toISOString().split('T')[0] : null,
         IsAlteration: data.IsAlteration,
         ItemLocation: data.ItemLocation,
-        AdAccessoryAmt: Number(data.AdAccessoriesAmt),
-        GroupItem: Number(data.GroupItem),
-        DelDate: trailDeliveryData.deliveryDate,
+        AdAccessoryAmt: toNum(data.AdAccessoriesAmt),
+        GroupItem: toNum(data.GroupItem),
+        DelDate: trailDeliveryData.deliveryDate ? new Date(trailDeliveryData.deliveryDate).toISOString().split('T')[0] : null,
         TrialDate:
           trailDeliveryData.trialDate == null
             ? null
-            : trailDeliveryData.trialDate,
+            : new Date(trailDeliveryData.trialDate).toISOString().split('T')[0],
         DelMode: data.DelMode,
         DelRemarks: data.DelRemarks,
-        DesignerId: Number(data.DesignerId),
-        MasterId: Number(data.MasterId),
-        DesignDiscAmt: Number(data.DesignDiscAmt),
-        AccessoryDiscAmt: Number(data.AccessoriesDisc),
-        AdDesignAmt: Number(data.AdDesignAmt),
-        Discount:
-          getDirectPaymentInfo?.discountAmt == "NaN"
-            ? 0
-            : getDirectPaymentInfo?.discountAmt,
-        Amount: +getDirectPaymentInfo?.Stitching,
-        VatPerc: +getDirectPaymentInfo?.vat,
-        VatAmt:
-          +getDirectPaymentInfo?.vatAmt == "NaN"
-            ? 0
-            : +getDirectPaymentInfo?.vatAmt,
-        STPerc: +getDirectPaymentInfo?.vat,
-        STAmt: +getDirectPaymentInfo?.vatAmt,
-        MakingAmt: +getDirectPaymentInfo?.makingAmt,
-        FabAmt: +getDirectPaymentInfo?.FabricAmt,
-        AccessoryAmt: +getDirectPaymentInfo?.AccessoriesAmount,
-        StitchingDiscAmt: Number(getDirectPaymentInfo?.StitchingDisc),
-        FabDiscAmt: Number(getDirectPaymentInfo?.FabricDisc),
-        BasicRate: Number(getDirectPaymentInfo?.basicAmt),
-        NetAmount:
-          getDirectPaymentInfo?.netPayable == "NaN"
-            ? 0
-            : Number(getDirectPaymentInfo?.netPayable),
-        AdStitching: Number(getDirectPaymentInfo?.AdStitchingAmt),
-        AdSTax: Number(getDirectPaymentInfo?.TaxAmt),
-        DelAmount: Number(getDirectPaymentInfo?.netPayable),
-        SGSTPer: Number(getDirectPaymentInfo?.SGST),
-        SGSTAmt: Number(getDirectPaymentInfo?.SGSTAmt),
-        CGSTPer: Number(getDirectPaymentInfo?.CGST),
-        CGSTAmt: Number(getDirectPaymentInfo?.CGSTAmt),
-        IGSTPer: Number(getDirectPaymentInfo?.IGST),
-        IGSTAmt: Number(getDirectPaymentInfo?.IGSTAmt),
-        DisPer:
-          getDirectPaymentInfo?.DiscountPer == "NaN"
-            ? 0
-            : Number(getDirectPaymentInfo?.DiscountPer),
-        DisAmt: Number(getDirectPaymentInfo?.discountAmt),
-        TotalAfterDiscount: Number(getDirectPaymentInfo?.afterdiscountAmt),
+        DesignerId: toNum(data.DesignerId),
+        MasterId: toNum(data.MasterId),
+        DesignDiscAmt: toNum(data.DesignDiscAmt),
+        AccessoryDiscAmt: toNum(data.AccessoriesDisc),
+        AdDesignAmt: toNum(data.AdDesignAmt),
+        Discount: toNum(getDirectPaymentInfo?.discountAmt),
+        Amount: toNum(getDirectPaymentInfo?.Stitching),
+        VatPerc: toNum(getDirectPaymentInfo?.vat),
+        VatAmt: toNum(getDirectPaymentInfo?.vatAmt),
+        STPerc: toNum(getDirectPaymentInfo?.vat),
+        STAmt: toNum(getDirectPaymentInfo?.vatAmt),
+        MakingAmt: toNum(getDirectPaymentInfo?.makingAmt),
+        FabAmt: toNum(getDirectPaymentInfo?.FabricAmt),
+        AccessoryAmt: toNum(getDirectPaymentInfo?.AccessoriesAmount),
+        StitchingDiscAmt: toNum(getDirectPaymentInfo?.StitchingDisc),
+        FabDiscAmt: toNum(getDirectPaymentInfo?.FabricDisc),
+        BasicRate: toNum(getDirectPaymentInfo?.basicAmt),
+        NetAmount: toNum(getDirectPaymentInfo?.netPayable),
+        AdStitching: toNum(getDirectPaymentInfo?.AdStitchingAmt),
+        AdSTax: toNum(getDirectPaymentInfo?.TaxAmt),
+        DelAmount: toNum(getDirectPaymentInfo?.netPayable),
+        SGSTPer: toNum(getDirectPaymentInfo?.SGST),
+        SGSTAmt: toNum(getDirectPaymentInfo?.SGSTAmt),
+        CGSTPer: toNum(getDirectPaymentInfo?.CGST),
+        CGSTAmt: toNum(getDirectPaymentInfo?.CGSTAmt),
+        IGSTPer: toNum(getDirectPaymentInfo?.IGST),
+        IGSTAmt: toNum(getDirectPaymentInfo?.IGSTAmt),
+        DisPer: toNum(getDirectPaymentInfo?.DiscountPer),
+        DisAmt: toNum(getDirectPaymentInfo?.discountAmt),
+        TotalAfterDiscount: toNum(getDirectPaymentInfo?.afterdiscountAmt),
         Disc_Calculate_On: getDirectPaymentInfo?.TOrd_Disc_Calculate_On,
       };
 
-      
+      const formdata = new FormData();
+
+      Object.keys(jsonFormData).forEach((key) => {
+        if (jsonFormData[key] !== null && jsonFormData[key] !== undefined) {
+          formdata.append(key, jsonFormData[key]);
+        }
+      });
+
+
 
       const response = await axiosClient.post(`oms/v1/addOrderItem`, formdata, {
         headers: {
@@ -138,6 +138,6 @@ export const generateTOrdDtId = (data) => {
         },
       });
       return response;
-    } catch (error) {}
+    } catch (error) { }
   };
 };

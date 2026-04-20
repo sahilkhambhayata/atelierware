@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import { axiosClient } from "../../../../../../axios/axios";
 import cameraIcon from "./../../../../../../images/icons/camera-icon.svg";
 import browseImageIcon from "./../../../../../../images/icons/browse-image-icon.svg";
 import browseCatalogIcon from "./../../../../../../images/icons/browse-catalog-icon.svg";
@@ -131,17 +132,17 @@ const ImageSearch = ({
         "JPEG", // compressFormat
         50, // quality
         0, // rotation
-        (base64String) => {
-          // Using base64 string directly
-          onImageSelect([base64String]); // This will pass the base64 URL
+        (blob) => {
+          const resizedFile = new File([blob], `captured_${Date.now()}.jpeg`, { type: "image/jpeg" });
+          onImageSelect([resizedFile]);
           handleCameraModelClose();
         },
-        "base64"
+        "blob"
       );
     }
   };
 
-  const onUserMedia = (e) => {};
+  const onUserMedia = (e) => { };
 
   const handleImageSelect = (event) => {
     if (mood == "view") {
@@ -159,18 +160,15 @@ const ImageSearch = ({
             "JPEG", // compressFormat
             50, // quality
             0, // rotation
-            (base64String) => {
-              // Here we just add the base64 string as the "URL"
-              updatedImages.push(base64String);
+            (blob) => {
+              const resizedFile = new File([blob], `image_${Date.now()}_${file.name}`, { type: "image/jpeg" });
+              updatedImages.push(resizedFile);
 
-              // Once all images are processed, update the state or call onImageSelect
               if (updatedImages.length === newMergedImageArray.length) {
-                const newMergedImages = [...mergedImageArray, ...updatedImages];
-
-                onImageSelect(newMergedImages); // This will contain base64 URLs
+                onImageSelect(updatedImages);
               }
             },
-            "base64" // Output as base64 string
+            "blob"
           );
         } else {
           toast.error(
@@ -318,14 +316,19 @@ const ImageSearch = ({
               onMouseLeave={() => isDesktop && setHoverIndex(null)}
             >
               <div
-                className={`my-1 position-relative bg-white border rounded-2 p-1 d-flex align-items-center justify-content-between ${
-                  isHovered ? "shadow-lg" : "shadow-sm"
+                className={`my-1 position-relative bg-white border rounded-2 p-1 d-flex align-items-center justify-content-between ${isHovered ? "shadow-lg" : "shadow-sm"
                   }`}
               >
                 <div className="d-flex align-items-center">
                   <img
-                    // src={URL.createObjectURL(img.image)}
-                    src={img.image}
+                    src={
+                      !img.image ? null
+                        : img.image instanceof File || img.image instanceof Blob
+                          ? URL.createObjectURL(img.image)
+                          : img.image.startsWith("data:") || img.image.startsWith("http")
+                            ? img.image
+                            : `${axiosClient.defaults.baseURL}${img.image}`
+                    }
                     alt={`Selected Image ${ind}`}
                     width="50px"
                     height="50px"
@@ -361,7 +364,7 @@ const ImageSearch = ({
                         alt=""
                         className="mx-1 cursor-pointer"
                         width="30px"
-                        onClick={() => onImageSelect(mergedImageArray)}
+                        onClick={() => onImageSelect([])}
                       />
                       <img
                         src={PaymentDeleteIcon}

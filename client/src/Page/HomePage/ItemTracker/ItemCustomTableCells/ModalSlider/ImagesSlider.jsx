@@ -1,4 +1,5 @@
 import React, { useRef, useState } from "react";
+import { axiosClient } from "../../../../../axios/axios";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css"; // Import Swiper's base CSS
 import "swiper/css/navigation"; // Import navigation CSS
@@ -24,7 +25,7 @@ const ImagesSlider = ({ service2Data, activeImg }) => {
   const [isModalOpen, setModalIsOpen] = useState(false);
 
   const swiperRef = useRef(null);
- 
+
 
   const handleSingleImageClick = (singleImage, index) => {
     setModalIsOpen(true);
@@ -40,10 +41,10 @@ const ImagesSlider = ({ service2Data, activeImg }) => {
     const activeSlide = swiperRef.current.swiper.slides[swiperRef.current.swiper.activeIndex];
     // Find the image within the active slide
     const activeImage = activeSlide.querySelector('.slider-images');
-    
+
     // Create a new window for printing
     const printWindow = window.open('', '_blank');
-    
+
     // Generate HTML content for printing
     const printContent = `
       <html>
@@ -58,19 +59,19 @@ const ImagesSlider = ({ service2Data, activeImg }) => {
         </body>
       </html>
     `;
-    
+
     // Write content to the new window
     printWindow.document.open();
     printWindow.document.write(printContent);
     printWindow.document.close();
-    
+
     const printImage = printWindow.document.getElementById('printImage');
     printImage.onload = () => {
       printWindow.print();
       printWindow.close(); // Close the print window after printing
     };
 
-    
+
   };
   return (
     <>
@@ -86,11 +87,13 @@ const ImagesSlider = ({ service2Data, activeImg }) => {
           dynamicBullets: true,
           el: ".swiper-pagination", // Reference to the pagination element
           clickable: true, // Enable clickable bullets
-          renderBullet: function(index, className) {
+          renderBullet: function (index, className) {
+            const imageSrc = !service2Data[index]?.image ? ""
+              : service2Data[index].image.startsWith?.("data:") || service2Data[index].image.startsWith?.("http")
+                ? service2Data[index].image
+                : `${axiosClient.defaults.baseURL}${service2Data[index].image}`;
             return `<span class="${className}">
-                <img src="${
-                  service2Data[index].image
-                }" alt="Image ${index + 1}" />
+                <img src="${imageSrc}" alt="Image ${index + 1}" />
               </span>`; // Customize the pagination bullet
           },
         }}
@@ -99,7 +102,12 @@ const ImagesSlider = ({ service2Data, activeImg }) => {
           <SwiperSlide key={index}>
             <div className="d-flex justify-content-center">
               <img
-                src={avatarImage.image}
+                src={
+                  !avatarImage.image ? null
+                    : avatarImage.image.startsWith("data:") || avatarImage.image.startsWith("http")
+                      ? avatarImage.image
+                      : `${axiosClient.defaults.baseURL}${avatarImage.image}`
+                }
                 alt="avatarImages"
                 className="slider-images "
                 width="100px"
@@ -109,7 +117,7 @@ const ImagesSlider = ({ service2Data, activeImg }) => {
             </div>
             <div className="modal-photo-dec">
               <div className="d-flex align-items-center justify-content-end">
-                
+
                 <div className="print-icon">
                   <img
                     src={icon.printerIcon}
@@ -120,7 +128,7 @@ const ImagesSlider = ({ service2Data, activeImg }) => {
                 </div>
               </div>
               <div className="p-dec mt-1">
-              {avatarImage.desc}
+                {avatarImage.desc}
               </div>
             </div>
           </SwiperSlide>
@@ -150,7 +158,12 @@ const ImagesSlider = ({ service2Data, activeImg }) => {
               <SwiperSlide key={index}>
                 <div className="">
                   <img
-                    src={avatarImage.image}
+                    src={
+                      !avatarImage.image ? null
+                        : avatarImage.image.startsWith("data:") || avatarImage.image.startsWith("http")
+                          ? avatarImage.image
+                          : `${axiosClient.defaults.baseURL}${avatarImage.image}`
+                    }
                     alt="avatarImages"
                     className="w-100"
                   />

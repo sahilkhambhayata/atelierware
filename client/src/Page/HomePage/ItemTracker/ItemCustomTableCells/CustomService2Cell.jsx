@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import { axiosClient } from "../../../../axios/axios";
 // import jecek from "../../../../images/icons/service-jecet01.svg";
 import Cimages from "./../../Images/CommonImageFile";
 
@@ -114,7 +115,7 @@ const CustomService2Cell = ({ service2Data }) => {
       });
     }
   }, [isDropdownOpen, service2Data.id, fetchedIds, dispatch]);
-  
+
   return (
     <>
       <div
@@ -134,7 +135,7 @@ const CustomService2Cell = ({ service2Data }) => {
         <UncontrolledDropdown
           className="user-dropdown table-Customer-col w-100 justify-content-center"
           isOpen={isDropdownOpen}
-          toggle={() => {}}
+          toggle={() => { }}
           // onClick={openModal}
           ref={dropdownRef}
         >
@@ -154,7 +155,7 @@ const CustomService2Cell = ({ service2Data }) => {
                         // balanceData.balanceData
                       )
                     }
-                    // onClick={() => handleImageModel(service2Data.imageArray)}
+                  // onClick={() => handleImageModel(service2Data.imageArray)}
                   >
                     {[...Array(Math.min(service2Data.imgCount, 4))].map(
                       (_, index) => (
@@ -214,7 +215,12 @@ const CustomService2Cell = ({ service2Data }) => {
                                 >
                                   <img
                                     className="avatar"
-                                    src={item.image}
+                                    src={
+                                      !item.image ? null
+                                        : item.image.startsWith("data:") || item.image.startsWith("http")
+                                          ? item.image
+                                          : `${axiosClient.defaults.baseURL}${item.image}`
+                                    }
                                     alt={`image-${ind + innerInd}`}
                                     onClick={(e) =>
                                       handleImageClick(e, item, ind + innerInd)

@@ -1,4 +1,5 @@
 import React from "react";
+import { axiosClient } from "./../../../../../axios/axios";
 
 import dolimage from "../../../../../images/Subtract2.svg";
 import { useSelector } from "react-redux";
@@ -15,6 +16,7 @@ const WorksheetPage2 = ({ worksheetData }) => {
         (key) =>
           (key.startsWith("attach_img_") ||
             key.startsWith("attach_garment_img_")) &&
+          !key.endsWith("_desc") &&
           imageData[key] !== null
       )
       .map((imgKey) => {
@@ -25,10 +27,7 @@ const WorksheetPage2 = ({ worksheetData }) => {
         };
       });
 
-  const finalImageObjects = newImageObjects?.slice(
-    0,
-    newImageObjects.length / 2
-  );
+  const finalImageObjects = newImageObjects?.slice(1);
 
   return (
     <>
@@ -54,7 +53,18 @@ const WorksheetPage2 = ({ worksheetData }) => {
             return (
               <div className="image_card ">
                 <div className="image-sec">
-                  <img src={item.image} alt="" />
+                  <img
+                    src={
+                      !item.image
+                        ? dolimage
+                        : item.image instanceof File || item.image instanceof Blob
+                          ? URL.createObjectURL(item.image)
+                          : item.image.startsWith?.("data:") || item.image.startsWith?.("http")
+                            ? item.image
+                            : `${axiosClient.defaults.baseURL}${item.image}`
+                    }
+                    alt=""
+                  />
                 </div>
                 <div className="image-desc">{item.desc}</div>
               </div>

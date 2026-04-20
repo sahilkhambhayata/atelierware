@@ -99,11 +99,9 @@ const CustomTableHeaderRow = React.memo(
         cellComponent={({ column, ...cellProps }) => (
           <TableHeaderRow.Cell
             {...cellProps}
-            className={`table-heading position-sticky top-0 z-3   custom-${
-              column.name
-            }-header ${cellProps.className || ""} ${
-              column.name === "more" ? "last-column-header" : ""
-            } ${column.name === "service1" ? "first-column-header" : ""}`}
+            className={`table-heading position-sticky top-0 z-3   custom-${column.name
+              }-header ${cellProps.className || ""} ${column.name === "more" ? "last-column-header" : ""
+              } ${column.name === "service1" ? "first-column-header" : ""}`}
             style={{ textAlign: "center" }}
           >
             {column.name === "service1" ? (
@@ -132,11 +130,11 @@ const CustomTableHeaderRow = React.memo(
                 </div>
               </>
             ) : // Default header cell content for other columns
-            column.sortingEnabled ? (
-              <TableHeaderRow.SortLabel column={column} />
-            ) : (
-              cellProps.children
-            )}
+              column.sortingEnabled ? (
+                <TableHeaderRow.SortLabel column={column} />
+              ) : (
+                cellProps.children
+              )}
           </TableHeaderRow.Cell>
         )}
       />
@@ -279,7 +277,7 @@ const ItemUnderProduction = ({
 
   itemData?.item?.orderItemList?.forEach((val) => {
     const newImageObjects = Object.keys(val)
-      .filter((key) => key.startsWith("attach_img_") && val[key] !== null)
+      .filter((key) => key.startsWith("attach_img_") && !key.endsWith("_desc") && val[key] !== null)
       .map((imgKey) => {
         const descKey = `${imgKey}_desc`;
         return {
@@ -288,10 +286,15 @@ const ItemUnderProduction = ({
         };
       });
 
-    const finalImageObjects = newImageObjects.slice(
-      0,
-      newImageObjects.length / 2
-    );
+    const finalImageObjects = Object.keys(val)
+      .filter((key) => key.startsWith("attach_img_") && !key.endsWith("_desc") && val[key] !== null)
+      .map((imgKey) => {
+        const descKey = `${imgKey}_desc`;
+        return {
+          image: val[imgKey],
+          desc: val.hasOwnProperty(descKey) ? val[descKey] : null,
+        };
+      });
     rows.push({
       service1: (
         <CustomService1Cell
@@ -305,9 +308,9 @@ const ItemUnderProduction = ({
             data: val,
             tab: "other",
           }}
-          // onSelectAllChange={onSelectAllChange}
-          // isSelected={selectedRows.includes(`${val.TOrdDtId}`)}
-          // onSelectionChange={handleRowSelection}
+        // onSelectAllChange={onSelectAllChange}
+        // isSelected={selectedRows.includes(`${val.TOrdDtId}`)}
+        // onSelectionChange={handleRowSelection}
         />
       ),
       service2: (
@@ -320,7 +323,7 @@ const ItemUnderProduction = ({
             data: val,
             tab: "other",
           }}
-          // images={imageArray}
+        // images={imageArray}
         />
       ),
       description: (
@@ -552,8 +555,8 @@ const ItemUnderProduction = ({
 
                       <CustomTableHeaderRow
                         showSortingControls
-                        // selectAll={selectAll}
-                        // handleSelectAll={handleSelectAll}
+                      // selectAll={selectAll}
+                      // handleSelectAll={handleSelectAll}
                       />
                       <TableFixedColumns
                         leftColumns={leftColumns}

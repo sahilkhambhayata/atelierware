@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { axiosClient } from "./../../../../axios/axios";
 // import service1 from "./../../../../images/avatar/ServiceAlbum/service1.png";
 import tridateImg from "./../../../../images/icons/tridateImg.svg";
 import deldateImg from "./../../../../images/icons/deldateImg.svg";
@@ -70,8 +71,8 @@ const OrderList = ({ tab, from }) => {
 
   const RoundUpToDecimal =
     getConfig?.RoundUpToDecimal == 0 ||
-    getConfig?.RoundUpToDecimal == undefined ||
-    getConfig?.RoundUpToDecimal == null
+      getConfig?.RoundUpToDecimal == undefined ||
+      getConfig?.RoundUpToDecimal == null
       ? 2
       : getConfig?.RoundUpToDecimal;
   const dispatch = useDispatch();
@@ -391,11 +392,12 @@ const OrderList = ({ tab, from }) => {
               ) : (
                 <>
                   {orderList?.orderData?.Order?.TOrdDtls?.map((order, ind) => {
-                    const newImageObjects = Object.keys(order)
+                    const finalImageObjects = Object.keys(order)
                       .filter(
                         (key) =>
                           (key.startsWith("attach_img_") ||
                             key.startsWith("attach_garment_img_")) &&
+                          !key.endsWith("_desc") &&
                           order[key] !== null
                       )
                       .map((imgKey) => {
@@ -407,11 +409,6 @@ const OrderList = ({ tab, from }) => {
                             : null,
                         };
                       });
-
-                    const finalImageObjects = newImageObjects.slice(
-                      0,
-                      newImageObjects.length / 2
-                    );
 
                     const fabricList = order.fabricList;
                     const fabArray = fabricList.filter(
@@ -445,7 +442,7 @@ const OrderList = ({ tab, from }) => {
                                   <UncontrolledDropdown
                                     className="user-dropdown table-Customer-col w-100"
                                     isOpen={openedRow === ind}
-                                    toggle={() => {}}
+                                    toggle={() => { }}
                                   >
                                     <DropdownToggle tag="a">
                                       <div className="avatar-stack mt-1 d-flex">
@@ -454,7 +451,7 @@ const OrderList = ({ tab, from }) => {
                                             <>
                                               {order.ItemName.length > 10
                                                 ? order.ItemName.slice(0, 10) +
-                                                  "..."
+                                                "..."
                                                 : order.ItemName}
                                               &nbsp;
                                               {order.OrdSrNo
@@ -578,11 +575,11 @@ const OrderList = ({ tab, from }) => {
                                           <div className=" border rounded-2">
                                             <span className="ms-1">
                                               {dropDownData?.ItemDesc?.length >
-                                              100
+                                                100
                                                 ? dropDownData.ItemDesc.slice(
-                                                    0,
-                                                    100
-                                                  ) + "..."
+                                                  0,
+                                                  100
+                                                ) + "..."
                                                 : dropDownData.ItemDesc}
                                             </span>
                                           </div>
@@ -669,13 +666,14 @@ const OrderList = ({ tab, from }) => {
                                           item.ItemType === "Accessories"
                                       );
 
-                                      const newImageObjects = Object.keys(item)
+                                      const finalImageObjects = Object.keys(item)
                                         .filter(
                                           (key) =>
                                             (key.startsWith("attach_img_") ||
                                               key.startsWith(
                                                 "attach_garment_img_"
                                               )) &&
+                                            !key.endsWith("_desc") &&
                                             item[key] !== null
                                         )
                                         .map((imgKey) => {
@@ -687,11 +685,6 @@ const OrderList = ({ tab, from }) => {
                                               : null,
                                           };
                                         });
-
-                                      const finalImageObjects = newImageObjects.slice(
-                                        0,
-                                        newImageObjects.length / 2
-                                      );
                                       return (
                                         <div
                                           className="row justify-content-between align-items-center custom-group-icon"
@@ -699,8 +692,8 @@ const OrderList = ({ tab, from }) => {
                                         >
                                           <div className="col-3 d-flex custom-group-item-lable">
                                             <span>{item.ItemName}
-                                              &nbsp; {item.OrdSrNo ? `(${item.OrdSrNo})` :""}
-                                               </span>
+                                              &nbsp; {item.OrdSrNo ? `(${item.OrdSrNo})` : ""}
+                                            </span>
                                           </div>
 
                                           <div className="col-9 d-flex feb_acces_measu_stl_icon ">
@@ -733,7 +726,7 @@ const OrderList = ({ tab, from }) => {
                                                   <img
                                                     src={
                                                       accessoriesArray.length >
-                                                      0
+                                                        0
                                                         ? isAccessoriesIcon
                                                         : isnotAccessoriesIcon
                                                     }
@@ -811,7 +804,15 @@ const OrderList = ({ tab, from }) => {
                                                       >
                                                         <img
                                                           className="avatar rounded-circle"
-                                                          src={item.image}
+                                                          src={
+                                                            !item.image
+                                                              ? service1
+                                                              : item.image instanceof File || item.image instanceof Blob
+                                                                ? URL.createObjectURL(item.image)
+                                                                : item.image.startsWith?.("data:") || item.image.startsWith?.("http")
+                                                                  ? item.image
+                                                                  : `${axiosClient.defaults.baseURL}${item.image}`
+                                                          }
                                                           alt="1"
                                                           width="25px"
                                                           height="25px"
@@ -820,7 +821,7 @@ const OrderList = ({ tab, from }) => {
                                                     );
                                                   })}
                                                 {finalImageObjects.length >
-                                                4 ? (
+                                                  4 ? (
                                                   <div className="avatar-item">
                                                     <span className="avatar">
                                                       +
@@ -848,11 +849,10 @@ const OrderList = ({ tab, from }) => {
                                 <div className="right-side-part-1 ">
                                   <div className="d-flex justify-content-between">
                                     <Accordion
-                                      className={`custom-z-index border-bottom ctransition w-100 ${
-                                        showAccordion.includes(ind)
-                                          ? "position-absolute px-2  justify-content-between"
-                                          : " Accordion-header-bg-tranpernt bg-transperent"
-                                      }`}
+                                      className={`custom-z-index border-bottom ctransition w-100 ${showAccordion.includes(ind)
+                                        ? "position-absolute px-2  justify-content-between"
+                                        : " Accordion-header-bg-tranpernt bg-transperent"
+                                        }`}
                                       style={{
                                         zIndex: showAccordion.includes(ind)
                                           ? "11"
@@ -861,11 +861,10 @@ const OrderList = ({ tab, from }) => {
                                     >
                                       <Accordion.Item
                                         eventKey="0"
-                                        className={`w-100 bg-transperent   ${
-                                          showAccordion.includes(ind)
-                                            ? "custome-acc-item"
-                                            : "basic_acc_btn_item"
-                                        }`}
+                                        className={`w-100 bg-transperent   ${showAccordion.includes(ind)
+                                          ? "custome-acc-item"
+                                          : "basic_acc_btn_item"
+                                          }`}
                                       >
                                         <Accordion.Header className="w-100 custom-acc-header">
                                           <div
@@ -906,8 +905,8 @@ const OrderList = ({ tab, from }) => {
                                                 {symbol}{" "}
                                                 {order?.BasicRate
                                                   ? (+order.BasicRate)?.toFixed(
-                                                      RoundUpToDecimal
-                                                    )
+                                                    RoundUpToDecimal
+                                                  )
                                                   : 0}
                                               </span>
                                             </div>
@@ -959,8 +958,8 @@ const OrderList = ({ tab, from }) => {
                                         {symbol}{" "}
                                         {order?.BasicRate
                                           ? (+order.BasicRate)?.toFixed(
-                                              RoundUpToDecimal
-                                            )
+                                            RoundUpToDecimal
+                                          )
                                           : 0}
                                       </span>
                                     </div>
@@ -1001,8 +1000,8 @@ const OrderList = ({ tab, from }) => {
                                     {symbol}{" "}
                                     {order.NetAmount
                                       ? parseFloat(order.NetAmount)?.toFixed(
-                                          RoundUpToDecimal
-                                        )
+                                        RoundUpToDecimal
+                                      )
                                       : 0}
                                   </h5>
                                 </div>
@@ -1032,7 +1031,7 @@ const OrderList = ({ tab, from }) => {
                                 <UncontrolledDropdown
                                   className="user-dropdown table-Customer-col w-100 "
                                   isOpen={openedRow === ind}
-                                  toggle={() => {}}
+                                  toggle={() => { }}
                                 >
                                   <DropdownToggle tag="a">
                                     <div className="avatar-stack mt-1 d-flex">
@@ -1041,7 +1040,7 @@ const OrderList = ({ tab, from }) => {
                                           <>
                                             {order.ItemName.length > 10
                                               ? order.ItemName.slice(0, 10) +
-                                                "..."
+                                              "..."
                                               : order.ItemName}
                                             &nbsp; ({order?.OrdSrNo})
                                           </>
@@ -1198,11 +1197,11 @@ const OrderList = ({ tab, from }) => {
                                         <div className=" border rounded-2">
                                           <span className="ms-1">
                                             {dropDownData?.ItemDesc?.length >
-                                            100
+                                              100
                                               ? dropDownData.ItemDesc.slice(
-                                                  0,
-                                                  100
-                                                ) + "..."
+                                                0,
+                                                100
+                                              ) + "..."
                                               : dropDownData.ItemDesc}
                                           </span>
                                         </div>
@@ -1365,7 +1364,7 @@ const OrderList = ({ tab, from }) => {
                                           id="measure_img_toolTip"
                                           alt=""
                                           width="35px"
-                                          // onClick={() => handleEditItem(order)}
+                                        // onClick={() => handleEditItem(order)}
                                         />
                                         <Tooltip
                                           id={`measure_img_toolTip`}
@@ -1397,7 +1396,7 @@ const OrderList = ({ tab, from }) => {
                                           id="style_img_toolTip"
                                           alt=""
                                           width="35px"
-                                          // onClick={() => handleEditItem(order)}
+                                        // onClick={() => handleEditItem(order)}
                                         />
                                         <Tooltip
                                           id={`style_img_toolTip`}
@@ -1429,7 +1428,15 @@ const OrderList = ({ tab, from }) => {
                                                 >
                                                   <img
                                                     className="avatar rounded-circle"
-                                                    src={item.image}
+                                                    src={
+                                                      !item.image
+                                                        ? service1
+                                                        : item.image instanceof File || item.image instanceof Blob
+                                                          ? URL.createObjectURL(item.image)
+                                                          : item.image.startsWith?.("data:") || item.image.startsWith?.("http")
+                                                            ? item.image
+                                                            : `${axiosClient.defaults.baseURL}${item.image}`
+                                                    }
                                                     alt="1"
                                                     width="25px"
                                                     height="25px"
@@ -1467,11 +1474,10 @@ const OrderList = ({ tab, from }) => {
                               <div className=" right-side-part-1 pl-0">
                                 <div className="d-flex justify-content-between ">
                                   <Accordion
-                                    className={`custom-z-index border-bottom ctransition w-100 ${
-                                      showAccordion.includes(ind)
-                                        ? "position-absolute px-2  justify-content-between"
-                                        : " Accordion-header-bg-tranpernt bg-transperent"
-                                    }`}
+                                    className={`custom-z-index border-bottom ctransition w-100 ${showAccordion.includes(ind)
+                                      ? "position-absolute px-2  justify-content-between"
+                                      : " Accordion-header-bg-tranpernt bg-transperent"
+                                      }`}
                                     style={{
                                       zIndex: showAccordion.includes(ind)
                                         ? "11"
@@ -1480,11 +1486,10 @@ const OrderList = ({ tab, from }) => {
                                   >
                                     <Accordion.Item
                                       eventKey="0"
-                                      className={`w-100 bg-transperent   ${
-                                        showAccordion.includes(ind)
-                                          ? "custome-acc-item"
-                                          : "basic_acc_btn_item"
-                                      }`}
+                                      className={`w-100 bg-transperent   ${showAccordion.includes(ind)
+                                        ? "custome-acc-item"
+                                        : "basic_acc_btn_item"
+                                        }`}
                                     >
                                       <Accordion.Header className="w-100   custom-acc-header">
                                         <div
@@ -1525,8 +1530,8 @@ const OrderList = ({ tab, from }) => {
                                               {symbol}{" "}
                                               {order?.BasicRate
                                                 ? (+order.BasicRate)?.toFixed(
-                                                    RoundUpToDecimal
-                                                  )
+                                                  RoundUpToDecimal
+                                                )
                                                 : 0}
                                             </span>
                                           </div>
@@ -1658,12 +1663,12 @@ const OrderList = ({ tab, from }) => {
                                                                   ?.ArticleName
                                                                   .length > 5
                                                                   ? item.articleDetails?.ArticleName.slice(
-                                                                      0,
-                                                                      5
-                                                                    ) + "..."
+                                                                    0,
+                                                                    5
+                                                                  ) + "..."
                                                                   : item
-                                                                      .articleDetails
-                                                                      ?.ArticleName}
+                                                                    .articleDetails
+                                                                    ?.ArticleName}
                                                               </p>
                                                             </div>
                                                             <div className="custom-border-right pr-2 pl-2 ">
@@ -1866,8 +1871,8 @@ const OrderList = ({ tab, from }) => {
                                       {symbol}{" "}
                                       {order?.BasicRate
                                         ? (+order.BasicRate)?.toFixed(
-                                            RoundUpToDecimal
-                                          )
+                                          RoundUpToDecimal
+                                        )
                                         : 0}
                                     </span>
                                   </div>
@@ -1906,8 +1911,8 @@ const OrderList = ({ tab, from }) => {
                                   {symbol}{" "}
                                   {order.NetAmount
                                     ? parseFloat(order.NetAmount)?.toFixed(
-                                        RoundUpToDecimal
-                                      )
+                                      RoundUpToDecimal
+                                    )
                                     : 0}
                                 </h5>
                               </div>
@@ -1949,8 +1954,8 @@ const OrderList = ({ tab, from }) => {
               mood={mood}
               action={action}
               from={from}
-              // isConfirm={isConfirm}
-              // setIsConfirm={setIsConfirm}
+            // isConfirm={isConfirm}
+            // setIsConfirm={setIsConfirm}
             />
           </div>
         </div>
@@ -1978,11 +1983,11 @@ const OrderList = ({ tab, from }) => {
             <DeleteSliderViewToEdit
               setMood={setMood}
               toggleSidebar={toogleSideBarViewToEdit}
-              // selectedRows={selectedRow}
+            // selectedRows={selectedRow}
 
-              // onChangeMood={onChangeMood}
-              // isConfirm={isConfirm}
-              // setIsConfirm={setIsConfirm}
+            // onChangeMood={onChangeMood}
+            // isConfirm={isConfirm}
+            // setIsConfirm={setIsConfirm}
             />
           </div>
         </div>
@@ -2010,11 +2015,11 @@ const OrderList = ({ tab, from }) => {
             <DeletePaymentSlider
               togglePaymentSidebar={togglePaymentSidebar}
               selectedPaymentMood={selectedPaymentMood}
-              // selectedRows={selectedRow}
+            // selectedRows={selectedRow}
 
-              // onChangeMood={onChangeMood}
-              // isConfirm={isConfirm}
-              // setIsConfirm={setIsConfirm}
+            // onChangeMood={onChangeMood}
+            // isConfirm={isConfirm}
+            // setIsConfirm={setIsConfirm}
             />
           </div>
         </div>
@@ -2143,14 +2148,14 @@ const OrderList = ({ tab, from }) => {
                                 {entry.PaymentMode === "BANK"
                                   ? "Bank"
                                   : entry.PaymentMode === "CASH"
-                                  ? "Cash"
-                                  : entry.PaymentMode === "Wallet"
-                                  ? "Wallet"
-                                  : "Cash Discount"}
+                                    ? "Cash"
+                                    : entry.PaymentMode === "Wallet"
+                                      ? "Wallet"
+                                      : "Cash Discount"}
                               </td>
                               <td>
                                 {entry.PaymentMode === "BANK" ||
-                                entry.PaymentMode === "Wallet" ? (
+                                  entry.PaymentMode === "Wallet" ? (
                                   <>
                                     Txn# {entry.ChequeNo}
                                     <p>{entry.BankName}</p>

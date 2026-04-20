@@ -1,4 +1,5 @@
 import React, { useRef, useState } from "react";
+import { axiosClient } from "../../../axios/axios";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/navigation"; // Import navigation CSS
@@ -30,23 +31,32 @@ const ProfileImageSlider = ({ images }) => {
           el: ".swiper-pagination",
           clickable: true,
           renderBullet: (index, className) => {
+            const imageSrc = !images[index] ? ""
+              : images[index].startsWith?.("data:") || images[index].startsWith?.("http")
+                ? images[index]
+                : `${axiosClient.defaults.baseURL}${images[index]}`;
             return `<span class="${className}">
-                <img src="${images[index]}" alt="Image ${index + 1}" />
+                <img src="${imageSrc}" alt="Image ${index + 1}" />
               </span>`;
           },
         }}
       >
         {images?.map((avatarImage, index) => {
-       
+
           return (
             <SwiperSlide key={index}>
               <div className="d-flex justify-content-center align-items-center slider-images-customm">
                 <div className="position-relative w-100">
-                  
+
                   <div className="sl-image position-relative">
                     <div className="img-section w-100 h-100">
                       <img
-                        src={avatarImage}
+                        src={
+                          !avatarImage ? null
+                            : avatarImage.startsWith?.("data:") || avatarImage.startsWith?.("http")
+                              ? avatarImage
+                              : `${axiosClient.defaults.baseURL}${avatarImage}`
+                        }
                         className={`img-fluid w-100 h-100 avatarImage_${index}`}
                         alt={avatarImage}
                       />

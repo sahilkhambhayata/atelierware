@@ -142,6 +142,7 @@ const Worksheet = () => {
                 (key) =>
                   (key.startsWith("attach_img_") ||
                     key.startsWith("attach_garment_img_")) &&
+                  !key.endsWith("_desc") &&
                   item.TOrdDtls[key] !== null
               )
               .map((imgKey) => {
@@ -154,10 +155,7 @@ const Worksheet = () => {
                 };
               });
 
-          const finalImageObjects = newImageObjects?.slice(
-            0,
-            newImageObjects.length / 2
-          );
+          const finalImageObjects = newImageObjects?.slice(0);
 
           return (
             <div Key={i}>

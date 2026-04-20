@@ -1,16 +1,16 @@
-  import axios from "axios";
+import axios from "axios";
 import { toast } from 'react-toastify';
 import { logInfo, logError, logWarn } from '../utils/logger';
 
 export const axiosClient = axios.create({
-    // baseURL: "http://157.230.24.147:4545/api/v1/",
+  // baseURL: "http://157.230.24.147:4545/api/v1/",
   // baseURL: "http://192.168.29.120:6565/api/v1/",
   // baseURL: "http://192.168.29.32:8088/",   //SM BASE
   // baseURL: "http://192.168.29.152:8088/", // AP BASE
   // baseURL: "http://192.168.29.210:8088/", // As BASE
   // baseURL: "http://192.168.1.17:8088/", // mo BASE
-  // baseURL: "http://192.168.1.24:8088/", // SA BASE
-  baseURL: "https://betaapi.atelierware.com", //live url
+  baseURL: "http://localhost:8088/", // SA BASE
+  // baseURL: "https://betaapi.atelierware.com", //live url
 });
 
 // Request interceptor to add token to headers
@@ -18,13 +18,13 @@ axiosClient.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('token');
     const tabId = localStorage.getItem('tabId') || 'N/A';
-    
+
     logInfo('AXIOS_REQUEST', `Making request to: ${config.method?.toUpperCase()} ${config.url}`, {
       hasToken: !!token,
       tabId: tabId,
       headers: config.headers
     });
-    
+
     if (token) {
       config.headers.token = token;
     }
@@ -40,40 +40,40 @@ axiosClient.interceptors.request.use(
 axiosClient.interceptors.response.use(
   (response) => {
     const tabId = localStorage.getItem('tabId') || 'N/A';
-    
+
     logInfo('AXIOS_RESPONSE', `Received response from: ${response.config.method?.toUpperCase()} ${response.config.url}`, {
       status: response.status,
       tabId: tabId,
       hasData: !!response.data
     });
-    
+
     return response;
   },
   (error) => {
     const tabId = localStorage.getItem('tabId') || 'N/A';
     const status = error.response?.status;
     const url = error.config?.url;
-    
+
     logError('AXIOS_RESPONSE_ERROR', `API Error: ${status} from ${url}`, {
       status: status,
       tabId: tabId,
       message: error.message,
       responseData: error.response?.data
     });
-    
+
     if (status === 401 || status === 403) {
       logWarn('SESSION_EXPIRED', `Session expired for tab: ${tabId}`, {
         status: status,
         tabId: tabId,
         url: url
       });
-      
+
       // Clear local storage
       localStorage.clear();
-      
+
       // Show error message
       toast.error('Your session has expired. Please login again.');
-      
+
       // Redirect to login page
       window.location.href = '/';
     }

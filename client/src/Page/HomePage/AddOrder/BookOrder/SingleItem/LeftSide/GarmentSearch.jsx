@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import { axiosClient } from "../../../../../../axios/axios";
 import cameraIcon from "./../../../../../../images/icons/camera-icon.svg";
 import browseImageIcon from "./../../../../../../images/icons/browse-image-icon.svg";
 import PaymentDeleteIcon from "./../../../../../../images/icons/payment-delete-icon.svg";
@@ -141,16 +142,13 @@ const GarmentSearch = ({
         "JPEG", // compressFormat
         50, // quality
         0, // rotation
-        (base64String) => {
-          // Using base64 string directly
-          onGarmentSelect([base64String]); // This will pass the base64 URL
+        (blob) => {
+          const resizedFile = new File([blob], `captured_${Date.now()}.jpeg`, { type: "image/jpeg" });
+          onGarmentSelect([resizedFile]);
           handleCameraModelClose();
         },
-        "base64"
+        "blob"
       );
-
-      onGarmentSelect([file]);
-      handleCameraModelClose();
     }
     // setUrl(imageSrc);
     // onImageSelect(imageSrc);
@@ -192,23 +190,16 @@ const GarmentSearch = ({
             "JPEG", // compressFormat
             50, // quality
             0, // rotation
-            (base64String) => {
-             
-              // Here we just add the base64 string as the "URL"
-              updatedImages.push(base64String);
+            (blob) => {
+              const resizedFile = new File([blob], `garment_${Date.now()}_${file.name}`, { type: "image/jpeg" });
+              updatedImages.push(resizedFile);
 
               // Once all images are processed, update the state or call onGarmentSelect
               if (updatedImages.length === newMergedGarmentArray.length) {
-                const newMergedImages = [
-                  ...mergedGarmentArray,
-                  ...updatedImages,
-                ];
-
-                
-                onGarmentSelect(newMergedImages); // This will contain base64 URLs
+                onGarmentSelect(updatedImages); // This will contain base64 URLs
               }
             },
-            "base64"
+            "blob"
           );
         } else {
           toast.error(
@@ -313,14 +304,21 @@ const GarmentSearch = ({
               onMouseLeave={() => isDesktop && setHoverIndex(null)}
             >
               <div
-                className={`my-1 position-relative bg-white border rounded-2 p-1 d-flex align-items-center justify-content-between ${
-                  isHovered ? "shadow-lg" : "shadow-sm"
-                }`}
+                className={`my-1 position-relative bg-white border rounded-2 p-1 d-flex align-items-center justify-content-between ${isHovered ? "shadow-lg" : "shadow-sm"
+                  }`}
               >
                 <div className="d-flex align-items-center">
                   <img
-                    // src={URL.createObjectURL(img.image)}
-                    src={img.image}
+                    src={
+                      !img.image
+                        ? null
+                        : img.image instanceof File || img.image instanceof Blob
+                        ? URL.createObjectURL(img.image)
+                        : img.image.startsWith?.("data:") ||
+                          img.image.startsWith?.("http")
+                        ? img.image
+                        : `${axiosClient.defaults.baseURL}${img.image}`
+                    }
                     alt={`Selected Image ${ind}`}
                     width="50px"
                     height="50px"
@@ -334,19 +332,19 @@ const GarmentSearch = ({
                 <div className="d-flex align-items-center">
                   {mainGarment?.id
                     ? mainGarment?.id === img?.id && (
-                        <img
-                          src={MainImageIcon1}
-                          alt=""
-                          className="mx-1 cursor-pointer"
-                        />
-                      )
+                      <img
+                        src={MainImageIcon1}
+                        alt=""
+                        className="mx-1 cursor-pointer"
+                      />
+                    )
                     : mainGarment?.image === img.image && (
-                        <img
-                          src={MainImageIcon1}
-                          alt=""
-                          className="mx-1 cursor-pointer"
-                        />
-                      )}
+                      <img
+                        src={MainImageIcon1}
+                        alt=""
+                        className="mx-1 cursor-pointer"
+                      />
+                    )}
 
                   {(isHovered || !isDesktop) && (
                     <div className="d-flex align-items-center">
@@ -355,7 +353,7 @@ const GarmentSearch = ({
                         alt=""
                         width="30px"
                         className="mx-1 cursor-pointer"
-                        onClick={() => onGarmentSelect(mergedGarmentArray)}
+                        onClick={() => onGarmentSelect([])}
                       />
                       <img
                         src={PaymentDeleteIcon}
@@ -404,9 +402,9 @@ const GarmentSearch = ({
             ref={webcamRef}
             audio={true}
             screenshotFormat="image/jpeg"
-            // videoConstraints={videoConstraints}
+          // videoConstraints={videoConstraints}
 
-            // onUserMedia={onUserMedia}
+          // onUserMedia={onUserMedia}
           />
           <div className="text-center ">
             <Button outline color="light" onClick={capturePhoto}>

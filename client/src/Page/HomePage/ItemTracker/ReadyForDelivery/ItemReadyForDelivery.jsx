@@ -100,11 +100,9 @@ const CustomTableHeaderRow = React.memo(
         cellComponent={({ column, ...cellProps }) => (
           <TableHeaderRow.Cell
             {...cellProps}
-            className={`table-heading position-sticky top-0 z-3   custom-${
-              column.name
-            }-header ${cellProps.className || ""} ${
-              column.name === "more" ? "last-column-header" : ""
-            } ${column.name === "service1" ? "first-column-header" : ""}`}
+            className={`table-heading position-sticky top-0 z-3   custom-${column.name
+              }-header ${cellProps.className || ""} ${column.name === "more" ? "last-column-header" : ""
+              } ${column.name === "service1" ? "first-column-header" : ""}`}
             style={{ textAlign: "center" }}
           >
             {column.name === "service1" ? (
@@ -133,11 +131,11 @@ const CustomTableHeaderRow = React.memo(
                 </div>
               </>
             ) : // Default header cell content for other columns
-            column.sortingEnabled ? (
-              <TableHeaderRow.SortLabel column={column} />
-            ) : (
-              cellProps.children
-            )}
+              column.sortingEnabled ? (
+                <TableHeaderRow.SortLabel column={column} />
+              ) : (
+                cellProps.children
+              )}
           </TableHeaderRow.Cell>
         )}
       />
@@ -191,7 +189,7 @@ const ItemReadyForDelivery = ({
   };
 
 
-  
+
   useEffect(() => {
     if (EnableInventory === 1) {
       setDefaultHiddenColumnNames([]);
@@ -223,9 +221,9 @@ const ItemReadyForDelivery = ({
     { columnName: "status", width: 300 },
     { columnName: "fabric", width: 200 },
     { columnName: "accessory", width: 200 },
-    
+
     { columnName: "commitment", width: 220 },
- 
+
     { columnName: "readyOn", width: 160 },
     { columnName: "lastActivity", width: 180 },
     { columnName: "remarks", width: 180 },
@@ -284,7 +282,7 @@ const ItemReadyForDelivery = ({
 
   itemData?.item?.orderItemList?.forEach((val) => {
     const newImageObjects = Object.keys(val)
-      .filter((key) => key.startsWith("attach_img_") && val[key] !== null)
+      .filter((key) => key.startsWith("attach_img_") && !key.endsWith("_desc") && val[key] !== null)
       .map((imgKey) => {
         const descKey = `${imgKey}_desc`;
         return {
@@ -293,10 +291,15 @@ const ItemReadyForDelivery = ({
         };
       });
 
-    const finalImageObjects = newImageObjects.slice(
-      0,
-      newImageObjects.length / 2
-    );
+    const finalImageObjects = Object.keys(val)
+      .filter((key) => key.startsWith("attach_img_") && !key.endsWith("_desc") && val[key] !== null)
+      .map((imgKey) => {
+        const descKey = `${imgKey}_desc`;
+        return {
+          image: val[imgKey],
+          desc: val.hasOwnProperty(descKey) ? val[descKey] : null,
+        };
+      });
 
     rows.push({
       service1: (
@@ -311,9 +314,9 @@ const ItemReadyForDelivery = ({
             data: val,
             tab: "other",
           }}
-          // onSelectAllChange={onSelectAllChange}
-          // isSelected={selectedRows.includes(`${val.TOrdDtId}`)}
-          // onSelectionChange={handleRowSelection}
+        // onSelectAllChange={onSelectAllChange}
+        // isSelected={selectedRows.includes(`${val.TOrdDtId}`)}
+        // onSelectionChange={handleRowSelection}
         />
       ),
       service2: (
@@ -326,7 +329,7 @@ const ItemReadyForDelivery = ({
             data: val,
             tab: "other",
           }}
-          // images={imageArray}
+        // images={imageArray}
         />
       ),
       description: (
@@ -500,9 +503,9 @@ const ItemReadyForDelivery = ({
                         { name: "status", title: "STATUS" },
                         { name: "fabric", title: "FABRIC" },
                         { name: "accessory", title: "ACCESSORY" },
-                       
+
                         { name: "commitment", title: "COMMITMENT" },
-                        
+
                         { name: "readyOn", title: "READY ON" },
                         { name: "lastActivity", title: "LAST ACTIVITY" },
                         { name: "remarks", title: "REMARKS" },
@@ -542,8 +545,8 @@ const ItemReadyForDelivery = ({
 
                       <CustomTableHeaderRow
                         showSortingControls
-                        // selectAll={selectAll}
-                        // handleSelectAll={handleSelectAll}
+                      // selectAll={selectAll}
+                      // handleSelectAll={handleSelectAll}
                       />
                       <TableFixedColumns
                         leftColumns={leftColumns}

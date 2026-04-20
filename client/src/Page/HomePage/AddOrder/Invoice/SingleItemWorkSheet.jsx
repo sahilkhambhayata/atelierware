@@ -26,7 +26,7 @@ const SingleItemWorkSheet = () => {
   const location = useLocation();
   // const TOrdDtId = localStorage.getItem(`TOrdDtID${tabId}`);
   const [TOrdDtId, setTOrdDtId] = useState();
-  
+
   useEffect(() => {
     // if (location?.state == null) {
     //   navigate("/dashboard");
@@ -34,16 +34,16 @@ const SingleItemWorkSheet = () => {
 
     if (tabId) {
       const blncData = localStorage.getItem(`TOrdDtID${tabId}`);
-      
+
       if (location.state !== null) {
         setTOrdDtId(localStorage.getItem(`TOrdDtID${tabId}`));
       } else if (blncData !== null) {
         const data = JSON.parse(localStorage.getItem("orderEditData"));
         setTOrdDtId(localStorage.getItem(`TOrdDtID${tabId}`));
       } else {
-        
+
         const data = JSON.parse(localStorage.getItem("orderEditData"));
-     
+
         setTOrdDtId(data.TOrdDtID);
         localStorage.setItem(`TOrdDtID${tabId}`, data.TOrdDtID);
       }
@@ -54,7 +54,7 @@ const SingleItemWorkSheet = () => {
     if (TOrdDtId == "null" || TOrdDtId == "undefined" || TOrdDtId == null) {
       // navigate(-1);
     } else {
-      
+
 
       dispatch(getSingleItemWorksheetPrintOrder(TOrdDtId));
     }
@@ -109,6 +109,7 @@ const SingleItemWorkSheet = () => {
           (key) =>
             (key.startsWith("attach_img_") ||
               key.startsWith("attach_garment_img_")) &&
+            !key.endsWith("_desc") &&
             worksheetData.worksheetData.TOrdDtls[key] !== null
         )
         .map((imgKey) => {
@@ -123,7 +124,7 @@ const SingleItemWorkSheet = () => {
 
       if (newImageObjects.length > 0) {
         setFinalImageObjects(
-          newImageObjects.slice(1, newImageObjects.length / 2)
+          newImageObjects.slice(1)
         );
       }
       // const finalObjects = newImageObjects.slice(1, newImageObjects.length / 2);

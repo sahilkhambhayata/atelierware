@@ -1,4 +1,5 @@
 import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { axiosClient } from "./../../../../../axios/axios";
 import { v4 as uuidv4 } from "uuid";
 import Skeleton from "@mui/material/Skeleton";
 
@@ -76,7 +77,7 @@ import { fabicDropDownList } from "../../../../../redux/actions/fabicDropDownLis
 import { getDiscription } from "../../../../../redux/actions/getDiscriptionAction";
 import { usePermissions } from "../../../../../Layout/Provider/PermissionsContext";
 
-const LeftSideDetail = ({ imagePath }) => {
+const LeftSideDetail = () => {
   const symbol = localStorage.getItem("countrySymbol");
   const [isDesktop, setIsDesktop] = useState(window.innerWidth > 1024);
 
@@ -382,39 +383,33 @@ const LeftSideDetail = ({ imagePath }) => {
 
   const handleAddImageToMergedArray = async (images) => {
     const newImages = images.filter((image) => {
+      const imageName = image instanceof File ? image.name : (image?.name || null);
+      if (!imageName) return true; // no name to compare — allow
       return !mergedImageArray.some(
-        (existingImage) => existingImage.name === image.name
+        (existingImage) => existingImage.name === imageName
       );
     });
 
     const newMergedArray = await Promise.all(
       newImages.map(async (image, ind) => {
-        const isBase64 = image.startsWith("data:image/");
-        const isFile = image instanceof File;
-        return new Promise((resolve) => {
-          if (isBase64 || !isFile) {
-            // Handle base64 strings or paths
-            resolve({
-              image: isBase64 ? image : image.path,
-              name: image.name || `image-${ind}`, // Provide a default name if missing
-              description: "",
-              id: uuidv4(),
-            });
-          } else if (isFile) {
-            const reader = new FileReader();
+        // Check File/Blob FIRST — File doesn't have .startsWith()
+        if (image instanceof File || image instanceof Blob) {
+          return {
+            image: image,         // keep actual File for FormData/Multer
+            name: image.name || `image-${ind}`,
+            description: "",
+            id: uuidv4(),
+          };
+        }
 
-            reader.onloadend = () => {
-              resolve({
-                image: reader.result,
-                name: image.name,
-                description: "",
-                id: uuidv4(),
-              });
-            };
-
-            reader.readAsDataURL(image);
-          }
-        });
+        // String: base64 or DB path
+        const isBase64 = typeof image === "string" && image.startsWith("data:image/");
+        return {
+          image: isBase64 ? image : (image.image || image),
+          name: image.name || `image-${ind}`,
+          description: image.description || "",
+          id: image.id || uuidv4(),
+        };
       })
     );
 
@@ -602,43 +597,38 @@ const LeftSideDetail = ({ imagePath }) => {
 
         // console.log(obj);
 
-        //image at edit time
+        // image at edit time
         const newImageObjects = Object.keys(obj)
-          .filter((key) => key.startsWith("attach_img_") && obj[key] !== null)
+          .filter((key) => key.startsWith("attach_img_") && !key.endsWith("_desc") && obj[key] !== null)
           .map((imgKey) => {
             const descKey = `${imgKey}_desc`;
             return {
               image: obj[imgKey],
               desc: obj.hasOwnProperty(descKey) ? obj[descKey] : null,
+              id: uuidv4(), // ensure they have IDs
             };
-          })
-          .filter((item) => item.image.startsWith("data:"));
-
-        const finalImageObjects = newImageObjects.slice(
-          0,
-          newImageObjects.length / 2
-        );
+          });
 
         setMergedImageArray(newImageObjects);
 
-        //garment at edit time
+        // garment at edit time
         const newGarmentObjects = Object.keys(obj)
           .filter(
-            (key) => key.startsWith("attach_garment_img_") && obj[key] !== null
+            (key) =>
+              key.startsWith("attach_garment_img_") &&
+              !key.endsWith("_desc") &&
+              obj[key] !== null
           )
           .map((imgKey) => {
             const descKey = `${imgKey}_desc`;
             return {
               image: obj[imgKey],
               desc: obj.hasOwnProperty(descKey) ? obj[descKey] : null,
+              id: uuidv4(), // ensure they have IDs
             };
           });
 
-        const finalGarmentObjects = newGarmentObjects.slice(
-          0,
-          newGarmentObjects.length / 2
-        );
-        setMergedGarmentArray(finalGarmentObjects);
+        setMergedGarmentArray(newGarmentObjects);
       }
     }
   }, [singleOrderData]);
@@ -651,40 +641,35 @@ const LeftSideDetail = ({ imagePath }) => {
   };
   const handleAddGarmentToMergedArray = async (images) => {
     const newImages = images.filter((image) => {
+      const imageName =
+        image instanceof File ? image.name : image?.name || null;
+      if (!imageName) return true; // no name to compare — allow
       return !mergedGarmentArray.some(
-        (existingImage) => existingImage.name === image.name
+        (existingImage) => existingImage.name === imageName
       );
     });
 
     const newMergedArray = await Promise.all(
       newImages.map(async (image, ind) => {
-        const isBase64 = image.startsWith("data:image/");
-        const isFile = image instanceof File;
+        // Check File/Blob FIRST — File doesn't have .startsWith()
+        if (image instanceof File || image instanceof Blob) {
+          return {
+            image: image, // keep actual File for FormData/Multer
+            name: image.name || `garment-${ind}`,
+            description: "",
+            id: uuidv4(),
+          };
+        }
 
-        return new Promise((resolve) => {
-          if (isBase64 || !isFile) {
-            // Handle base64 strings or paths
-            resolve({
-              image: isBase64 ? image : image.path,
-              name: image.name || `image-${ind}`, // Provide a default name if missing
-              description: "",
-              id: uuidv4(),
-            });
-          } else if (isFile) {
-            const reader = new FileReader();
-
-            reader.onloadend = () => {
-              resolve({
-                image: reader.result,
-                name: image.name,
-                description: "",
-                id: uuidv4(),
-              });
-            };
-
-            reader.readAsDataURL(image);
-          }
-        });
+        // String: base64 or DB path
+        const isBase64 =
+          typeof image === "string" && image.startsWith("data:image/");
+        return {
+          image: isBase64 ? image : image.image || image,
+          name: image.name || `garment-${ind}`,
+          description: image.description || "",
+          id: image.id || uuidv4(),
+        };
       })
     );
 
@@ -1906,7 +1891,15 @@ const LeftSideDetail = ({ imagePath }) => {
                           }
                         >
                           <img
-                            src={img.images ? img.images : noImageIcon}
+                            src={
+                              !img.images
+                                ? noImageIcon
+                                : img.images instanceof File || img.images instanceof Blob
+                                  ? URL.createObjectURL(img.images)
+                                  : img.images.startsWith?.("data:") || img.images.startsWith?.("http")
+                                    ? img.images
+                                    : `${axiosClient.defaults.baseURL}${img.images}`
+                            }
                             alt=""
                             className={`p-0 m-0 albumImage `}
                           />
@@ -1942,7 +1935,11 @@ const LeftSideDetail = ({ imagePath }) => {
                           src={
                             singleImageRecord[res.StyleId] === undefined
                               ? noImageIcon
-                              : singleImageRecord[res.StyleId].images
+                              : singleImageRecord[res.StyleId].images instanceof File || singleImageRecord[res.StyleId].images instanceof Blob
+                                ? URL.createObjectURL(singleImageRecord[res.StyleId].images)
+                                : (singleImageRecord[res.StyleId].images?.startsWith?.("data:") || singleImageRecord[res.StyleId].images?.startsWith?.("http"))
+                                  ? singleImageRecord[res.StyleId].images
+                                  : `${axiosClient.defaults.baseURL}${singleImageRecord[res.StyleId].images}`
                           }
                           alt="Selected"
                           className="image-selected"
@@ -2020,8 +2017,15 @@ const LeftSideDetail = ({ imagePath }) => {
                   >
                     <div className="mr-3" id={`image-name-tooltip${ind}`}>
                       <img
-                        src={isFile ? URL.createObjectURL(image) : image.image}
-                        // src={isFile ? URL.createObjectURL(image) : image.path}
+                        src={
+                          !image.image
+                            ? null
+                            : image.image instanceof File || image.image instanceof Blob
+                              ? URL.createObjectURL(image.image)
+                              : image.image.startsWith?.("data:") || image.image.startsWith?.("http")
+                                ? image.image
+                                : `${axiosClient.defaults.baseURL}${image.image}`
+                        }
                         alt={`Selected Image ${ind}`}
                         width="120px"
                       />
@@ -2127,7 +2131,14 @@ const LeftSideDetail = ({ imagePath }) => {
                     <span>{img.description || img.desc}</span>
                   </div>
                   <img
-                    src={img.image}
+                    src={
+                      !img.image ? null
+                        : img.image instanceof File || img.image instanceof Blob
+                          ? URL.createObjectURL(img.image)
+                          : img.image.startsWith("data:") || img.image.startsWith("http")
+                            ? img.image
+                            : `${axiosClient.defaults.baseURL}${img.image}`
+                    }
                     alt="avatarImages"
                     // className="w-100"
                     // width="full"
@@ -2160,7 +2171,15 @@ const LeftSideDetail = ({ imagePath }) => {
             <div className="border rounded-2">
               <div className="d-flex my-3 mx-2 pb-5">
                 <img
-                  src={deleteImage.image}
+                  src={
+                    !deleteImage.image
+                      ? noImageIcon
+                      : deleteImage.image instanceof File || deleteImage.image instanceof Blob
+                        ? URL.createObjectURL(deleteImage.image)
+                        : (deleteImage.image?.startsWith?.("data:") || deleteImage.image?.startsWith?.("http"))
+                          ? deleteImage.image
+                          : `${axiosClient.defaults.baseURL}${deleteImage.image}`
+                  }
                   alt=""
                   className="mr-2"
                   height="160px"
@@ -2394,7 +2413,8 @@ const LeftSideDetail = ({ imagePath }) => {
           <div className="p-1">
             {mergedGarmentArray.length > 0 &&
               mergedGarmentArray.map((image, ind) => {
-                const isFile = image instanceof File;
+                const isFile =
+                  image.image instanceof File || image.image instanceof Blob;
                 const isHovered = hoverIndex === ind; // Assume hoverIndex is a state variable tracking the index of the hovered image
                 const isMainImage = mainGarment && mainGarment === image;
                 return (
@@ -2407,7 +2427,16 @@ const LeftSideDetail = ({ imagePath }) => {
                     <div className="mr-3" id={`image-name-tooltip${ind}`}>
                       <img
                         // src={image.image}
-                        src={isFile ? URL.createObjectURL(image) : image.image}
+                        src={
+                          !image.image
+                            ? null
+                            : isFile
+                            ? URL.createObjectURL(image.image)
+                            : image.image.startsWith?.("data:") ||
+                              image.image.startsWith?.("http")
+                            ? image.image
+                            : `${axiosClient.defaults.baseURL}${image.image}`
+                        }
                         alt={`Selected Image ${ind}`}
                         width="120px"
                       />
@@ -2501,7 +2530,16 @@ const LeftSideDetail = ({ imagePath }) => {
                     <span>{img.description || img.desc}</span>
                   </div>
                   <img
-                    src={img.image}
+                    src={
+                      !img.image
+                        ? null
+                        : img.image instanceof File || img.image instanceof Blob
+                        ? URL.createObjectURL(img.image)
+                        : img.image.startsWith?.("data:") ||
+                          img.image.startsWith?.("http")
+                        ? img.image
+                        : `${axiosClient.defaults.baseURL}${img.image}`
+                    }
                     alt="avatarImages"
                     // className="w-100"
                     // width="full"
@@ -2534,7 +2572,15 @@ const LeftSideDetail = ({ imagePath }) => {
             <div className="border rounded-2">
               <div className="d-flex my-3 mx-2 pb-5">
                 <img
-                  src={deleteGarment.image}
+                  src={
+                    !deleteGarment.image
+                      ? noImageIcon
+                      : deleteGarment.image instanceof File || deleteGarment.image instanceof Blob
+                        ? URL.createObjectURL(deleteGarment.image)
+                        : (deleteGarment.image?.startsWith?.("data:") || deleteGarment.image?.startsWith?.("http"))
+                          ? deleteGarment.image
+                          : `${axiosClient.defaults.baseURL}${deleteGarment.image}`
+                  }
                   alt=""
                   className="mr-2"
                   height="160px"

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { axiosClient } from "./../../../../axios/axios";
 // import service1 from "./../../../../images/avatar/ServiceAlbum/service1.png";
 import tridateImg from "./../../../../images/icons/tridateImg.svg";
 import deldateImg from "./../../../../images/icons/deldateImg.svg";
@@ -300,11 +301,12 @@ const SingleAndGroupOrderList = () => {
           ) : (
             <>
               {orderList?.orderData?.Order?.TOrdDtls?.map((order, ind) => {
-                const newImageObjects = Object.keys(order)
+                const finalImageObjects = Object.keys(order)
                   .filter(
                     (key) =>
                       (key.startsWith("attach_img_") ||
                         key.startsWith("attach_garment_img_")) &&
+                      !key.endsWith("_desc") &&
                       order[key] !== null
                   )
                   .map((imgKey) => {
@@ -316,11 +318,6 @@ const SingleAndGroupOrderList = () => {
                         : null,
                     };
                   });
-
-                const finalImageObjects = newImageObjects.slice(
-                  0,
-                  newImageObjects.length / 2
-                );
 
                 const fabricList = order.fabricList;
                 const fabArray = fabricList.filter(
@@ -589,13 +586,14 @@ const SingleAndGroupOrderList = () => {
                                       item?.ItemType === "accessories"
                                   );
 
-                                  const newImageObjects = Object.keys(item)
+                                  const finalImageObjects = Object.keys(item)
                                     .filter(
                                       (key) =>
                                         (key.startsWith("attach_img_") ||
                                           key.startsWith(
                                             "attach_garment_img_"
                                           )) &&
+                                        !key.endsWith("_desc") &&
                                         item[key] !== null
                                     )
                                     .map((imgKey) => {
@@ -607,11 +605,6 @@ const SingleAndGroupOrderList = () => {
                                           : null,
                                       };
                                     });
-
-                                  const finalImageObjects = newImageObjects.slice(
-                                    0,
-                                    newImageObjects.length / 2
-                                  );
 
                                   return (
                                     <div
@@ -743,7 +736,15 @@ const SingleAndGroupOrderList = () => {
                                                   >
                                                     <img
                                                       className="avatar rounded-circle"
-                                                      src={item.image}
+                                                      src={
+                                                        !item.image
+                                                          ? service1
+                                                          : item.image instanceof File || item.image instanceof Blob
+                                                            ? URL.createObjectURL(item.image)
+                                                            : item.image.startsWith?.("data:") || item.image.startsWith?.("http")
+                                                              ? item.image
+                                                              : `${axiosClient.defaults.baseURL}${item.image}`
+                                                      }
                                                       alt="1"
                                                       width="25px"
                                                       height="25px"
@@ -1378,7 +1379,15 @@ const SingleAndGroupOrderList = () => {
                                               >
                                                 <img
                                                   className="avatar rounded-circle"
-                                                  src={item.image}
+                                                  src={
+                                                    !item.image
+                                                      ? service1
+                                                      : item.image instanceof File || item.image instanceof Blob
+                                                        ? URL.createObjectURL(item.image)
+                                                        : item.image.startsWith?.("data:") || item.image.startsWith?.("http")
+                                                          ? item.image
+                                                          : `${axiosClient.defaults.baseURL}${item.image}`
+                                                  }
                                                   alt="1"
                                                   width="25px"
                                                   height="25px"

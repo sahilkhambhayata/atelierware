@@ -1,4 +1,5 @@
 import React, { useRef, useState } from "react";
+import { axiosClient } from "../../../../axios/axios";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/navigation"; // Import navigation CSS
@@ -104,9 +105,13 @@ const ImagesSlider = ({ images }) => {
           dynamicBullets: true,
           el: ".swiper-pagination",
           clickable: true,
-          renderBullet: function(index, className) {
+          renderBullet: function (index, className) {
+            const imageSrc = !images[index]?.image ? ""
+              : images[index].image.startsWith?.("data:") || images[index].image.startsWith?.("http")
+                ? images[index].image
+                : `${axiosClient.defaults.baseURL}${images[index].image}`;
             return `<span class="${className}">
-                <img src="${images[index]?.image}" alt="Image ${index + 1}" />
+                <img src="${imageSrc}" alt="Image ${index + 1}" />
               </span>`;
           },
         }}
@@ -169,9 +174,8 @@ const ImagesSlider = ({ images }) => {
                       />
                     </div> */}
                     <div
-                      className={`img-section w-100 h-100 ${
-                        fullscreen ? "fullscreen" : ""
-                      }`}
+                      className={`img-section w-100 h-100 ${fullscreen ? "fullscreen" : ""
+                        }`}
                       style={{ whiteSpace: "nowrap" }}
                       ref={containerRef}
                       onMouseDown={handleMouseDown}
@@ -180,7 +184,12 @@ const ImagesSlider = ({ images }) => {
                       onMouseMove={handleMouseMove}
                     >
                       <img
-                        src={avatarImage.image}
+                        src={
+                          !avatarImage.image ? null
+                            : avatarImage.image.startsWith?.("data:") || avatarImage.image.startsWith?.("http")
+                              ? avatarImage.image
+                              : `${axiosClient.defaults.baseURL}${avatarImage.image}`
+                        }
                         className={`img-fluid w-100 h-100 avatarImage_${index}`}
                         alt={avatarImage.image}
                       />
@@ -234,7 +243,16 @@ const ImagesSlider = ({ images }) => {
         <div className="position-absolute top-0 start-0 w-100 h-100 ">
           <div className="lightbox-modal-overlay" onClick={closeLightbox}>
             <div className="lightbox-modal">
-              <img src={lightboxImage} alt="Fullscreen" className="img-fluid" />
+              <img
+                src={
+                  !lightboxImage ? ""
+                    : lightboxImage.startsWith?.("data:") || lightboxImage.startsWith?.("http")
+                      ? lightboxImage
+                      : `${axiosClient.defaults.baseURL}${lightboxImage}`
+                }
+                alt="Fullscreen"
+                className="img-fluid"
+              />
             </div>
           </div>
         </div>

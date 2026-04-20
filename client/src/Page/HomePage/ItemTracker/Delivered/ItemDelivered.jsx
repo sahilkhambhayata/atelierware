@@ -93,11 +93,9 @@ const CustomTableHeaderRow = React.memo(
         cellComponent={({ column, ...cellProps }) => (
           <TableHeaderRow.Cell
             {...cellProps}
-            className={`table-heading position-sticky top-0 z-3   custom-${
-              column.name
-            }-header ${cellProps.className || ""} ${
-              column.name === "more" ? "last-column-header" : ""
-            } ${column.name === "service1" ? "first-column-header" : ""}`}
+            className={`table-heading position-sticky top-0 z-3   custom-${column.name
+              }-header ${cellProps.className || ""} ${column.name === "more" ? "last-column-header" : ""
+              } ${column.name === "service1" ? "first-column-header" : ""}`}
             style={{ textAlign: "center" }}
           >
             {column.name === "service1" ? (
@@ -128,11 +126,11 @@ const CustomTableHeaderRow = React.memo(
                 </div>
               </>
             ) : // Default header cell content for other columns
-            column.sortingEnabled ? (
-              <TableHeaderRow.SortLabel column={column} />
-            ) : (
-              cellProps.children
-            )}
+              column.sortingEnabled ? (
+                <TableHeaderRow.SortLabel column={column} />
+              ) : (
+                cellProps.children
+              )}
           </TableHeaderRow.Cell>
         )}
       />
@@ -186,7 +184,7 @@ const ItemDelivered = ({
     return true;
   }
 
- 
+
 
   useEffect(() => {
     if (isObjectEmpty(itemData)) {
@@ -199,7 +197,7 @@ const ItemDelivered = ({
     setApiCallCompleted(true);
   }, [isLoading, itemData]);
 
-  
+
 
   const [defaultColumnWidths] = useState([
     { columnName: "service1", align: "left", width: 160 },
@@ -278,7 +276,7 @@ const ItemDelivered = ({
 
   itemData?.item?.orderItemList?.forEach((val) => {
     const newImageObjects = Object.keys(val)
-      .filter((key) => key.startsWith("attach_img_") && val[key] !== null)
+      .filter((key) => key.startsWith("attach_img_") && !key.endsWith("_desc") && val[key] !== null)
       .map((imgKey) => {
         const descKey = `${imgKey}_desc`;
         return {
@@ -287,10 +285,15 @@ const ItemDelivered = ({
         };
       });
 
-    const finalImageObjects = newImageObjects.slice(
-      0,
-      newImageObjects.length / 2
-    );
+    const finalImageObjects = Object.keys(val)
+      .filter((key) => key.startsWith("attach_img_") && !key.endsWith("_desc") && val[key] !== null)
+      .map((imgKey) => {
+        const descKey = `${imgKey}_desc`;
+        return {
+          image: val[imgKey],
+          desc: val.hasOwnProperty(descKey) ? val[descKey] : null,
+        };
+      });
 
     rows.push({
       service1: (
@@ -303,9 +306,9 @@ const ItemDelivered = ({
             barcodeText: val.barcode,
             mainId: `${val.TOrdDtId}`,
           }}
-          // onSelectAllChange={onSelectAllChange}
-          // isSelected={selectedRows.includes(`${val.TOrdDtId}`)}
-          // onSelectionChange={handleRowSelection}
+        // onSelectAllChange={onSelectAllChange}
+        // isSelected={selectedRows.includes(`${val.TOrdDtId}`)}
+        // onSelectionChange={handleRowSelection}
         />
       ),
       service2: (
@@ -318,7 +321,7 @@ const ItemDelivered = ({
             data: val,
             tab: "other",
           }}
-          // images={imageArray}
+        // images={imageArray}
         />
       ),
       description: (
@@ -495,9 +498,9 @@ const ItemDelivered = ({
                         { name: "status", title: "STATUS" },
                         { name: "fabric", title: "FABRIC" },
                         { name: "accessory", title: "ACCESSORY" },
-                       
+
                         { name: "commitment", title: "COMMITMENT" },
-                        
+
                         { name: "deliveredOn", title: "DELIVERED ON" },
                         { name: "lastActivity", title: "LAST ACTIVITY" },
                         { name: "remarks", title: "REMARKS" },
@@ -536,8 +539,8 @@ const ItemDelivered = ({
 
                       <CustomTableHeaderRow
                         showSortingControls
-                        // selectAll={selectAll}
-                        // handleSelectAll={handleSelectAll}
+                      // selectAll={selectAll}
+                      // handleSelectAll={handleSelectAll}
                       />
                       <TableFixedColumns
                         leftColumns={leftColumns}

@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import { axiosClient } from "./../../../../../axios/axios";
 import barcodeImg from "./../../../../../images/icons/odertable-barcode.svg";
 import fabricIcon from "./../../../../../images/icons/fabric-icon.svg";
 import Skeleton from "@mui/material/Skeleton";
@@ -39,7 +40,7 @@ import { getDiscription } from "../../../../../redux/actions/getDiscriptionActio
 import SherwaniImage from "./../../../../../images/avatar/sherwani-image.png";
 import { toast } from "react-toastify";
 
-const LeftSideDetail = ({ imagePath }) => {
+const LeftSideDetail = () => {
   const createOrderData = useSelector(
     (state) => state.createorddtls?.ordDetails?.upCrtOrder
   );
@@ -106,7 +107,7 @@ const LeftSideDetail = ({ imagePath }) => {
   useEffect(() => {
     if (isFromSingleOrderPage) {
       const TOrdDtID = localStorage.getItem(`TOrdDtID${tabId}`);
-      
+
       dispatch(getSingleGroupOrderList(TOrdDtID));
     }
   }, [isFromSingleOrderPage]);
@@ -121,7 +122,7 @@ const LeftSideDetail = ({ imagePath }) => {
     groupData?.groupItemList?.length > 0 &&
       groupData?.groupItemList.map((item, i) => {
         const fabArray = item?.fabricList?.filter(
-          (val) => val?.ItemType === "Cut Length" || val?.ItemType === "Fabric" || val?.ItemType === "fabric" ||  val?.ItemType === "cut length"
+          (val) => val?.ItemType === "Cut Length" || val?.ItemType === "Fabric" || val?.ItemType === "fabric" || val?.ItemType === "cut length"
         );
         const accArray = item?.fabricList?.filter(
           (val) => val?.ItemType === "Accessories" || val?.ItemType === "accessories"
@@ -279,7 +280,7 @@ const LeftSideDetail = ({ imagePath }) => {
     if (
       itemDesc &&
       itemDesc !==
-        (selectedGroupItem?.ItemDescription || groupData?.ItemDescription)
+      (selectedGroupItem?.ItemDescription || groupData?.ItemDescription)
     ) {
       dispatch(getDiscription(itemDesc));
     }
@@ -358,7 +359,7 @@ const LeftSideDetail = ({ imagePath }) => {
             groupData?.groupItemList.map((item, i) => {
               const fabArray = item?.fabricList?.filter(
                 (val) =>
-                  val?.ItemType === "Cut Length" || val?.ItemType === "Fabric" || val?.ItemType === "fabric" ||  val?.ItemType === "cut length"
+                  val?.ItemType === "Cut Length" || val?.ItemType === "Fabric" || val?.ItemType === "fabric" || val?.ItemType === "cut length"
               );
               const accArray = item?.fabricList?.filter(
                 (val) => val?.ItemType === "Accessories" || val?.ItemType === "accessories"
@@ -378,9 +379,12 @@ const LeftSideDetail = ({ imagePath }) => {
                 return sum + product;
               }, 0);
 
-              const newImageObjects = Object.keys(item)
+              const finalImageObjects = Object.keys(item)
                 .filter(
-                  (key) => key.startsWith("attach_img_") && item[key] !== null
+                  (key) =>
+                    key.startsWith("attach_img_") &&
+                    !key.endsWith("_desc") &&
+                    item[key] !== null
                 )
                 .map((imgKey) => {
                   const descKey = `${imgKey}_desc`;
@@ -389,11 +393,6 @@ const LeftSideDetail = ({ imagePath }) => {
                     desc: item.hasOwnProperty(descKey) ? item[descKey] : null,
                   };
                 });
-
-              const finalImageObjects = newImageObjects.slice(
-                0,
-                newImageObjects.length / 2
-              );
 
               return (
                 <Accordion className="shadow mt-3" key={i}>
@@ -472,7 +471,7 @@ const LeftSideDetail = ({ imagePath }) => {
                                   alt=""
                                   width="25px"
                                   onClick={(e) => handleEditOrder(e, item)}
-                                  // onClick={() => handleEditItem(item)}
+                                // onClick={() => handleEditItem(item)}
                                 />
                                 <Tooltip
                                   id={`measure_img_toolTip`}
@@ -495,7 +494,7 @@ const LeftSideDetail = ({ imagePath }) => {
                                   alt=""
                                   width="25px"
                                   onClick={(e) => handleEditOrder(e, item)}
-                                  // onClick={() => handleEditItem(item)}
+                                // onClick={() => handleEditItem(item)}
                                 />
                                 <Tooltip
                                   id={`style_img_toolTip`}
@@ -532,9 +531,9 @@ const LeftSideDetail = ({ imagePath }) => {
                               {finalImageObjects.length > 0 && (
                                 <div
                                   className="avatar-stack mt-1 d-flex"
-                                  // onClick={() =>
-                                  //   handleImageModel(finalImageObjects)
-                                  // }
+                                // onClick={() =>
+                                //   handleImageModel(finalImageObjects)
+                                // }
                                 >
                                   {finalImageObjects
                                     .slice(0, 4)
@@ -543,7 +542,15 @@ const LeftSideDetail = ({ imagePath }) => {
                                         <div className="avatar-item" key={ind}>
                                           <img
                                             className="avatar rounded-circle"
-                                            src={item.image}
+                                            src={
+                                              !item.image
+                                                ? service1
+                                                : item.image instanceof File || item.image instanceof Blob
+                                                  ? URL.createObjectURL(item.image)
+                                                  : item.image.startsWith?.("data:") || item.image.startsWith?.("http")
+                                                    ? item.image
+                                                    : `${axiosClient.defaults.baseURL}${item.image}`
+                                            }
                                             alt="1"
                                             width="25px"
                                             height="25px"
@@ -574,8 +581,8 @@ const LeftSideDetail = ({ imagePath }) => {
                             {item.Rate != null
                               ? item.Rate + totalFabricAmount + totalAccAmount
                               : totalFabricAmount +
-                                totalAccAmount +
-                                item.Amount}
+                              totalAccAmount +
+                              item.Amount}
                             {/* {item.BasicRate +
                               totalFabricAmount +
                               totalAccAmount} */}
@@ -662,23 +669,23 @@ const LeftSideDetail = ({ imagePath }) => {
                                               {fabric.articleDetails.ArticleName
                                                 .length >= 12
                                                 ? fabric.articleDetails.ArticleName.slice(
-                                                    0,
-                                                    12
-                                                  ) + "..."
+                                                  0,
+                                                  12
+                                                ) + "..."
                                                 : fabric.articleDetails
-                                                    .ArticleName}
+                                                  .ArticleName}
                                             </span>
                                             {fabric.articleDetails.ArticleName
                                               .length >= 12 && (
-                                              <Tooltip
-                                                id={`ArticleName${index}`}
-                                                direction="right"
-                                                text={
-                                                  fabric.articleDetails
-                                                    .ArticleName
-                                                }
-                                              />
-                                            )}
+                                                <Tooltip
+                                                  id={`ArticleName${index}`}
+                                                  direction="right"
+                                                  text={
+                                                    fabric.articleDetails
+                                                      .ArticleName
+                                                  }
+                                                />
+                                              )}
                                             <div className="d-flex custom-light-text custom-text-transform">
                                               {fabric.Barcode_Id != null && (
                                                 <>
@@ -699,22 +706,22 @@ const LeftSideDetail = ({ imagePath }) => {
                                                 id={`discriptionsls${index}`}
                                               >
                                                 {fabric?.Descriptions?.length >=
-                                                12
+                                                  12
                                                   ? fabric?.Descriptions?.slice(
-                                                      0,
-                                                      12
-                                                    ) + "..."
+                                                    0,
+                                                    12
+                                                  ) + "..."
                                                   : fabric?.Descriptions}
                                               </p>
 
                                               {fabric?.Descriptions?.length >=
                                                 12 && (
-                                                <Tooltip
-                                                  id={`discriptionsls${index}`}
-                                                  direction="right"
-                                                  text={fabric?.Descriptions}
-                                                />
-                                              )}
+                                                  <Tooltip
+                                                    id={`discriptionsls${index}`}
+                                                    direction="right"
+                                                    text={fabric?.Descriptions}
+                                                  />
+                                                )}
                                             </div>
                                           </div>
                                         </div>
@@ -730,23 +737,23 @@ const LeftSideDetail = ({ imagePath }) => {
                                                 {fabric.articleDetails
                                                   .Article_desc.length >= 8
                                                   ? fabric.articleDetails.Article_desc.slice(
-                                                      0,
-                                                      8
-                                                    ) + "..."
+                                                    0,
+                                                    8
+                                                  ) + "..."
                                                   : fabric.articleDetails
-                                                      .Article_desc}
+                                                    .Article_desc}
 
                                                 {fabric.articleDetails
                                                   .Article_desc.length >= 8 && (
-                                                  <Tooltip
-                                                    id={`Item_name${index}`}
-                                                    direction="right"
-                                                    text={
-                                                      fabric.articleDetails
-                                                        .Article_desc
-                                                    }
-                                                  />
-                                                )}
+                                                    <Tooltip
+                                                      id={`Item_name${index}`}
+                                                      direction="right"
+                                                      text={
+                                                        fabric.articleDetails
+                                                          .Article_desc
+                                                      }
+                                                    />
+                                                  )}
                                                 {/* 100% COTTON */}
                                                 {/* {fabric.Item_name} */}
                                               </span>
@@ -862,21 +869,21 @@ const LeftSideDetail = ({ imagePath }) => {
                                             {acc.articleDetails.ArticleName
                                               .length >= 12
                                               ? acc.articleDetails.ArticleName.slice(
-                                                  0,
-                                                  12
-                                                ) + "..."
+                                                0,
+                                                12
+                                              ) + "..."
                                               : acc.articleDetails.ArticleName}
                                           </span>
                                           {acc.articleDetails.ArticleName
                                             .length >= 12 && (
-                                            <Tooltip
-                                              id={`ArticleName${index}`}
-                                              direction="right"
-                                              text={
-                                                acc.articleDetails.ArticleName
-                                              }
-                                            />
-                                          )}
+                                              <Tooltip
+                                                id={`ArticleName${index}`}
+                                                direction="right"
+                                                text={
+                                                  acc.articleDetails.ArticleName
+                                                }
+                                              />
+                                            )}
                                           <div className="d-flex custom-light-text custom-text-transform">
                                             {acc.Barcode_Id != null && (
                                               <>
@@ -895,20 +902,20 @@ const LeftSideDetail = ({ imagePath }) => {
                                             >
                                               {acc?.Descriptions?.length >= 12
                                                 ? acc?.Descriptions?.slice(
-                                                    0,
-                                                    12
-                                                  ) + "..."
+                                                  0,
+                                                  12
+                                                ) + "..."
                                                 : acc?.Descriptions}
                                             </p>
 
                                             {acc?.Descriptions?.length >=
                                               12 && (
-                                              <Tooltip
-                                                id={`discriptionsls${index}`}
-                                                direction="right"
-                                                text={acc?.Descriptions}
-                                              />
-                                            )}
+                                                <Tooltip
+                                                  id={`discriptionsls${index}`}
+                                                  direction="right"
+                                                  text={acc?.Descriptions}
+                                                />
+                                              )}
                                           </div>
                                         </div>
                                       </div>
@@ -924,23 +931,23 @@ const LeftSideDetail = ({ imagePath }) => {
                                               {acc.articleDetails.Article_desc
                                                 .length >= 8
                                                 ? acc.articleDetails.Article_desc.slice(
-                                                    0,
-                                                    8
-                                                  ) + "..."
+                                                  0,
+                                                  8
+                                                ) + "..."
                                                 : acc.articleDetails
-                                                    .Article_desc}
+                                                  .Article_desc}
 
                                               {acc.articleDetails.Article_desc
                                                 .length >= 8 && (
-                                                <Tooltip
-                                                  id={`Item_name${index}`}
-                                                  direction="right"
-                                                  text={
-                                                    acc.articleDetails
-                                                      .Article_desc
-                                                  }
-                                                />
-                                              )}
+                                                  <Tooltip
+                                                    id={`Item_name${index}`}
+                                                    direction="right"
+                                                    text={
+                                                      acc.articleDetails
+                                                        .Article_desc
+                                                    }
+                                                  />
+                                                )}
                                               {/* 100% COTTON */}
                                               {/* {acc.Item_name} */}
                                             </span>
@@ -1162,8 +1169,8 @@ const LeftSideDetail = ({ imagePath }) => {
                     src={img}
                     alt="avatarImages"
                     className="w-100"
-                    // width="full"
-                    // height="300px"
+                  // width="full"
+                  // height="300px"
                   />
                 </div>
               </SwiperSlide>
