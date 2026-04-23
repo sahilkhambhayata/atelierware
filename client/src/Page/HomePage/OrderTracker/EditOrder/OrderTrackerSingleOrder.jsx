@@ -165,7 +165,7 @@ const OrderTrackerSingleOrder = () => {
 
           <OrderList tab={tab} from={from} />
 
-          {mood == "edit" && (
+          {(mood == "edit" || mood == "view") && (
             <div className="mt-5 d-flex justify-content-center mb-5">
               <Button
                 id="BtnEditOrderAddPayment"
