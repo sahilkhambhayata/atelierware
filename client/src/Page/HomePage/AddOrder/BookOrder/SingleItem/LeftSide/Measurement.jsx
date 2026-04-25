@@ -1,4 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
+import "./MeasurementTape.css";
+
 import {
   DropdownToggle,
   DropdownMenu,
@@ -24,7 +26,105 @@ import {
 import { useTheme } from "../../../../../../Layout/Provider/Themes";
 import { usePermissions } from "../../../../../../Layout/Provider/PermissionsContext";
 
+const MeasurementTape = ({ onValueChange, activeField, initialValue }) => {
+  const tapeRef = useRef(null);
+  const audioCtx = useRef(null);
+  const [currentValue, setCurrentValue] = useState(initialValue || 0);
+  // Ultra-fine resolution: 1/16th of an inch (0.0625)
+  const values = Array.from({ length: 1281 }, (_, i) => i * 0.0625);
+  const itemHeight = 10; // Very dense marks
+
+  // Mechanical Click sound (Noise-based)
+  const playTick = () => {
+    try {
+      if (!audioCtx.current) {
+        audioCtx.current = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      const bufferSize = audioCtx.current.sampleRate * 0.008; // 8ms
+      const buffer = audioCtx.current.createBuffer(1, bufferSize, audioCtx.current.sampleRate);
+      const data = buffer.getChannelData(0);
+      for (let i = 0; i < bufferSize; i++) {
+        data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufferSize / 3));
+      }
+      const source = audioCtx.current.createBufferSource();
+      source.buffer = buffer;
+      const gain = audioCtx.current.createGain();
+      gain.gain.value = 0.05;
+      source.connect(gain);
+      gain.connect(audioCtx.current.destination);
+      source.start();
+    } catch (e) {
+      console.log("Audio error", e);
+    }
+  };
+
+  useEffect(() => {
+    if (tapeRef.current && initialValue !== undefined) {
+      const index = values.indexOf(parseFloat(initialValue || 0));
+      if (index !== -1) {
+        tapeRef.current.scrollTop = index * itemHeight;
+      }
+    }
+  }, [activeField.key, activeField.type]);
+
+  const handleScroll = (e) => {
+    const scrollTop = e.target.scrollTop;
+    const index = Math.round(scrollTop / itemHeight);
+    const newValue = values[index];
+    if (newValue !== currentValue) {
+      setCurrentValue(newValue);
+      onValueChange(newValue);
+      playTick();
+    }
+  };
+
+  return (
+    <div className="tape-column">
+      <div className="tape-title">Precision Scale</div>
+      <div className="tape-wrapper" style={{ height: '500px' }}>
+        <div className="tape-indicator"></div>
+        <div className="tape-scroll" ref={tapeRef} onScroll={handleScroll}>
+          <div className="tape-content" style={{ padding: '245px 0' }}>
+            {values.map((v, i) => {
+              const decimal = v % 1;
+              const isMajor = decimal === 0;
+              const isHalf = decimal === 0.5;
+              const isQuarter = decimal === 0.25 || decimal === 0.75;
+              const isEighth = decimal === 0.125 || decimal === 0.375 || decimal === 0.625 || decimal === 0.875;
+              const isActive = v === currentValue;
+              
+              let typeClass = '';
+              if (isMajor) typeClass = 'major';
+              else if (isHalf) typeClass = 'half';
+              else if (isQuarter) typeClass = 'quarter';
+              else if (isEighth) typeClass = 'eighth';
+              else typeClass = 'sixteenth';
+
+              return (
+                <div 
+                  key={v} 
+                  className={`tape-mark ${typeClass} ${isActive ? 'active' : ''}`}
+                  style={{ height: `${itemHeight}px` }}
+                >
+                  {isMajor && (
+                    <span className="mark-value">
+                      {v}
+                    </span>
+                  )}
+                  <div className="mark-line"></div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+      <div className="value-display">{currentValue}"</div>
+    </div>
+  );
+};
+
 const Measurement = ({ mood, handleAddMeasurementSuccess }) => {
+  const [activeField, setActiveField] = useState({ key: null, type: 'measurement' });
   const [modelMeasurement, setModelMeasurement] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
   const [isLoader, setIsLoader] = useState(false);
@@ -70,6 +170,7 @@ const Measurement = ({ mood, handleAddMeasurementSuccess }) => {
   const [count, setCount] = useState(0);
 
   const [formMeas, setFormMeas] = useState({});
+  const [garmentFormMeas, setGarmentFormMeas] = useState({});
   const [saveClicked, setSaveClicked] = useState(false);
   const [extraFormMeas, setExtraFormMeas] = useState({
     remarks: "",
@@ -187,6 +288,13 @@ const Measurement = ({ mood, handleAddMeasurementSuccess }) => {
     }));
   };
 
+  const handleGarmentInputChange = (measurement, value) => {
+    setGarmentFormMeas((prevFormMeas) => ({
+      ...prevFormMeas,
+      [measurement]: value,
+    }));
+  };
+
   const handleaddextramager = (e) => {
     setExtraFormMeas({
       ...extraFormMeas,
@@ -296,12 +404,31 @@ const Measurement = ({ mood, handleAddMeasurementSuccess }) => {
     }
   };
 
+  const handleTapeValueChange = (value) => {
+    if (activeField.key) {
+      if (activeField.type === 'measurement') {
+        handleInputChange(activeField.key, value);
+      } else {
+        handleGarmentInputChange(activeField.key, value);
+      }
+    }
+  };
+
   return (
-    <div className="position-relative nk-header-searchbox border m-0 px-md-5 px-2 pt-3">
+    <div className="measurement-container">
+      {/* Header Boxes */}
+      <div className="measurement-headers">
+        <div className="header-box active">
+          {selectedMeas.ItemName !== "Copy Measurement" ? selectedMeas.ItemName : "Area Name"}
+        </div>
+        <div className="header-box">Measurements</div>
+        <div className="header-box">Garment Fields</div>
+      </div>
+
       <UncontrolledDropdown
         isOpen={modelMeasurement}
         toggle={toggleDropdownMeasurement}
-        className="user-dropdown w-100 "
+        className="user-dropdown w-100 mb-3"
       >
         <DropdownToggle
           tag="a"
@@ -311,6 +438,7 @@ const Measurement = ({ mood, handleAddMeasurementSuccess }) => {
             outline
             className="w-100 d-flex justify-content-between"
             color="light"
+            style={{ borderRadius: '2px' }}
           >
             <span className="text-dark d-none d-md-block">
               {selectedMeas.ItemName}
@@ -340,99 +468,84 @@ const Measurement = ({ mood, handleAddMeasurementSuccess }) => {
             })}
         </DropdownMenu>
       </UncontrolledDropdown>
-      <div className="w-100 px-3">
-        {measure?.Measurement?.map((item, ind) => {
-          // // console.log(formMeas);
 
-          return (
-            <div className="row align-items-center" key={item.CNTMID}>
-              <div className="col-sm-4 col-12 fw-medium fs-12">
-                {item.Measurement}
-              </div>
-              <div className="col-sm-8 col-12">
+      <div className="measurement-layout">
+        <div className="measurement-inputs">
+          {measure?.Measurement?.map((item, ind) => {
+            const fieldKey = `M${item.CNTMID}`;
+            const isMeasActive = activeField.key === fieldKey && activeField.type === 'measurement';
+            const isGarmActive = activeField.key === fieldKey && activeField.type === 'garment';
+            
+            return (
+              <div className="input-row" key={item.CNTMID}>
+                <div className="input-label">
+                  {item.Measurement}
+                </div>
+                
+                {/* Measurement Input */}
                 <input
                   type={getConfig?.orderType?.DecimalMsrmt ? "number" : "text"}
-                  id={`measurement-input-${item.CNTMID}`}
-                  value={formMeas[`M${item.CNTMID}`] || ""}
-                  name={item.Measurement}
-                  onChange={(e) =>
-                    handleInputChange(`M${item.CNTMID}`, e.target.value)
-                  }
+                  value={formMeas[fieldKey] || ""}
+                  onChange={(e) => handleInputChange(fieldKey, e.target.value)}
+                  onFocus={() => setActiveField({ key: fieldKey, type: 'measurement' })}
                   readOnly={mood === "view"}
-                  onKeyDown={handleKeyDown}
                   placeholder="Enter"
-                  style={{ ...inputStyle(item.CNTMID), width: "100%" }}
-                  className="form-control-lg form-control my-2"
+                  className={`custom-input ${isMeasActive ? 'active' : ''}`}
+                />
+
+                {/* Garment Input */}
+                <input
+                  type={getConfig?.orderType?.DecimalMsrmt ? "number" : "text"}
+                  value={garmentFormMeas[fieldKey] || ""}
+                  onChange={(e) => handleGarmentInputChange(fieldKey, e.target.value)}
+                  onFocus={() => setActiveField({ key: fieldKey, type: 'garment' })}
+                  readOnly={mood === "view"}
+                  placeholder="Garment"
+                  className={`custom-input ${isGarmActive ? 'active' : ''}`}
                 />
               </div>
-            </div>
-          );
-        })}
+            );
+          })}
+        </div>
+
+        <div style={{ width: '120px' }}>
+          <MeasurementTape 
+            activeField={activeField}
+            initialValue={activeField.key ? (activeField.type === 'measurement' ? formMeas[activeField.key] : garmentFormMeas[activeField.key]) : 0}
+            onValueChange={handleTapeValueChange}
+          />
+        </div>
       </div>
+
       <textarea
-        name=""
-        id=""
         rows="2"
         readOnly={mood === "view"}
         onKeyDown={handleKeyDown}
-        style={{ width: "100%" }}
-        className="mt-3 rounded-3 form-control remove_border_textArea"
-        placeholder="Remarks Box"
+        className="mt-3 rounded-1 form-control remove_border_textArea"
+        placeholder="Add Remarks here..."
+        style={{ fontSize: '13px' }}
         value={extraFormMeas.remarks}
         onChange={(e) => handleaddextramager(e)}
       ></textarea>
 
-      <div className="row align-items-center justify-content-between ">
-        <div className="d-flex align-items-center p-2 col-md-8 col-12">
-          {/* <input
-            type="checkbox"
-            checked={extraFormMeas.saveToSimilarGarments}
-            id="Dyeing"
-            onChange={handleCheckboxChange}
-            style={{ backgroundColor: "black" }}
-            className="mr-2"
-          />
-          <label htmlFor="Dyeing" className="mb-0 fs-12">
-            Save this Measurement to all similar Garments in This Order
-          </label> */}
-        </div>
-        <div className="col-12 text-end">
-          <span className="custom-light-text custom-text-transform">
-            {" "}
-            Updated On {formattedDate}
-          </span>
-        </div>
-      </div>
-
-      <div className="d-flex justify-content-center my-2">
+      <div className="save-section">
         <Button
           outline
           id="BtnBkAnOrderAddMeas"
-          color="light"
-          className="ps-2 pe-2 d-flex "
-          // className="px-2 d-flex bg-white border border-1 rounded border-dark"
+          color="none"
+          className="premium-btn"
           onClick={handleAddMeasurement}
-          // onClick={() =>
-          //   handleAction(
-          //     "BtnBkAnOrderAddMeas",
-          //     "action",
-          //     handleAddMeasurement,
-          //     null
-          //   )
-          // }
         >
           {isLoader ? (
-            <>
-              <span>
-                <Spinner size="sm" className="mx-1 py-1" />
-              </span>
-            </>
+            <Spinner size="sm" />
           ) : (
-            <span>Save</span>
+            <span>Save Measurements</span>
           )}
         </Button>
       </div>
     </div>
   );
 };
+
+
 export default Measurement;
